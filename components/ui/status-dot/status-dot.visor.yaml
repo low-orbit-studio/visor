@@ -1,5 +1,5 @@
 name: StatusDot
-description: A 6×6px tone-tinted indicator dot — composes inside badges, table rows, activity feed items, and inline status text.
+description: A tone-tinted indicator dot (6px unless a theme sets `--status-dot-size`) — composes inside badges, table rows, activity feed items, and inline status text.
 extends: HTMLSpanElement
 category: data-display
 
@@ -11,7 +11,7 @@ when_to_use:
 
 when_not_to_use:
   - Standalone status without an adjacent label — prefer StatusBadge for a full labelled control
-  - Larger callouts or hero-scale indicators — single 6px size is intentional
+  - Larger callouts or hero-scale indicators — the dot has one size per theme, set by `--status-dot-size`
   - As an interactive affordance — StatusDot is a pure indicator with no behaviour
 
 why: >
@@ -37,6 +37,12 @@ props:
       Omit when the dot is paired with adjacent status text — surrounding
       labels carry the semantic meaning and the dot stays decorative.
 
+theme_hooks:
+  - name: --status-dot-size
+    description: Dot diameter, bound by a theme under `components.status-dot.size`. Default 6px.
+  - name: --status-dot-color
+    description: Fill for a colour outside the five tones, such as a role colour. Set it on the dot or a wrapper; unset, each tone keeps its token.
+
 dependencies: []
 
 preview_url: "https://visor.design/docs/components/data-display/status-dot"
@@ -48,3 +54,4 @@ example: |
     96% capacity
   </Badge>
   <StatusDot tone="danger" aria-label="Service down" />
+  <StatusDot style={{ "--status-dot-color": "var(--staff)" } as React.CSSProperties} />

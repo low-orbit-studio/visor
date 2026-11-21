@@ -11,6 +11,7 @@ const textVariants = cva(styles.base, {
       md: styles.sizeMd,
       lg: styles.sizeLg,
       xl: styles.sizeXl,
+      eyebrow: styles.sizeEyebrow,
     },
     weight: {
       normal: styles.weightNormal,
@@ -61,7 +62,17 @@ const Text = React.forwardRef<HTMLElement, TextProps>(
       <Tag
         ref={ref as React.Ref<never>}
         data-slot="text"
-        className={cn(textVariants({ size, weight, family, color, leading }), className)}
+        className={cn(
+          textVariants({
+            size,
+            // An eyebrow's weight and colour come from its own hooks unless the caller picks one.
+            weight: size === "eyebrow" && weight === undefined ? null : weight,
+            family,
+            color: size === "eyebrow" && color === undefined ? null : color,
+            leading,
+          }),
+          className,
+        )}
         {...props}
       />
     )

@@ -95,37 +95,51 @@
    The edged variant classes are never applied under `soft`, so nothing here
    has to out-specify them. Sizes are `--alert-*` component tokens a theme binds
    in its components block, under alert.
+
+   Over a photo (VI-799), inside the glass layer's `data-glass="on"` switch, the
+   soft alert replaces the kit's Notice: the glass layer's control fill and blur
+   (the light field glass the Notice draws, not a card's heavy fill), a full
+   hairline outline (never a stripe) and every tone in the glass ink, not red, since
+   a tone colour sinks into a warm photo. The icon's shape still carries the tone.
+   Off the switch every `--glass-on-*` is unset, so the two `--_` values below are
+   invalid and each property falls back to the plain soft look.
    ───────────────────────────────────────────────────────────────────────────── */
 .soft {
+  /* The Notice's outline (64% ink) and body (80% ink), its own intentional mixes. */
+  --_glass-ring: inset 0 0 0 var(--stroke-width-thin, 1px) color-mix(in srgb, var(--glass-on-ink) 64%, transparent);
+  --_glass-body: color-mix(in srgb, var(--glass-on-ink) 80%, transparent);
   display: flex;
   align-items: flex-start;
   gap: var(--alert-gap, var(--spacing-3, 0.75rem));
   /* 12px 14px — the approved builds' inset; 14px is spacing-3 plus half a step. */
   padding: var(--alert-soft-padding, var(--spacing-3, 0.75rem) calc(var(--spacing-3, 0.75rem) + var(--spacing-1, 0.25rem) / 2));
   border-radius: var(--alert-radius, var(--radius-lg, 0.5rem));
-  box-shadow: none;
+  box-shadow: var(--_glass-ring, none);
+  /* -webkit- first: Lightning CSS keeps only the last of the pair (VI-788). */
+  -webkit-backdrop-filter: var(--glass-on-control-blur, none);
+  backdrop-filter: var(--glass-on-control-blur, none);
   font-size: var(--alert-font-size, var(--font-size-sm, 0.875rem));
   line-height: var(--line-height-normal, 1.5);
-  color: var(--text-secondary, currentColor);
+  color: var(--_glass-body, var(--text-secondary, currentColor));
 }
 
 .softDestructive {
-  background-color: var(--surface-error-soft, var(--surface-error-subtle, transparent));
+  background-color: var(--glass-on-control-fill, var(--surface-error-soft, var(--surface-error-subtle, transparent)));
 }
 
 .softWarning {
-  background-color: var(--surface-warning-soft, var(--surface-warning-subtle, transparent));
+  background-color: var(--glass-on-control-fill, var(--surface-warning-soft, var(--surface-warning-subtle, transparent)));
 }
 
 .softSuccess {
-  background-color: var(--surface-success-soft, var(--surface-success-subtle, transparent));
+  background-color: var(--glass-on-control-fill, var(--surface-success-soft, var(--surface-success-subtle, transparent)));
 }
 
 /* The neutral note: a faint wash of the ink colour — white on a dark card, a
    faint grey on a light one. 5% is the approved builds' white wash at 5% alpha,
    mixed toward the ink instead of white so it also reads in light mode. */
 .softNote {
-  background-color: color-mix(in srgb, var(--text-primary, #111827) 5%, transparent);
+  background-color: var(--glass-on-control-fill, color-mix(in srgb, var(--text-primary, #111827) 5%, transparent));
 }
 
 /* The icon: outline, unchipped, in the tone's colour. The SVG's own width is
@@ -146,19 +160,19 @@
 }
 
 .softDestructive .icon {
-  color: var(--text-error, currentColor);
+  color: var(--glass-on-ink, var(--text-error, currentColor));
 }
 
 .softWarning .icon {
-  color: var(--text-warning, currentColor);
+  color: var(--glass-on-ink, var(--text-warning, currentColor));
 }
 
 .softSuccess .icon {
-  color: var(--text-success, currentColor);
+  color: var(--glass-on-ink, var(--text-success, currentColor));
 }
 
 .softNote .icon {
-  color: var(--text-secondary, currentColor);
+  color: var(--glass-on-ink, var(--text-secondary, currentColor));
 }
 
 /* At least the icon's height and centred against it, so a one-line message
@@ -174,6 +188,28 @@
 }
 
 .softNote .content {
+  min-height: var(--alert-icon-size-note, 1.5rem);
+}
+
+/* Over a photo (VI-799) the note draws its icon at the other tones' size, so
+   every tone's text starts in one column on the glass. A size can't ride a
+   --glass-on-* fallback, so this keys off the switch itself; the off rule
+   after it restores the note for a data-glass="off" subtree inside it. */
+:global([data-glass="on"]) .softNote .icon > svg {
+  width: var(--alert-icon-size, 2rem);
+  height: var(--alert-icon-size, 2rem);
+}
+
+:global([data-glass="on"]) .softNote .content {
+  min-height: var(--alert-icon-size, 2rem);
+}
+
+:global([data-glass="off"]) .softNote .icon > svg {
+  width: var(--alert-icon-size-note, 1.5rem);
+  height: var(--alert-icon-size-note, 1.5rem);
+}
+
+:global([data-glass="off"]) .softNote .content {
   min-height: var(--alert-icon-size-note, 1.5rem);
 }
 
@@ -193,12 +229,13 @@
   margin-bottom: 0;
 }
 
-.soft .title {
-  color: var(--text-primary, currentColor);
+.soft .title,
+.soft .lead {
+  color: var(--glass-on-ink, var(--text-primary, currentColor));
 }
 
 .soft .description {
   font-size: inherit;
   line-height: inherit;
-  color: var(--text-secondary, currentColor);
+  color: var(--_glass-body, var(--text-secondary, currentColor));
 }

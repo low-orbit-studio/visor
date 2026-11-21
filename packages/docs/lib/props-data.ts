@@ -19,7 +19,7 @@ export const propsData: Record<string, PropDef[]> = {
       type: "'default' | 'soft'",
       default: "'default'",
       description:
-        'soft draws a tinted fill with no edge or shadow, a tone icon and the body in secondary ink.',
+        'soft draws a tinted fill with no edge or shadow, a tone icon and the body in secondary ink. Inside data-glass="on" it draws on glass with a full outline, every tone in the glass ink.',
     },
     {
       name: 'icon',
@@ -331,7 +331,7 @@ export const propsData: Record<string, PropDef[]> = {
     {
       name: 'offlineLabel',
       type: 'string',
-      default: '"You\'re offline"',
+      default: '"You\'re offline" ("Offline" for the pill)',
       description: 'Text shown in the offline state.',
     },
     {
@@ -351,6 +351,19 @@ export const propsData: Record<string, PropDef[]> = {
       type: 'string',
       default: '"Retry"',
       description: 'Label for the retry button.',
+    },
+    {
+      name: 'variant',
+      type: "'banner' | 'pill'",
+      default: "'banner'",
+      description:
+        'Draws the full-width sticky bar, or a compact inline pill for a top bar. The pill is solid by default and reads the glass layer inside `data-glass="on"`.',
+    },
+    {
+      name: 'detail',
+      type: 'React.ReactNode',
+      description:
+        'Shown after the label as `· {detail}`, lighter, for example "saved 9PM". With a detail the root drops its `aria-label`, so the status reads the whole text.',
     },
     {
       name: 'className',
@@ -1307,9 +1320,10 @@ export const propsData: Record<string, PropDef[]> = {
     },
     {
       name: 'size',
-      type: "'xs' | 'sm' | 'md' | 'lg' | 'xl'",
+      type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'eyebrow'",
       default: "'md'",
-      description: 'Font size of the text.',
+      description:
+        'Font size of the text. `eyebrow` is an all-caps label laid out as a row for a leading dot or icon; it takes its weight and colour from the `--text-eyebrow-*` hooks unless `weight` or `color` is passed.',
     },
     {
       name: 'weight',

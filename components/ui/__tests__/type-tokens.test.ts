@@ -120,6 +120,14 @@ const CASES: Case[] = [
     TYPE.map((t) => ({ token: `--text-${size}-${t.key}`, fixture: "text/default", target: SIZE_TEXT(i + 1), prop: t.prop, value: t.value })),
   ),
 
+  // text — the eyebrow (VI-801)
+  { token: "--text-eyebrow-font-size", fixture: "text/eyebrow", target: "[data-slot=text]", prop: "font-size", value: "21px" },
+  { token: "--text-eyebrow-text-transform", fixture: "text/eyebrow", target: "[data-slot=text]", prop: "text-transform", value: "lowercase" },
+  { token: "--text-eyebrow-letter-spacing", fixture: "text/eyebrow", target: "[data-slot=text]", prop: "letter-spacing", value: "3px" },
+  { token: "--text-eyebrow-font-weight", fixture: "text/eyebrow", target: "[data-slot=text]", prop: "font-weight", value: "680" },
+  { token: "--text-eyebrow-color", fixture: "text/eyebrow", target: "[data-slot=text]", prop: "color", value: "rgb(255, 0, 170)" },
+  { token: "--text-eyebrow-gap", fixture: "text/eyebrow", target: "[data-slot=text]", prop: "column-gap", value: "17px" },
+
   // switch
   { token: "--switch-track-width", fixture: "switch/default", target: "button", prop: "width", value: "40px" },
   { token: "--switch-track-height", fixture: "switch/default", target: "button", prop: "height", value: "24px" },

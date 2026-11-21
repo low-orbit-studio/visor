@@ -68,6 +68,8 @@ components:
     selected-bg: "#2b0a3d"
     selected-border-color: "#ff00aa"
     selected-text-color: "#00d5ff"
+  status-dot:
+    size: "17px"
   badge:
     radius: "3px"
     border: "3px dashed #ff00aa"
@@ -416,6 +418,12 @@ components:
     xl-font-size: "37px"
     xl-text-transform: uppercase
     xl-letter-spacing: "0.3em"
+    eyebrow-font-size: "37px"
+    eyebrow-text-transform: lowercase
+    eyebrow-letter-spacing: "0.3em"
+    eyebrow-font-weight: "900"
+    eyebrow-color: "#00d5ff"
+    eyebrow-gap: "17px"
   switch:
     track-width: "37px"
     track-height: "37px"
@@ -542,6 +550,18 @@ components:
     button-color: "#ff00aa"
     button-hover-bg: "#2b0a3d"
     icon-size: "37px"
+  offline-banner:
+    pill-height: "37px"
+    pill-padding-x: "21px"
+    pill-gap: "17px"
+    pill-font-size: "13px"
+    pill-font-weight: "900"
+    pill-detail-font-weight: "300"
+    pill-detail-opacity: "0.5"
+    pill-icon-size: "37px"
+    pill-bg: "#2b0a3d"
+    pill-text-color: "#00d5ff"
+    pill-border: "#ff00aa"
   separator:
     color: "#2c2c2c"
   alert:
@@ -593,5 +613,30 @@ components:
     label-line-height: "3"
     label-letter-spacing: "0.5em"
     label-color: "#00d5ff"
+  key-value-list:
+    label-font-size: "21px"
+    label-font-weight: "900"
+    label-line-height: "3"
+    label-letter-spacing: "0.4em"
+    label-text-transform: "lowercase"
+    label-color: "#00d5ff"
+    label-padding-top: "7px"
+    value-font-size: "37px"
+    value-font-weight: "100"
+    value-line-height: "2"
+    value-color: "#ff3300"
+    value-text-wrap: "balance"
+    value-overflow-wrap: "anywhere"
+    value-font-variant-numeric: "normal"
+    columns: "33px 1fr"
+    item-gap: "17px"
+    item-align: "start"
+    item-padding: "9px 3px"
+    row-gap: "13px"
+    divider: "3px dotted #ffd000"
+    panel-bg: "#2b0a3d"
+    panel-border-color: "#ff00aa"
+    panel-radius: "3px"
+    panel-padding: "19px"
   admin-ui:
     marquee-family: "\"Courier New\", monospace"

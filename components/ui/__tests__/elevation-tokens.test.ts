@@ -84,14 +84,15 @@ describe('Elevation token coverage — VI-131', () => {
           // e.g. 0 0 0 var(--focus-ring-width, 2px) color-mix(in srgb, ...)
           if (value.includes('color-mix')) return false
           // Allow: a component-scoped shadow role (VI-625 `--banner-shadow`,
-          // `--tabs-trigger-active-shadow`, the shared `--dt-container-shadow`)
+          // `--tabs-trigger-active-shadow`, the shared `--dt-container-shadow`,
+          // a private `--_glass-ring` set only under the glass switch, VI-799)
           // whose fallback chain still terminates in a --shadow-* token or none.
           // Checking the fallback rather than the hook's NAME means a new
           // theme-bindable shadow can't quietly smuggle in an inline rgba.
           // The chain may pass through more hooks first (VI-804: Card's glass
           // shadow reads the glass switch's `--glass-on-shadow`, then `--shadow-sm`).
           if (
-            /^(var\(--[a-z0-9-]+,\s*)+(var\(--shadow-|none\s*\))/.test(value)
+            /^(var\(--[a-z0-9_-]+,\s*)+(var\(--shadow-|none\s*\))/.test(value)
           ) {
             return false
           }

@@ -1,3 +1,4 @@
+// @vitest-environment node
 import { existsSync, readFileSync } from "fs"
 import { dirname, resolve } from "path"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"

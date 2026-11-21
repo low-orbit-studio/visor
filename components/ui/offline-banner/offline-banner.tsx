@@ -116,10 +116,18 @@ export interface OfflineBannerProps {
   restoredLabel?: string
   /** Custom label for the retry button. Default: "Retry". */
   retryLabel?: string
+  /**
+   * `"banner"` (default): the full-width sticky bar. `"pill"`: a compact inline
+   * pill for a top bar, solid by default and glass inside `data-glass="on"`.
+   */
+  variant?: "banner" | "pill"
+  /** Shown after the label as `· {detail}`, lighter, e.g. "saved 9PM". Read out with the label. */
+  detail?: React.ReactNode
 }
 
 /**
- * OfflineBanner — full-width sticky banner for network connectivity loss.
+ * OfflineBanner — full-width sticky banner for network connectivity loss, or a
+ * compact pill (`variant="pill"`) for a top bar.
  *
  * Composes the existing Banner pattern: dark surface, inverse text, accent icon.
  * Mounts below the navigation bar using sticky positioning — does not overlay content.
@@ -134,10 +142,12 @@ export const OfflineBanner = React.forwardRef<HTMLDivElement, OfflineBannerProps
       networkState,
       onRetry,
       className,
-      offlineLabel = "You're offline",
+      offlineLabel,
       reconnectingLabel = "Reconnecting…",
       restoredLabel = "Back online",
       retryLabel = "Retry",
+      variant = "banner",
+      detail,
     },
     ref
   ) {
@@ -147,10 +157,16 @@ export const OfflineBanner = React.forwardRef<HTMLDivElement, OfflineBannerProps
     const isOffline = networkState === "offline"
     const isReconnecting = networkState === "reconnecting"
     const isRestored = networkState === "restored"
+    const isPill = variant === "pill"
+    const label = isRestored
+      ? restoredLabel
+      : isReconnecting
+        ? reconnectingLabel
+        : (offlineLabel ?? (isPill ? "Offline" : "You're offline"))
 
     const bannerClass = [
-      styles.banner,
-      isRestored ? styles.bannerRestored : styles.bannerOffline,
+      isPill ? styles.pill : styles.banner,
+      isPill ? undefined : isRestored ? styles.bannerRestored : styles.bannerOffline,
       className,
     ]
       .filter(Boolean)
@@ -161,15 +177,11 @@ export const OfflineBanner = React.forwardRef<HTMLDivElement, OfflineBannerProps
         ref={ref}
         data-slot="offline-banner"
         data-state={networkState}
+        data-variant={isPill ? "pill" : undefined}
         role="status"
         aria-live="polite"
-        aria-label={
-          isRestored
-            ? restoredLabel
-            : isReconnecting
-              ? reconnectingLabel
-              : offlineLabel
-        }
+        // With a detail, the live region reads its own text so the detail is announced too.
+        aria-label={detail === undefined ? label : undefined}
         className={bannerClass}
       >
         {/* Left: icon or spinner */}
@@ -184,13 +196,13 @@ export const OfflineBanner = React.forwardRef<HTMLDivElement, OfflineBannerProps
         </span>
 
         {/* Center: status label */}
-        <span className={styles.label}>
-          {isRestored
-            ? restoredLabel
-            : isReconnecting
-              ? reconnectingLabel
-              : offlineLabel}
-        </span>
+        <span className={styles.label}>{label}</span>
+        {detail !== undefined && (
+          <>
+            {" "}
+            <span className={styles.detail}>· {detail}</span>
+          </>
+        )}
 
         {/* Right: retry button (offline state only) */}
         {isOffline && onRetry && (

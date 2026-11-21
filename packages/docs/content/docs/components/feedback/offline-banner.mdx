@@ -6,6 +6,8 @@ description: App-shell banner for network connectivity loss. Non-blocking sticky
 import { ComponentPreview } from '@/components/preview';
 import { PropsTable } from '@/components/props-table';
 import { OfflineBannerStateDemo, OfflineBannerHookDemo } from '@/components/ui/offline-banner-demos';
+import { OfflineBanner } from '@/components/ui/offline-banner';
+import { FiveLooks } from '@/components/looks/five-looks';
 
 ## Overview
 
@@ -58,6 +60,47 @@ const { networkState, retry } = useNetworkStatus({
   restoredDisplayDuration: 2000, // show "Back online" for 2s
 });
 ```
+
+## Pill
+
+`variant="pill"` draws a compact inline pill for a top bar instead of the full-width
+bar. Its offline label is "Offline", and `detail` adds a lighter `· {detail}` after it,
+such as when the page was saved. The pill keeps the banner's states, and shows Retry
+only when you pass `onRetry`. It is solid by default; inside `data-glass="on"` (see
+[Glass](/docs/themes/glass)) it takes the glass layer's control fill, ring, ink and blur.
+
+<ComponentPreview
+  title="Pill"
+  code={"<OfflineBanner networkState=\"offline\" variant=\"pill\" detail=\"saved 9PM\" />\n<OfflineBanner networkState=\"reconnecting\" variant=\"pill\" />"}
+>
+  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem', justifyContent: 'center' }}>
+    <OfflineBanner networkState="offline" variant="pill" detail="saved 9PM" />
+    <OfflineBanner networkState="reconnecting" variant="pill" />
+  </div>
+</ComponentPreview>
+
+A theme sizes the pill through the `offline-banner` component tokens; see
+[Component Tokens](/docs/themes/component-tokens#offline-banner). On a phone, set
+smaller values under your own breakpoint, and pass a shorter `detail`.
+
+```yaml
+components:
+  offline-banner:
+    pill-height: "42px"
+    pill-gap: "6px"
+    pill-font-weight: "680"
+    pill-detail-font-weight: "520"
+```
+
+### In Five Looks
+
+The itinerary's labels in each look, on the theme picked in the docs: the offline pill
+from the top bar, and a tile of eyebrows with role dots and chips. The specimen binds
+the Honcho kit's sizes the way a theme would, and reads the theme's fill and inks. Only
+the two Photo looks turn glass on: the tile and the pill turn to glass, while the
+chips, dots and eyebrows never blur themselves.
+
+<FiveLooks specimen="itinerary-labels" height={460} />
 
 ## Installation
 
@@ -131,7 +174,7 @@ function useNetworkStatus(options?: UseNetworkStatusOptions): UseNetworkStatusRe
 ## Accessibility
 
 - The banner uses `role="status"` and `aria-live="polite"` — changes are announced non-interruptively.
-- `aria-label` updates to reflect the current state ("You're offline", "Reconnecting…", "Back online").
+- `aria-label` updates to reflect the current state ("You're offline", "Reconnecting…", "Back online"). With a `detail`, the root drops `aria-label`, so the status reads the whole text ("Offline · saved 9PM").
 - The Retry button has an `aria-label` that clarifies intent: "Retry — check network connection".
 - Icons are `aria-hidden="true"` — meaning is carried by the text label.
 - The banner does not trap focus or block interaction with content below it.

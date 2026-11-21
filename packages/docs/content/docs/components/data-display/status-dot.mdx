@@ -7,6 +7,7 @@ import { ComponentPreview } from '@/components/preview';
 import { PropsTable } from '@/components/props-table';
 import { StatusDot } from '@/components/ui/status-dot';
 import { Badge } from '@/components/ui/badge';
+import { FiveLooks } from '@/components/looks/five-looks';
 
 ## Basic
 
@@ -68,6 +69,32 @@ make the dot announce itself as a labeled image.
 >
   <StatusDot tone="danger" aria-label="Service down" />
 </ComponentPreview>
+
+## Size and Colour
+
+A theme sets the dot's size with `components.status-dot.size` (`--status-dot-size`,
+6px unset). For a colour outside the five tones, such as a role colour, set
+`--status-dot-color` on the dot or a wrapper; unset, each tone keeps its token.
+
+<ComponentPreview
+  title="A larger dot in a role colour"
+  code={"<span style={{ '--status-dot-size': '9px' }}>\n  <StatusDot style={{ '--status-dot-color': 'var(--accent)' }} />\n</span>"}
+>
+  <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', '--status-dot-size': '9px' }} data-demo="status-dot-hooks">
+    <StatusDot tone="mint" />
+    <StatusDot style={{ '--status-dot-color': 'var(--accent)' }} />
+  </div>
+</ComponentPreview>
+
+### In Five Looks
+
+The itinerary's labels in each look, on the theme picked in the docs: the offline pill
+from the top bar, and a tile of eyebrows with role dots and chips. The specimen binds
+the Honcho kit's sizes the way a theme would, and reads the theme's fill and inks. Only
+the two Photo looks turn glass on: the tile and the pill turn to glass, while the
+chips, dots and eyebrows never blur themselves.
+
+<FiveLooks specimen="itinerary-labels" height={460} />
 
 ## Installation
 
@@ -141,9 +168,9 @@ and circular radius are intentional and fixed — for larger callouts, use
 
 After copying the component, you own it completely. Common customizations:
 
-- Add a new tone (e.g. `accent`) by adding a `data-tone="accent"` rule that
+- Add a new tone (such as `accent`) by adding a `data-tone="accent"` rule that
   references the desired semantic token.
-- Swap the size by editing the `width`/`height` values — the
-  `border-radius: 9999px` handles any square size as a circle.
+- Swap the size with `--status-dot-size` — the `border-radius: 9999px`
+  handles any square size as a circle.
 - Add a pulse animation for in-flight states by porting the keyframes from
   [`StatusBadge`](/docs/components/admin/status-badge).

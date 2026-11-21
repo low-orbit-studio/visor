@@ -7,6 +7,7 @@ import { ComponentPreview } from '@/components/preview';
 import { PropsTable } from '@/components/props-table';
 import { Alert, AlertTitle, AlertDescription, AlertLead, AlertActions } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
+import { FiveLooks } from '@/components/looks/five-looks';
 
 ## Variants
 
@@ -128,6 +129,12 @@ Danger is an octagon, so it differs from a warning by shape as well as colour. `
     </Alert>
   </div>
 </ComponentPreview>
+
+### Over a Photo
+
+Inside the [glass layer](/docs/themes/glass)'s `data-glass="on"` switch, the soft alert draws on glass: the glass layer's control fill and blur (the light glass of a field, not a card's), a full hairline outline (never a stripe), and every tone in the glass ink instead of its tone colour, because red sinks into a warm photo. The icon's shape still tells the tones apart, and the neutral note draws its icon at the other tones' 32px, so every tone's text starts in one column. Off the switch it is the plain soft alert above, with no blur. This is the look that replaces the Honcho kit's Notice: pass `icon={<WarningCircle weight="bold" />}` for a send that failed, or `icon={<WifiSlash weight="bold" />}` for offline. Below, the alerts sit on a form panel drawn with the glass layer's recipe, as a FormDeck slide sets its notices on the slide's glass card. Over a photo the panel turns to glass too, so the alerts read against a calm surface instead of the photo itself.
+
+<FiveLooks specimen="alert" height={620} />
 
 ### Choosing between Alert, FieldError, ErrorPlacard and Banner
 

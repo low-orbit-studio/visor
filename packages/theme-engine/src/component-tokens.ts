@@ -115,6 +115,8 @@ export function componentTokenName(family: ComponentTokenFamily, key: string): s
 const TABLE = "components/ui/table/table.module.css";
 const DATA_TABLE = "components/ui/data-table/data-table.module.css";
 const CHIP = "components/ui/chip/chip.module.css";
+const STATUS_DOT = "components/ui/status-dot/status-dot.module.css";
+const OFFLINE_BANNER = "components/ui/offline-banner/offline-banner.module.css";
 const BADGE = "components/ui/badge/badge.module.css";
 const STATUS_BADGE = "components/ui/status-badge/status-badge.module.css";
 const FILTER_BAR = "components/ui/filter-bar/filter-bar.module.css";
@@ -153,6 +155,7 @@ const BILLING_SLIDER = "components/ui/billing-slider/billing-slider.module.css";
 const RESIZABLE_SPLIT = "components/ui/resizable-split/resizable-split.module.css";
 const DIALOG = "components/ui/dialog/dialog.module.css";
 const STAT_CARD = "components/ui/stat-card/stat-card.module.css";
+const KEY_VALUE_LIST = "components/ui/key-value-list/key-value-list.module.css";
 const CARD = "components/ui/card/card.module.css";
 
 /** Shorthand for the common single-consumer case. */
@@ -262,8 +265,14 @@ const chipFamily: ComponentTokenFamily = {
       description: "Outlined-chip edge colour. Width and style come from the shared `control` edge, so `control.edge-width: 0` turns it off.",
       consumers: at(CHIP, "var(--control-edge-color, var(--border-default, #e5e7eb))"),
     },
-    { key: "bg", property: "background-color", description: "Resting chip fill.", consumers: at(CHIP, "var(--surface-card, #ffffff)") },
-    { key: "text-color", property: "color", description: "Chip label colour.", consumers: at(CHIP, "var(--text-primary, #111827)") },
+    // VI-801: the default variant reads these too, over the muted fill it drew before.
+    {
+      key: "bg",
+      property: "background-color",
+      description: "Resting chip fill, on the base chip and the default variant.",
+      consumers: [...at(CHIP, "var(--surface-card, #ffffff)"), ...at(CHIP, "var(--surface-muted, #f3f4f6)")],
+    },
+    { key: "text-color", property: "color", description: "Chip label colour.", consumers: each([CHIP, CHIP], "var(--text-primary, #111827)") },
     { key: "font-family", property: "font-family", description: "Chip label family — bind a mono face for token/ID chips.", consumers: at(CHIP, "var(--font-body, inherit)") },
     { key: "font-weight", property: "font-weight", description: "Chip label weight.", consumers: at(CHIP, "var(--font-weight-medium, 500)") },
     { key: "letter-spacing", property: "letter-spacing", description: "Chip label tracking.", consumers: at(CHIP, "inherit") },
@@ -280,6 +289,38 @@ const chipFamily: ComponentTokenFamily = {
     { key: "selected-bg", property: "background-color", description: "Selected chip fill.", consumers: at(CHIP, "var(--surface-accent-subtle, #eff6ff)") },
     { key: "selected-border-color", property: "outline-color (on ::after)", description: "Selected chip edge colour.", consumers: at(CHIP, "var(--surface-accent-default, #3b82f6)") },
     { key: "selected-text-color", property: "color", description: "Selected chip label colour.", consumers: at(CHIP, "var(--text-link, #2563eb)") },
+  ],
+};
+
+// VI-801: StatusDot's size, so a theme can draw a larger dot (the Honcho kit's 9px).
+// A colour outside the five tones is per element (`--status-dot-color`), not a theme value.
+const statusDotFamily: ComponentTokenFamily = {
+  family: "status-dot",
+  prefix: "status-dot",
+  description: "StatusDot size. A caller sets `--status-dot-color` on a dot for a colour outside its five tones.",
+  tokens: [{ key: "size", property: "width / height", description: "Dot diameter.", consumers: at(STATUS_DOT, "6px") }],
+};
+
+// VI-801: OfflineBanner's pill variant, the compact status a top bar carries. Each
+// key falls back to the pill's own defaults. Under the glass switch (VI-795) the
+// pill reads the glass layer's control fill, ring, ink and blur ahead of these.
+const offlineBannerFamily: ComponentTokenFamily = {
+  family: "offline-banner",
+  prefix: "offline-banner",
+  description:
+    "OfflineBanner's pill variant \u2014 height, padding, gap, type size, label and detail weight, detail opacity, icon size, fill, ink and edge. Under `data-glass=\"on\"` the pill reads the glass layer's control values instead.",
+  tokens: [
+    { key: "pill-height", property: "height", description: "Pill height.", consumers: at(OFFLINE_BANNER, "2.5rem") },
+    { key: "pill-padding-x", property: "padding", description: "Pill horizontal padding.", consumers: at(OFFLINE_BANNER, "var(--spacing-4, 1rem)") },
+    { key: "pill-gap", property: "gap", description: "Space between the icon, label and detail.", consumers: at(OFFLINE_BANNER, "var(--spacing-2, 0.5rem)") },
+    { key: "pill-font-size", property: "font-size", description: "Pill type size.", consumers: at(OFFLINE_BANNER, "var(--font-size-sm, 0.875rem)") },
+    { key: "pill-font-weight", property: "font-weight", description: "Label weight.", consumers: at(OFFLINE_BANNER, "var(--font-weight-semibold, 600)") },
+    { key: "pill-detail-font-weight", property: "font-weight", description: "Detail weight.", consumers: at(OFFLINE_BANNER, "var(--font-weight-medium, 500)") },
+    { key: "pill-detail-opacity", property: "opacity", description: "Detail opacity, so it reads quieter than the label in any ink.", consumers: at(OFFLINE_BANNER, "var(--opacity-80, 0.8)") },
+    { key: "pill-icon-size", property: "width / height", description: "Icon size.", consumers: at(OFFLINE_BANNER, "1.125rem") },
+    { key: "pill-bg", property: "background-color", description: "Solid pill fill.", consumers: at(OFFLINE_BANNER, "var(--surface-muted, #f3f4f6)") },
+    { key: "pill-text-color", property: "color", description: "Pill ink: label, detail and icon.", consumers: at(OFFLINE_BANNER, "var(--text-primary, #111827)") },
+    { key: "pill-border", property: "box-shadow (inset edge)", description: "Solid pill edge colour.", consumers: at(OFFLINE_BANNER, "var(--border-default, #e5e7eb)") },
   ],
 };
 
@@ -1117,11 +1158,20 @@ const textFamily: ComponentTokenFamily = {
   family: "text",
   prefix: "text",
   description:
-    "Text type treatment, per size — set `sm-font-size: 13px` for a 13px step, or caps and tracking on `xs` for a state tag. Every key begins with a size.",
+    "Text type treatment, per size — set `sm-font-size: 13px` for a 13px step, or caps and tracking on `xs` for a state tag. `eyebrow` also takes a weight, colour and gap. Every key begins with a size.",
   tokens: TEXT_SIZES.flatMap(({ size, fontSize }) => [
     { key: `${size}-font-size`, property: "font-size", description: `\`${size}\` type size.`, consumers: at(TEXT, fontSize) },
     { key: `${size}-text-transform`, property: "text-transform", description: `\`${size}\` casing.`, consumers: at(TEXT, "revert-layer") },
     { key: `${size}-letter-spacing`, property: "letter-spacing", description: `\`${size}\` tracking.`, consumers: at(TEXT, "revert-layer") },
+  ]).concat([
+    // VI-801: the eyebrow, an all-caps label above a section. It drops Text's default
+    // weight and colour classes, so its own weight, colour and gap keys set them.
+    { key: "eyebrow-font-size", property: "font-size", description: "`eyebrow` type size.", consumers: at(TEXT, "var(--font-size-xs, 0.75rem)") },
+    { key: "eyebrow-text-transform", property: "text-transform", description: "`eyebrow` casing.", consumers: at(TEXT, "uppercase") },
+    { key: "eyebrow-letter-spacing", property: "letter-spacing", description: "`eyebrow` tracking.", consumers: at(TEXT, "var(--letter-spacing-wide, 0.05em)") },
+    { key: "eyebrow-font-weight", property: "font-weight", description: "`eyebrow` weight, unless the caller passes `weight`.", consumers: at(TEXT, "var(--font-weight-semibold, 600)") },
+    { key: "eyebrow-color", property: "color", description: "`eyebrow` colour, unless the caller passes `color`.", consumers: at(TEXT, "var(--text-secondary, #6b7280)") },
+    { key: "eyebrow-gap", property: "gap", description: "Space between an `eyebrow` and a leading dot or icon.", consumers: at(TEXT, "var(--spacing-2, 0.5rem)") },
   ]),
 };
 
@@ -1695,10 +1745,49 @@ const statCardFamily: ComponentTokenFamily = {
   ],
 };
 
+// VI-800: KeyValueList's skin, so a theme can draw Honcho's Facts panel and the
+// Backstage itinerary's key-value pairs: label and value type, the horizontal
+// columns, row spacing and divider, and the `surface="panel"` fill, edge, corners
+// and inset. Each key falls back to what KeyValueList drew before it. Under the
+// glass switch (VI-795) the panel reads the glass layer's fill, lift and blur.
+const keyValueListFamily: ComponentTokenFamily = {
+  family: "key-value-list",
+  prefix: "key-value-list",
+  description:
+    "KeyValueList \u2014 label and value type and ink, the horizontal columns, item gap and alignment, row spacing, padding and divider, and the `surface=\"panel\"` fill, edge colour, corners and inset. Under `data-glass=\"on\"` the panel reads the glass layer instead.",
+  tokens: [
+    { key: "label-font-size", property: "font-size", description: "Label type size.", consumers: at(KEY_VALUE_LIST, "var(--font-size-xs, 0.6875rem)") },
+    { key: "label-font-weight", property: "font-weight", description: "Label weight.", consumers: at(KEY_VALUE_LIST, "var(--font-weight-medium, 500)") },
+    { key: "label-line-height", property: "line-height", description: "Label line height.", consumers: at(KEY_VALUE_LIST, "1.4") },
+    { key: "label-letter-spacing", property: "letter-spacing", description: "Label tracking, stacked and horizontal.", consumers: [{ file: KEY_VALUE_LIST, fallback: "0.12em" }, { file: KEY_VALUE_LIST, fallback: "0.06em" }] },
+    { key: "label-text-transform", property: "text-transform", description: "Label case (`none` for sentence-case labels).", consumers: at(KEY_VALUE_LIST, "uppercase") },
+    { key: "label-color", property: "color", description: "Label ink.", consumers: at(KEY_VALUE_LIST, "var(--text-tertiary, #6b7280)") },
+    { key: "label-padding-top", property: "padding-top", description: "Nudge the label down against a larger value.", consumers: at(KEY_VALUE_LIST, "0") },
+    { key: "value-font-size", property: "font-size", description: "Value type size, in every density.", consumers: [{ file: KEY_VALUE_LIST, fallback: "var(--font-size-lg, 1.125rem)" }, { file: KEY_VALUE_LIST, fallback: "var(--font-size-base, 1rem)" }, { file: KEY_VALUE_LIST, fallback: "var(--font-size-sm, 0.8125rem)" }] },
+    { key: "value-font-weight", property: "font-weight", description: "Value weight.", consumers: at(KEY_VALUE_LIST, "inherit") },
+    { key: "value-line-height", property: "line-height", description: "Value line height.", consumers: at(KEY_VALUE_LIST, "inherit") },
+    { key: "value-color", property: "color", description: "Value ink.", consumers: at(KEY_VALUE_LIST, "var(--text-primary, #111827)") },
+    { key: "value-text-wrap", property: "text-wrap", description: "Value line breaking, e.g. `pretty`.", consumers: at(KEY_VALUE_LIST, "inherit") },
+    { key: "value-overflow-wrap", property: "overflow-wrap", description: "`anywhere` breaks a long name or email rather than widening the list.", consumers: at(KEY_VALUE_LIST, "inherit") },
+    { key: "value-font-variant-numeric", property: "font-variant-numeric", description: "Value figures (`normal` for proportional).", consumers: at(KEY_VALUE_LIST, "tabular-nums") },
+    { key: "columns", property: "grid-template-columns", description: "Horizontal label and value columns.", consumers: at(KEY_VALUE_LIST, "minmax(7rem, 0.4fr) 1fr") },
+    { key: "item-gap", property: "gap", description: "Horizontal gap between label and value.", consumers: at(KEY_VALUE_LIST, "var(--spacing-4, 1rem)") },
+    { key: "item-align", property: "align-items", description: "Horizontal label and value alignment.", consumers: at(KEY_VALUE_LIST, "baseline") },
+    { key: "item-padding", property: "padding", description: "Inset of each row.", consumers: at(KEY_VALUE_LIST, "0") },
+    { key: "row-gap", property: "row-gap", description: "Space between rows, in every density.", consumers: [{ file: KEY_VALUE_LIST, fallback: "var(--spacing-6, 1.5rem)" }, { file: KEY_VALUE_LIST, fallback: "var(--spacing-4, 1rem)" }, { file: KEY_VALUE_LIST, fallback: "var(--spacing-3, 0.75rem)" }] },
+    { key: "divider", property: "border-top", description: "Rule between rows of a one-column list, e.g. `1px solid var(--border-default)`.", consumers: at(KEY_VALUE_LIST, "0") },
+    { key: "panel-bg", property: "background", description: "`surface=\"panel\"` fill off glass.", consumers: at(KEY_VALUE_LIST, "var(--surface-card, #ffffff)") },
+    { key: "panel-border-color", property: "border-color", description: "`surface=\"panel\"` edge colour off glass.", consumers: at(KEY_VALUE_LIST, "var(--border-default, #e5e7eb)") },
+    { key: "panel-radius", property: "border-radius", description: "`surface=\"panel\"` corner radius.", consumers: at(KEY_VALUE_LIST, "var(--radius-lg, 0.5rem)") },
+    { key: "panel-padding", property: "padding", description: "`surface=\"panel\"` inset.", consumers: at(KEY_VALUE_LIST, "var(--spacing-2, 0.5rem) var(--spacing-6, 1.5rem)") },
+  ],
+};
+
 export const COMPONENT_TOKEN_FAMILIES: readonly ComponentTokenFamily[] = [
   tableFamily,
   dataTableFamily,
   chipFamily,
+  statusDotFamily,
   badgeFamily,
   statusBadgeFamily,
   filterBarFamily,
@@ -1734,10 +1823,12 @@ export const COMPONENT_TOKEN_FAMILIES: readonly ComponentTokenFamily[] = [
   actionRowFamily,
   inputAffixFamily,
   numberInputFamily,
+  offlineBannerFamily,
   separatorFamily,
   alertFamily,
   layerChartFamily,
   statCardFamily,
+  keyValueListFamily,
   cardFamily,
   adminUiFamily,
 ];

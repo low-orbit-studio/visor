@@ -1,0 +1,10 @@
+/* The glass recipe's panel, widened to a form column; the alerts stack inside it. */
+.form {
+  width: 100%;
+  max-width: 32rem;
+  box-sizing: border-box;
+}
+
+.stack {
+  gap: var(--spacing-3, 0.75rem);
+}

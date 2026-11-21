@@ -276,6 +276,50 @@ function fixtureMarkup(): string {
       <div class="${c("stat-card", "footer")}" data-probe="stat-card-footer">12 invoices</div>
     </article>
   </section>
+  <section class="band" data-family="key-value-list">
+    <dl class="${c("key-value-list", "root")}" data-columns="1" data-orientation="stacked" data-density="editorial" data-probe="key-value-list-root">
+      <div class="${c("key-value-list", "item")}" data-probe="key-value-list-item">
+        <dt class="${c("key-value-list", "label")}" data-probe="key-value-list-label">Plan</dt>
+        <dd class="${c("key-value-list", "value")}" data-probe="key-value-list-value">Enterprise</dd>
+      </div>
+      <div class="${c("key-value-list", "item")}" data-probe="key-value-list-item-next">
+        <dt class="${c("key-value-list", "label")}">Members</dt>
+        <dd class="${c("key-value-list", "value")}">142</dd>
+      </div>
+    </dl>
+    <dl class="${c("key-value-list", "root")}" data-columns="1" data-orientation="horizontal" data-density="compact" data-probe="key-value-list-horizontal">
+      <div class="${c("key-value-list", "item")}" data-probe="key-value-list-horizontal-item">
+        <dt class="${c("key-value-list", "label")}" data-probe="key-value-list-horizontal-label">Owner</dt>
+        <dd class="${c("key-value-list", "value")}" data-probe="key-value-list-horizontal-value">Alma Reyes</dd>
+      </div>
+    </dl>
+  </section>
+
+  <section class="band" data-family="alert">
+    <div class="${c("alert", "base", "variantDestructive")}" data-probe="alert-edged-destructive">
+      <div class="${c("alert", "title")}" data-probe="alert-edged-title">Error</div>
+      <div class="${c("alert", "description")}" data-probe="alert-edged-description">Your session has expired.</div>
+    </div>
+    <div class="${c("alert", "base", "soft", "softDestructive")}" data-probe="alert-soft-destructive">
+      <span class="${c("alert", "icon")}" data-probe="alert-soft-destructive-icon"><svg viewBox="0 0 32 32"></svg></span>
+      <div class="${c("alert", "content")}">
+        <div class="${c("alert", "title")}" data-probe="alert-soft-title">Your answers didn't send</div>
+        <div class="${c("alert", "description")}" data-probe="alert-soft-destructive-description"><span class="${c("alert", "lead")}" data-probe="alert-soft-lead">Lead.</span> Body copy.</div>
+      </div>
+    </div>
+    <div class="${c("alert", "base", "soft", "softWarning")}" data-probe="alert-soft-warning">
+      <span class="${c("alert", "icon")}" data-probe="alert-soft-warning-icon"><svg viewBox="0 0 32 32"></svg></span>
+      <div class="${c("alert", "content")}"><div class="${c("alert", "description")}" data-probe="alert-soft-warning-description">Body copy.</div></div>
+    </div>
+    <div class="${c("alert", "base", "soft", "softSuccess")}" data-probe="alert-soft-success">
+      <span class="${c("alert", "icon")}" data-probe="alert-soft-success-icon"><svg viewBox="0 0 32 32"></svg></span>
+      <div class="${c("alert", "content")}"><div class="${c("alert", "description")}" data-probe="alert-soft-success-description">Body copy.</div></div>
+    </div>
+    <div class="${c("alert", "base", "soft", "softNote")}" data-probe="alert-soft-note">
+      <span class="${c("alert", "icon")}" data-probe="alert-soft-note-icon"><svg viewBox="0 0 32 32"></svg></span>
+      <div class="${c("alert", "content")}"><div class="${c("alert", "description")}" data-probe="alert-soft-note-description">Body copy.</div></div>
+    </div>
+  </section>
 </main>`;
 }
 
@@ -286,6 +330,9 @@ const PAGE_CSS = `
   .band { display: flex; flex-direction: column; gap: 12px; }
   .spinnerRow { display: flex; align-items: center; gap: 16px; padding-top: 12px; }
 `;
+
+/** Probes that read no component token (VI-799's edged Alert): D4a proves they did not move, and no binding can move them, so D4b skips them. */
+const PARITY_ONLY = /^alert-edged-/;
 
 /** Properties probed on every marked element. The union of the contract's. */
 const PROPS = [
@@ -299,6 +346,7 @@ const PROPS = [
   "width", "height", "box-shadow",
   "font-family", "font-size", "font-weight", "letter-spacing", "text-transform", "line-height",
   "animation-duration", "transform", "outline-color",
+  "grid-template-columns", "align-items", "text-wrap-style", "overflow-wrap", "font-variant-numeric", "backdrop-filter",
 ];
 
 interface Probe {
@@ -432,7 +480,9 @@ async function main() {
       `\n${changed.length} computed-style deltas across ${touchedProbes.size} of ${unboundProbes.length} probed elements.\n`,
     );
 
-    const untouched = unboundProbes.map((p) => p.probe).filter((p) => !touchedProbes.has(p));
+    const untouched = unboundProbes
+      .map((p) => p.probe)
+      .filter((p) => !touchedProbes.has(p) && !PARITY_ONLY.test(p));
     if (untouched.length > 0) {
       report.push(`Unmoved probes: ${untouched.join(", ")}\n`);
       failed = true;

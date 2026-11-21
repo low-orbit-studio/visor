@@ -21,7 +21,7 @@ why: >
   ensuring consistency across themes.
 
 variants:
-  size: [xs, sm, md, lg, xl]
+  size: [xs, sm, md, lg, xl, eyebrow]
   weight: [normal, medium, semibold, bold]
   family: [mono]  # `body`, the default, is .base itself and has no class
   color: [primary, secondary, tertiary, warning, success, amber, inherit]
@@ -33,8 +33,9 @@ props:
     default: "'p'"
     description: HTML element to render
   - name: size
-    type: "'xs' | 'sm' | 'md' | 'lg' | 'xl'"
+    type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'eyebrow'"
     default: "'md'"
+    description: Type size. `eyebrow` is an all-caps label above a section, laid out as a row so a leading StatusDot or icon sits beside it. It takes its weight and colour from the `--text-eyebrow-*` hooks unless `weight` or `color` is passed.
   - name: weight
     type: "'normal' | 'medium' | 'semibold' | 'bold'"
     default: "'normal'"
@@ -50,6 +51,20 @@ props:
     type: "'tight' | 'snug' | 'normal' | 'relaxed' | 'loose'"
     default: "'normal'"
 
+theme_hooks:
+  - name: --text-eyebrow-font-size
+    description: Eyebrow type size.
+  - name: --text-eyebrow-text-transform
+    description: Eyebrow casing (uppercase).
+  - name: --text-eyebrow-letter-spacing
+    description: Eyebrow tracking.
+  - name: --text-eyebrow-font-weight
+    description: Eyebrow weight, unless weight is passed.
+  - name: --text-eyebrow-color
+    description: Eyebrow colour, unless color is passed.
+  - name: --text-eyebrow-gap
+    description: Space between the eyebrow and a leading dot or icon.
+
 dependencies:
   - "class-variance-authority"
 
@@ -64,6 +79,11 @@ example: |
 
   <Text as="span" weight="semibold" size="lg">
     Inline emphasized text
+  </Text>
+
+  <Text size="eyebrow">
+    <StatusDot tone="info" />
+    Your Shifts
   </Text>
 
   <Text as="span" family="mono" weight="bold" color="success">
