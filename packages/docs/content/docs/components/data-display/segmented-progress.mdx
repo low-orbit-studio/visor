@@ -146,9 +146,9 @@ no transition. Press Next to walk the form, and press a finished section to jump
 ### In Five Looks
 
 The same sections bar in each look, on the theme picked in the docs. The labels take the theme's
-text inks. Over a photo (`data-glass="on"`) they take the theme's `segmented-progress.glass-ink` or,
-unbound, the glass layer's ink, and the track takes its
-fill and blurs the photo behind it; everywhere else the track is solid and does not blur.
+text inks. Over a photo (`data-glass="on"`) they take the glass layer's control ink, as the glass
+controls beside them do, and the track takes the glass fill and blurs
+the photo behind it; everywhere else the track is solid and does not blur.
 
 <FiveLooks specimen="segmented-progress" height={200} />
 
@@ -162,8 +162,7 @@ fill and blurs the photo behind it; everywhere else the track is solid and does 
 | `--segmented-progress-fill-duration` | `600ms` | Each segment's fill-in |
 | `--segmented-progress-fill-stagger` | `140ms` | The delay between one segment's fill and the next |
 | `--motion-duration-enter`, `--motion-easing-enter` | `--motion-duration-800`, `--motion-easing-ease-out` | A revealed label's fade in |
-| `--segmented-progress-glass-ink` | `--glass-ink` | Labels under `data-glass="on"` only; a theme binds it as `components.segmented-progress.glass-ink` |
-| `--glass-ink`, `--glass-fill`, `--glass-blur` | the theme's text inks, `--surface-muted`, `none` | Labels, track and track blur under `data-glass="on"` |
+| `--glass-control-ink`, `--glass-fill`, `--glass-blur` | the theme's text inks, `--surface-muted`, `none` | Labels, track and track blur under `data-glass="on"` |
 
 A host that wants smaller labels at desktop widths sets the label hooks in its own media or
 container query.

@@ -469,10 +469,6 @@ components:
     indicator-edge: "#ffcc00"
     inactive-text: "#c7b8d6"
     active-weight: "650"
-  segmented-progress:
-    glass-ink:
-      light: "#fffafa"
-      dark: "#faf0e6"
   toggle-group:
     track-bg: "#1a0526"
     selected-bg: "#ff00aa"

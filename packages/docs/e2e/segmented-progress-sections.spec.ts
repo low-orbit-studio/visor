@@ -29,7 +29,7 @@ const style = (el: Locator, prop: string) =>
 // A probe that cannot inherit: its parent is a sentinel colour, so an unset variable reads as the
 // sentinel and fails the check instead of passing on whatever ink the label happens to have.
 const SENTINEL = "rgb(1, 2, 3)";
-const PROGRESS_GLASS_INK = "var(--segmented-progress-glass-ink, var(--glass-on-ink))";
+const GLASS_INK = "var(--glass-on-control-ink)";
 const resolveInk = (el: Locator, value: string) =>
   el.evaluate(
     (n, [v, sentinel]) => {
@@ -104,8 +104,8 @@ test("Sections: under reduced motion a label switches with no transition", async
   await openDocs(page, "light");
   const { steps } = demo(page);
   const duration = await style(steps.nth(2).locator('[data-slot="segmented-progress-label"]'), "transition-duration");
-  // visor-core pins every duration to 0.01ms under reduce; the label adds none of its own.
-  expect(parseFloat(duration)).toBeLessThanOrEqual(0.00001);
+  // 0s outright, past visor-core's global 0.01ms pin under reduce.
+  expect(duration).toBe("0s");
 });
 
 async function lookFrame(page: Page, id: string): Promise<Frame> {
@@ -144,11 +144,13 @@ for (const width of [1440, 390]) {
           const done = frame.locator('[data-slot="segmented-progress-step"][data-state="done"] [data-slot="segmented-progress-label"]').first();
           const track = frame.locator('[data-slot="segmented-progress-segment"]').first();
           const ink = await style(done, "color");
-          // Over a photo the label is the progress glass ink (unbound, the glass layer's); on a
-          // plain look it is the theme's text ink. White in Light + Photo waits on BO-84 binding it.
-          const themeInk = await resolveInk(done, look.photo ? PROGRESS_GLASS_INK : "var(--text-secondary)");
+          // Over a photo the label is the glass layer's control ink; on a plain look it is the
+          // theme's text ink.
+          const themeInk = await resolveInk(done, look.photo ? GLASS_INK : "var(--text-secondary)");
           expect(themeInk).not.toBe(SENTINEL);
           expect(ink).toBe(themeInk);
+          // honcho-backstage binds glass.control-ink white (BO-76), so Light + Photo is white.
+          if (look.id === "light-photo") expect(ink).toBe("rgb(255, 255, 255)");
           const blur = await style(track, "backdrop-filter");
           if (look.photo) expect(blur).not.toBe("none");
           else expect(blur).toBe("none");
@@ -168,46 +170,3 @@ for (const width of [1440, 390]) {
     });
   }
 }
-
-// V6 (white Light + Photo labels) stays open until BO-84 binds components.segmented-progress.glass-ink
-// to #ffffff in honcho-backstage's light tone. This proves the token reaches the labels and only them.
-test("Light + Photo: binding --segmented-progress-glass-ink turns the labels white and leaves Alert's ink alone", async ({ page }) => {
-  test.skip(!THEME_INSTALLED, NOT_INSTALLED);
-  const panel = (specimen: string) => `/looks/panel?theme=${THEME}&look=light-photo&mode=light&specimen=${specimen}`;
-  const bind = () =>
-    page.evaluate(() =>
-      document.querySelector<HTMLElement>('[data-slot="look-panel"]')!.style.setProperty("--segmented-progress-glass-ink", "#ffffff"),
-    );
-
-  // Reduced motion, so a colour transition can't be caught mid-way.
-  await page.emulateMedia({ reducedMotion: "reduce" });
-  const open = async (specimen: string) => {
-    await page.goto(panel(specimen));
-    await expect(page.locator("body")).toHaveClass(new RegExp(`(^|\\s)${THEME}-theme(\\s|$)`));
-  };
-
-  await open("segmented-progress");
-  const labels = page.locator('[data-slot="segmented-progress-step"]:not([data-state="failed"]) [data-slot="segmented-progress-label"]');
-  await expect(labels.first()).toBeVisible();
-  const before = await resolveInk(labels.first(), PROGRESS_GLASS_INK);
-  expect(before).not.toBe(SENTINEL);
-  expect(await labels.evaluateAll((els) => els.map((e) => getComputedStyle(e).color))).toEqual(
-    Array(await labels.count()).fill(before),
-  );
-  await bind();
-  // visor-core keeps a 0.01ms transition under reduce, so the new colour lands a frame later.
-  await expect
-    .poll(() => labels.evaluateAll((els) => els.map((e) => getComputedStyle(e).color)))
-    .toEqual(Array(await labels.count()).fill("rgb(255, 255, 255)"));
-
-  await open("alert");
-  const alertText = page.locator('[data-slot="alert-title"], [data-slot="alert-description"]');
-  await expect(alertText.first()).toBeVisible();
-  const read = () => alertText.evaluateAll((els) => els.map((e) => getComputedStyle(e).color));
-  const alertBefore = await read();
-  expect(alertBefore.length).toBeGreaterThan(0);
-  await bind();
-  // Give a colour change two frames to land before reading it back unchanged.
-  await page.evaluate(() => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r))));
-  expect(await read()).toEqual(alertBefore);
-});

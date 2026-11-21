@@ -143,7 +143,6 @@ const TEXT = "components/ui/text/text.module.css";
 const INLINE_EDIT = "components/ui/inline-edit/inline-edit.module.css";
 const SAVE_STATUS = "components/ui/save-status/save-status.module.css";
 const SEGMENTED_CONTROL = "components/ui/segmented-control/segmented-control.module.css";
-const SEGMENTED_PROGRESS = "components/ui/segmented-progress/segmented-progress.module.css";
 const LAYER_CHART = "components/ui/layer-chart/layer-chart.module.css";
 const PROPORTION_BAR = "components/ui/proportion-bar/proportion-bar.module.css";
 const TOGGLE_GROUP = "components/ui/toggle-group/toggle-group.module.css";
@@ -1476,17 +1475,6 @@ const proportionBarFamily: ComponentTokenFamily = {
   ],
 };
 
-// VI-809: the step labels' ink over a photo, read only inside the glass switch.
-const segmentedProgressFamily: ComponentTokenFamily = {
-  family: "segmented-progress",
-  prefix: "segmented-progress",
-  description:
-    "SegmentedProgress — the step labels' ink over a photo. It applies only under `data-glass=\"on\"`; elsewhere the labels keep the theme's text inks.",
-  tokens: [
-    { key: "glass-ink", property: "color", description: "Step label colour under the glass switch (a failed label stays in the error ink). Unbound, the glass layer's ink.", consumers: at(SEGMENTED_PROGRESS, "var(--glass-on-ink)") },
-  ],
-};
-
 // VI-615: the single-select pill group. Its resting edge is the shared `control` edge
 // (no token of its own), so `control.edge-width: 0` turns it off.
 const segmentedControlFamily: ComponentTokenFamily = {
@@ -1796,7 +1784,6 @@ export const COMPONENT_TOKEN_FAMILIES: readonly ComponentTokenFamily[] = [
   saveStatusFamily,
   proportionBarFamily,
   segmentedControlFamily,
-  segmentedProgressFamily,
   toggleGroupFamily,
   radioCardFamily,
   tooltipFamily,

@@ -61,14 +61,11 @@
   position: relative;
 }
 
-/* Under the glass switch the labels take the theme's progress ink
-   (--segmented-progress-glass-ink, VI-809) or, unbound, the glass layer's.
-   Off the switch --glass-on-ink is unset, so --_glass-ink is too and the
-   labels keep the theme's text inks.
-   shortcut: a bound ink still reaches a bar inside a data-glass="off" reset
-   nested in an on zone; scope it to the nearest switch if a page nests one. */
-:global([data-glass="on"]) .labelled {
-  --_glass-ink: var(--segmented-progress-glass-ink, var(--glass-on-ink));
+/* Under the glass switch the labels sit on the photo, as the glass controls
+   do, so they take the glass layer's control ink (VI-809). Off the switch it
+   is unset, so --_glass-ink is too and the labels keep the theme's text inks. */
+.labelled {
+  --_glass-ink: var(--glass-on-control-ink);
 }
 
 .labelled.sizeMd {
@@ -181,7 +178,7 @@ button.step:focus-visible {
   color: var(--interactive-primary-bg, var(--primary, #111827));
 }
 
-/* Over a photo every label takes the glass ink above (VI-809); a failed one stays red. */
+/* Over a photo every label takes the glass control ink above (VI-809); a failed one stays red. */
 .step[data-state="current"] .label {
   color: var(--_glass-ink, var(--text-primary, #111827));
   font-weight: var(--font-weight-bold, 700);
@@ -228,6 +225,17 @@ button.step:focus-visible {
     transition-property: opacity, translate, filter, color;
     transition-duration: var(--motion-duration-enter, var(--motion-duration-800, 800ms));
     transition-timing-function: var(--motion-easing-enter, var(--motion-easing-ease-out, cubic-bezier(0, 0, 0.2, 1)));
+  }
+}
+
+/* Under reduced motion a label switches at once: 0s outright. It sits in
+   visor-base beside visor-core's global 0.01ms pin, because an important
+   declaration in a layer beats an unlayered one; there this selector outranks `*`. */
+@layer visor-base {
+  @media (prefers-reduced-motion: reduce) {
+    .labelled[data-reveal] .label {
+      transition-duration: 0s !important;
+    }
   }
 }
 

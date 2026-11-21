@@ -204,8 +204,8 @@ describe("VI-809 — sections (real browser)", () => {
   it("under reduced motion a label switches with no transition", async (ctx) => {
     if (!ready()) return ctx.skip()
     const read = `getComputedStyle(q("[data-state=pending] [data-slot=segmented-progress-label]")).transitionDuration`
-    // visor-core's tokens.css pins every duration to 0.01ms under reduce; the label adds none of its own.
-    expect(parseFloat(await inSections<string>(read, { motion: "reduce" }))).toBeLessThanOrEqual(0.00001)
+    // 0s outright, past visor-core's global 0.01ms pin under reduce.
+    expect(await inSections<string>(read, { motion: "reduce" })).toBe("0s")
   }, 30_000)
 
   it("with no glass switch the labels read the theme's text inks and the track does not blur", async (ctx) => {
@@ -228,10 +228,10 @@ describe("VI-809 — sections (real browser)", () => {
         filter: getComputedStyle(q("[data-slot=segmented-progress-segment]")).backdropFilter
       }
     })()`, { scopeCss })
-  const GLASS = "--glass-ink: rgb(10, 20, 30); --glass-fill: rgb(1, 2, 3); --glass-blur: blur(15px);"
-  const PROGRESS_INK = "--segmented-progress-glass-ink: rgb(250, 240, 230);"
+  // The panel ink differs from the control ink, so a label reading the wrong one fails.
+  const GLASS = "--glass-control-ink: rgb(10, 20, 30); --glass-ink: rgb(250, 240, 230); --glass-fill: rgb(1, 2, 3); --glass-blur: blur(15px);"
 
-  it('under data-glass="on" the labels take the glass ink and the track the glass fill and blur', async (ctx) => {
+  it('under data-glass="on" the labels take the glass control ink and the track the glass fill and blur', async (ctx) => {
     if (!ready()) return ctx.skip()
     expect(await glassRead("on", null, SCOPE + GLASS)).toEqual({
       labels: ["rgb(10, 20, 30)", "rgb(10, 20, 30)", "rgb(10, 20, 30)"],
@@ -240,26 +240,13 @@ describe("VI-809 — sections (real browser)", () => {
     })
   }, 30_000)
 
-  it('under data-glass="on" a bound --segmented-progress-glass-ink wins over the glass ink, the track unchanged', async (ctx) => {
-    if (!ready()) return ctx.skip()
-    expect(await glassRead("on", null, SCOPE + GLASS + PROGRESS_INK)).toEqual({
-      labels: ["rgb(250, 240, 230)", "rgb(250, 240, 230)", "rgb(250, 240, 230)"],
-      track: "rgb(1, 2, 3)",
-      filter: "blur(15px)",
-    })
-  }, 30_000)
-
-  it("off the glass switch the labels keep the text inks, a bound --segmented-progress-glass-ink included", async (ctx) => {
+  it("off the glass switch the labels keep the text inks, a bound glass control ink included", async (ctx) => {
     if (!ready()) return ctx.skip()
     // No switch, the switch off, and off inside on (the glass layer's reset) all keep the text inks.
     for (const [scope, root] of [[null, null], ["off", null], ["on", "off"]] as const) {
       const r = await glassRead(scope, root, SCOPE + GLASS)
-      expect(r.labels, `scope ${scope}, root ${root}, unbound`).toEqual(["rgb(34, 34, 34)", "rgb(17, 17, 17)", "rgb(51, 51, 51)"])
+      expect(r.labels, `scope ${scope}, root ${root}`).toEqual(["rgb(34, 34, 34)", "rgb(17, 17, 17)", "rgb(51, 51, 51)"])
       expect(r.filter).toBe("none")
-    }
-    for (const [scope, root] of [[null, null], ["off", null]] as const) {
-      const r = await glassRead(scope, root, SCOPE + GLASS + PROGRESS_INK)
-      expect(r.labels, `scope ${scope}, root ${root}, bound`).toEqual(["rgb(34, 34, 34)", "rgb(17, 17, 17)", "rgb(51, 51, 51)"])
     }
   }, 30_000)
 })
