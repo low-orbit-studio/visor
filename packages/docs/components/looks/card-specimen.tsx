@@ -2,13 +2,14 @@
 
 import { useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { NumberInput } from '@/components/ui/number-input';
 import styles from './card-specimen.module.css';
 
 /**
  * Card's glass variant with a blurred field inside, and an editable glass tile with
- * its save flash (VI-804). Solid unless an ancestor sets `data-glass="on"`.
+ * its save flash (VI-804). Solid unless an ancestor sets `data-glass="on"`. Save sits on the glass
+ * card with a filled glass wash, never outline-only on the photo (VI-829).
  */
 export function CardSpecimen() {
   const tile = useRef<HTMLDivElement>(null);
@@ -34,20 +35,22 @@ export function CardSpecimen() {
         <CardContent>
           <NumberInput defaultValue={2} min={0} max={9} aria-label="Guests" />
         </CardContent>
+        <CardFooter>
+          <Button variant="glass" onClick={save}>
+            Save
+          </Button>
+        </CardFooter>
       </Card>
       <div className={styles.stack}>
         <Card ref={tile} variant="glass" editable className={styles.tileCard} data-demo="card-editable" onClick={save}>
           <span className={styles.tile}>
             <span className={styles.eyebrow}>Doors</span>
-            <span className={styles.value}>9:00 PM</span>
+            <span className={styles.value}>9PM</span>
             <span className={styles.sub} data-slot="card-saves">
               Saved {saves} {saves === 1 ? 'time' : 'times'}
             </span>
           </span>
         </Card>
-        <Button variant="outline" onClick={save}>
-          Save
-        </Button>
       </div>
     </div>
   );
