@@ -483,6 +483,12 @@ export const propsData: Record<string, PropDef[]> = {
     },
   ],
 
+  'scroll-hint': [
+    { name: 'boxRef', type: 'RefObject<HTMLElement | null>', required: true, description: 'The scroll box the hint sits in. Render the hint as its last child.' },
+    { name: 'keepGoing', type: 'KeepGoing', required: true, description: 'What useKeepGoing returns for the same box. `more` shows the pill; a click calls `go()`, or pages the box down by 0.8 of its height.' },
+    { name: 'label', type: 'ReactNode', default: '"More Below"', description: "The pill's words." },
+  ],
+
   'segmented-control': [
     {
       name: 'options',

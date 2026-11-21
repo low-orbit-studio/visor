@@ -86,7 +86,7 @@ npx visor add <component-name> --overwrite
 | `toast` | Non-blocking notification that auto-dismisses |
 | `tooltip` | Small label shown on hover/focus |
 
-### Form (25)
+### Form (26)
 
 | Component | Description |
 | --- | --- |
@@ -108,6 +108,7 @@ npx visor add <component-name> --overwrite
 | `photo-picker` | Photo thumbnail grid, one chosen; draw wave on open; thumbnails load on first open |
 | `position-picker` | 3x3 anchor grid; value is a { y, x } pair; on its own or over an image |
 | `radio-group` | Single-select from a group of options |
+| `scroll-hint` | "More Below" pill on a scroll box, with a Keep Going hook that jumps to the next unanswered field |
 | `search-input` | Input with search icon and clear button |
 | `select` | Dropdown single-select (sizes: sm, md, lg) |
 | `slider` | Range input with track and thumb |

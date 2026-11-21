@@ -209,6 +209,12 @@ components:
     divider-color: "#3d0a2b"
     divider-hover-color: "#00aaff"
     divider-active-color: "#ff7700"
+  scroll-hint:
+    bg: "#fff3d6"
+    border: "#5a2d82"
+    color: "#1d4f3a"
+    glass-bg: "rgba(250, 240, 230, 0.7)"
+    gap: "40px"
   dialog:
     max-width: "760px"
     radius: "56px"

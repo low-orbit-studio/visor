@@ -2819,6 +2819,25 @@ export const ui: Registry = [
     ],
   },
   {
+    name: "scroll-hint",
+    type: "registry:ui",
+    category: "form",
+    description:
+      "A \"More Below\" pill pinned to a scroll box's bottom edge while there is more to scroll, and a useKeepGoing hook that scrolls to the next unanswered field and focuses it. A solid chip, or glass over a photo.",
+    dependencies: ["@phosphor-icons/react", "@loworbitstudio/visor-core"],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/scroll-hint/scroll-hint.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/scroll-hint/scroll-hint.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
     name: "container",
     type: "registry:ui",
     category: "layout",
