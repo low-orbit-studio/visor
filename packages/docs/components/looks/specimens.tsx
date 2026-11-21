@@ -7,7 +7,10 @@ import { NumberInputSpecimen } from './number-input-specimen';
 import { SpinnerSpecimen } from './spinner-specimen';
 import { ThemeSpecimen } from './theme-specimen';
 
-/** What a five-look frame can draw, by `specimen` key. Part tickets add theirs here. */
+/**
+ * What a five-look frame can draw, by `specimen` key. Part tickets add theirs here. A specimen's
+ * form controls sit on `FormPanel` (or a glass card of their own), never straight on the photo (VI-829).
+ */
 export const LOOK_SPECIMENS: Record<string, ComponentType> = {
   alert: AlertSpecimen,
   button: ButtonSpecimen,

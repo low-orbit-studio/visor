@@ -30,7 +30,8 @@ export interface FiveLooksProps {
  * One specimen in all five looks (Today, Dark, Dark + Photo, Light, Light + Photo),
  * on the theme picked in the docs. Each look is its own frame, because a page can
  * only hold one light/dark mode per theme. Today follows the docs site's mode.
- * A `?photo=/path.jpg` on the page swaps the stand-in photo for a real one.
+ * The photo looks use a private theme's real photos (VI-829); a `?photo=/path.jpg` on the page
+ * swaps in another one.
  */
 export function FiveLooks({ specimen, height = 340, theme: themeProp, todayTheme }: FiveLooksProps) {
   const theme = useActiveTheme(themeProp, PRIVATE_SLUGS);
