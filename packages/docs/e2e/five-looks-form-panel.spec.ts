@@ -139,6 +139,55 @@ const HONCHO_LOOKS = [
 ] as const;
 const RETIRED_FONTS = /montserrat|arny sans|bbb dm sans/i;
 
+// Every grid as the operator opens it, with Honcho Backstage picked in the docs: each look's frame
+// is on the right theme, draws Satoshi only and squircle buttons, and Today's primary button is the
+// pink key. Visiting /looks/panel directly cannot see a grid that hands Today the wrong theme
+// (VI-829 v4: the Button page drew Today on honcho-backstage, so its primary was black).
+const HONCHO_GRIDS = [
+  { path: "/themes/private", primary: true },
+  { path: "/docs/components/general/button", primary: true },
+  { path: "/docs/components/form/number-input", primary: false },
+  { path: "/docs/components/feedback/alert", primary: false },
+  { path: "/docs/components/data-display/key-value-list", primary: false },
+];
+
+for (const grid of HONCHO_GRIDS) for (const width of [1440, 390]) {
+  test(`Honcho grid: ${grid.path} draws Today on honcho with the pink key, Satoshi and squircles at ${width}`, async ({ page }) => {
+    test.setTimeout(120_000);
+    await page.setViewportSize({ width, height: 900 });
+    test.skip(!(await privateThemesInstalled(page)), "the private themes are not installed");
+    await page.addInitScript(() => localStorage.setItem("visor-theme", "honcho-backstage"));
+    await page.goto(grid.path);
+    for (const { theme, look } of HONCHO_LOOKS) {
+      const where = `${grid.path} · ${look}`;
+      const iframe = page.locator(`[data-slot="five-looks"] [data-look="${look}"] iframe`);
+      await expect(iframe, `${where} theme`).toHaveAttribute("src", new RegExp(`theme=${theme}&`), { timeout: 20_000 });
+      await expect(async () => {
+        const frame = (await (await iframe.elementHandle())!.contentFrame())!;
+        await frame.waitForSelector(`body.${theme}-theme [data-slot="look-panel"]`, { timeout: 5_000 });
+        await frame.evaluate(() => document.fonts.ready);
+        const drawn = await frame.evaluate(() => {
+          const panel = document.querySelector('[data-slot="look-panel"]')!;
+          const buttons = [...panel.querySelectorAll("button")];
+          return {
+            key: getComputedStyle(document.body).getPropertyValue("--interactive-primary-bg").trim().toLowerCase(),
+            fonts: [...new Set([panel, ...panel.querySelectorAll("*")].map((el) => getComputedStyle(el).fontFamily))],
+            corners: buttons.map((b) => getComputedStyle(b).getPropertyValue("corner-shape")),
+            primary: buttons.filter((b) => /variantDefault/.test(b.className)).map((b) => getComputedStyle(b).backgroundColor),
+          };
+        });
+        for (const family of drawn.fonts) expect(family, `${where} font`).not.toMatch(RETIRED_FONTS);
+        for (const corner of drawn.corners) expect(corner, `${where} corner-shape`).toBe("squircle");
+        if (look === "today") {
+          expect(drawn.key, `${where} key colour`).toBe("#ff2d8a");
+          if (grid.primary) expect(drawn.primary.length, `${where} primary buttons`).toBeGreaterThan(0);
+          for (const fill of drawn.primary) expect(fill, `${where} primary button fill`).toBe("rgb(255, 45, 138)");
+        }
+      }).toPass({ timeout: 20_000 });
+    }
+  });
+}
+
 /** A button's ink and where it sits, with its ink hidden so a screenshot shows only what is behind it. */
 const readButtons = (frame: Frame) =>
   frame.evaluate(() => {

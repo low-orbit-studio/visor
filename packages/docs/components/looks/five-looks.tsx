@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { PRIVATE_THEMES } from '@/lib/private-themes';
 import { useActiveTheme } from '@/components/playgrounds/sections/use-active-theme';
-import { LOOKS, type LookMode } from './looks';
+import { LOOKS, TODAY_THEMES, type LookMode } from './looks';
 import styles from './five-looks.module.css';
 
 const PRIVATE_SLUGS = PRIVATE_THEMES.map((t) => t.slug);
@@ -22,7 +22,7 @@ export interface FiveLooksProps {
   height?: number;
   /** Draw every look on this theme instead of the one picked in the docs. */
   theme?: string;
-  /** Draw Today on this theme (Honcho's Today look is its own theme). Defaults to `theme`. */
+  /** Draw Today on this theme. Defaults to the theme's Today theme in `TODAY_THEMES`, else `theme`. */
   todayTheme?: string;
 }
 
@@ -50,7 +50,7 @@ export function FiveLooks({ specimen, height = 340, theme: themeProp, todayTheme
   return (
     <div className={styles.grid} data-slot="five-looks">
       {LOOKS.map((look) => {
-        const lookTheme = look.id === 'today' ? (todayTheme ?? theme) : theme;
+        const lookTheme = look.id === 'today' ? (todayTheme ?? TODAY_THEMES[theme] ?? theme) : theme;
         const query = new URLSearchParams({ theme: lookTheme, look: look.id, mode, specimen });
         if (photo) query.set('photo', photo);
         return (

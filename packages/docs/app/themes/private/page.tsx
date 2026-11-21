@@ -43,7 +43,7 @@ export default function PrivateThemesPage() {
       {HONCHO_LOOKS && (
         <section className={styles.brandBlock} aria-label="Honcho Five Looks" data-slot="honcho-looks">
           <h2 className={styles.brandHeading}>Honcho Five Looks</h2>
-          <FiveLooks specimen="theme" theme="honcho-backstage" todayTheme="honcho" height={440} />
+          <FiveLooks specimen="theme" theme="honcho-backstage" height={440} />
         </section>
       )}
       <section className={styles.brandBlock} aria-label="Brand">
