@@ -13,8 +13,14 @@
   outline: var(--control-edge-width, 1px) var(--control-edge-style, solid) var(--control-edge-color, var(--border-default, #e5e7eb));
   outline-offset: calc(-1 * var(--control-edge-width, 1px));
   /* The well the active pill sits in: the page nudged 12% toward the ink, so it reads as a well
-     in light and dark alike (page-relative, unlike --surface-subtle, which is the page in dark). */
-  background-color: var(--segmented-control-track-bg, color-mix(in srgb, var(--text-primary, #111827) 12%, var(--surface-page, #ffffff)));
+     in light and dark alike (page-relative, unlike --surface-subtle, which is the page in dark).
+     Glass (VI-803): under data-glass="on" the well blurs the photo and, unbound, takes the glass
+     layer's control fill; a theme's own track-bg still wins. With glass off the --glass-on-*
+     variables are unset, so there is no blur. */
+  background-color: var(--segmented-control-track-bg, var(--glass-on-control-fill, color-mix(in srgb, var(--text-primary, #111827) 12%, var(--surface-page, #ffffff))));
+  /* Prefixed line first, so Lightning CSS keeps both (VI-788). */
+  -webkit-backdrop-filter: var(--glass-on-control-blur, none);
+  backdrop-filter: var(--glass-on-control-blur, none);
 }
 
 /* Labels are medium weight, never light. */

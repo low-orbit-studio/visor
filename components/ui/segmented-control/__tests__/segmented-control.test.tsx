@@ -196,7 +196,8 @@ describe("SegmentedControl", () => {
 
     it("seats the pill in a well that is the page nudged toward the ink, on a token", () => {
       expect(css).toContain(
-        "var(--segmented-control-track-bg, color-mix(in srgb, var(--text-primary, #111827) 12%, var(--surface-page, #ffffff)))",
+        // VI-803: under glass an unbound well takes the glass layer's control fill first.
+        "var(--segmented-control-track-bg, var(--glass-on-control-fill, color-mix(in srgb, var(--text-primary, #111827) 12%, var(--surface-page, #ffffff))))",
       )
       // --surface-subtle is the page itself in dark themes, so it must not be the default well.
       expect(css).not.toMatch(/segmented-control-track-bg[^;]*surface-subtle/)
