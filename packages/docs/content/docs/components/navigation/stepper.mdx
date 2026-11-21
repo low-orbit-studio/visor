@@ -6,7 +6,9 @@ description: A multi-step progress indicator with horizontal and vertical orient
 import { ComponentPreview } from '@/components/preview';
 import { PropsTable } from '@/components/props-table';
 import { FiveLooks } from '@/components/looks/five-looks';
-import { StepperRailSpecimen } from '@/components/looks/stepper-rail-specimen';
+import { StepperRail } from '@/components/looks/stepper-rail-specimen';
+import { PRIVATE_THEMES } from '@/lib/private-themes';
+
 import {
   Stepper,
   StepperItem,
@@ -15,6 +17,8 @@ import {
   StepperDescription,
   StepperSeparator,
 } from '@/components/ui/stepper';
+
+export const HONCHO_BACKSTAGE = PRIVATE_THEMES.some((t) => t.slug === 'honcho-backstage');
 
 ## Horizontal (Default)
 
@@ -140,14 +144,27 @@ The `rail` variant is a side list of form sections, the desktop companion to a p
   title="Section Rail"
   code={"<Stepper orientation=\"vertical\" variant=\"rail\" aria-label=\"Sections\">\n  <StepperItem step={0} status=\"complete\">\n    <StepperTrigger step={0} status=\"complete\" onClick={() => jump(0)}>Welcome</StepperTrigger>\n  </StepperItem>\n  <StepperItem step={1} status=\"active\">\n    <StepperTrigger step={1} status=\"active\">About You</StepperTrigger>\n  </StepperItem>\n  <StepperItem step={2} status=\"upcoming\">\n    <StepperTrigger step={2} status=\"upcoming\" onClick={() => jump(2)}>Travel</StepperTrigger>\n  </StepperItem>\n  <StepperItem step={3} status=\"locked\">\n    <StepperTrigger step={3} status=\"locked\">Pay</StepperTrigger>\n  </StepperItem>\n  <StepperItem step={4} status=\"locked\">\n    <StepperTrigger step={4} status=\"locked\">Agreements</StepperTrigger>\n  </StepperItem>\n</Stepper>"}
 >
-  <StepperRailSpecimen />
+  <StepperRail />
 </ComponentPreview>
 
 ### Over a Photo
 
-Glass is off unless an ancestor sets `data-glass="on"` (see [Glass](/docs/themes/glass)). On a plain page the rail draws theme ink with no shadow and no blur. Over a photo the same ramp runs on the glass layer's `ink`, with its `ink-shadow` to seat the labels on bright and dark patches. A theme that wants white labels over a light photo binds `components.glass.ink` to white in its light tone. Row sizes bind under `components.stepper` (`rail-padding`, `rail-font-size`, `rail-mark-size` and so on, see [Component Tokens](/docs/themes/component-tokens)).
+Glass is off unless an ancestor sets `data-glass="on"` (see [Glass](/docs/themes/glass)). On a plain page the rail draws theme ink with no shadow and no blur. Over a photo, like any form content, it sits on a glass form panel, never straight on the photo: the same ramp runs on the glass layer's `ink`, with its `ink-shadow` to seat the labels. Row sizes bind under `components.stepper` (`rail-padding`, `rail-font-size`, `rail-mark-size` and so on, see [Component Tokens](/docs/themes/component-tokens)).
 
-<FiveLooks specimen="stepper-rail" height={260} />
+Below, the rail sits on a panel built from the glass recipe: a solid card in the plain looks, glass in the Photo looks.
+
+<FiveLooks specimen="stepper-rail" height={340} />
+
+{HONCHO_BACKSTAGE && (
+  <section data-slot="honcho-backstage-looks" aria-label="Honcho Backstage">
+    <h3>Honcho Backstage</h3>
+    <p>
+      The rail as the Honcho kit draws it. Today is the <code>honcho</code> theme; the other four looks are{' '}
+      <code>honcho-backstage</code>. Over a photo the rail sits on a glass form panel.
+    </p>
+    <FiveLooks specimen="stepper-rail" theme="honcho-backstage" todayTheme="honcho" height={340} />
+  </section>
+)}
 
 ## Locked Step
 
