@@ -163,7 +163,8 @@ const items: ProfileMenuItem[] = [
 | `enableGlobalShortcuts` | `boolean` | `false` | When `true`, registers a window-level `⌘⇧Q` / `Ctrl+⇧+Q` handler that calls `onSignOut`. |
 | `trigger` | `"row" \| "avatar"` | `"row"` | `"row"`: avatar, name, context and caret, for a sidebar footer. `"avatar"`: the round avatar alone, for a top bar (see Top Bar With an Avatar Trigger). |
 | `side` | `"top" \| "bottom" \| "auto"` | `"top"`, or `"bottom"` with `trigger="avatar"` | Direction the menu opens. `"top"` matches the bottom-anchored sidebar footer; `"auto"` lets Radix decide. |
-| `defaultOpen` | `boolean` | — | Open on first render (uncontrolled). |
+| `defaultOpen` | `boolean` | — | Open on first render (uncontrolled). That first open leaves focus where it is. |
+| `modal` | `boolean` | `true` | While open, the rest of the page is inert to the pointer and hidden from screen readers. `false` leaves it as is. |
 | `className` | `string` | — | Forwarded to the trigger button. |
 
 ### `ProfileMenuUser`
