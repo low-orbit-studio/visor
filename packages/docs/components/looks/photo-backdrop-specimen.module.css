@@ -1,0 +1,18 @@
+/* Fills the look's frame, over the panel's own photo, so the photo seen is the PhotoBackdrop's. */
+.stage {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: var(--spacing-6, 1.5rem);
+}
+
+/* The tone's scrim over the photo; a sibling of the card, so the card's blur still reaches the photo. */
+.scrim {
+  position: absolute;
+  inset: 0;
+}
+
+.next {
+  justify-self: start;
+}

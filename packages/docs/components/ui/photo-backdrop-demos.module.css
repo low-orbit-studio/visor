@@ -1,0 +1,56 @@
+.demo {
+  display: grid;
+  gap: var(--spacing-3, 0.75rem);
+  width: 100%;
+  max-width: 40rem;
+}
+
+/* PhotoBackdrop fills its nearest positioned ancestor. */
+.stage {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: 22rem;
+  padding: var(--spacing-6, 1.5rem);
+  border-radius: var(--radius-lg, 0.5rem);
+  overflow: hidden;
+}
+
+/* Positioned, so it paints above the backdrop. */
+.content {
+  position: relative;
+  width: 100%;
+  max-width: 22rem;
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-3, 0.75rem);
+  align-items: center;
+}
+
+.pair {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-4, 1rem);
+}
+
+.figure {
+  display: grid;
+  gap: var(--spacing-2, 0.5rem);
+  margin: 0;
+}
+
+.narrow {
+  position: relative;
+  width: 8rem;
+  height: 14rem;
+  border-radius: var(--radius-lg, 0.5rem);
+  overflow: hidden;
+}
+
+.caption {
+  font-size: var(--font-size-sm, 0.875rem);
+  color: var(--text-secondary, #6b7280);
+}

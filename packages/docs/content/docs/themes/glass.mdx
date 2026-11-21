@@ -26,6 +26,8 @@ Glass is off unless an ancestor turns it on. The nearest switch wins, so a subtr
 </main>
 ```
 
+A [PhotoBackdrop](/docs/components/data-display/photo-backdrop) turns glass on for the element that holds it as a direct child, so a page that draws its photo with one needs no attribute. With no photo it renders nothing, and glass stays off.
+
 With glass off, nothing that reads the glass layer renders a `backdrop-filter`. Modal scrims (Dialog, Sheet, Lightbox) keep their own blur: they blur the page under a modal, not a photo.
 
 Put the switch at or inside the element that sets the light/dark mode. The switch resolves the theme's glass values for the tone in force where it sits.

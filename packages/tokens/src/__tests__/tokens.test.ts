@@ -988,12 +988,16 @@ describe("Glass switch (VI-795)", () => {
 
   for (const file of ["tokens.css", "semantic.css"]) {
     const css = readFileSync(join(REPO_ROOT, "packages/tokens/dist", file), "utf-8");
-    const on = css.match(/\[data-glass="on"\] \{([^}]*)\}/)?.[1] ?? "";
+    const on = css.match(/\[data-glass="on"\],\n:has\(> \[data-slot="photo-backdrop"\]\) \{([^}]*)\}/)?.[1] ?? "";
     const off = css.match(/\[data-glass="off"\] \{([^}]*)\}/)?.[1] ?? "";
 
     it(`${file}: the switch sits in the visor-semantic layer`, () => {
       const semantic = css.slice(css.indexOf("@layer visor-semantic {"));
       expect(semantic.indexOf('[data-glass="on"]')).toBeGreaterThan(0);
+    });
+
+    it(`${file}: a container holding a PhotoBackdrop turns glass on too (VI-811)`, () => {
+      expect(on).not.toBe("");
     });
 
     it(`${file}: on copies every theme glass value, with the contract's default`, () => {
