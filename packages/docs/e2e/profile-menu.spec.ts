@@ -114,12 +114,16 @@ for (const width of [1440, 390]) {
       await expect(menu.getByRole("menuitem", { name: "Change Email" })).toBeVisible();
       await expect(menu.getByRole("menuitem", { name: "Sign Out" })).toBeVisible();
 
-      // Glass only in the Photo looks; solid and opaque elsewhere.
+      // Glass only in the Photo looks; solid and opaque elsewhere. The avatar is a glass
+      // control over the photo, so its initials never sit on the bare photo.
       const filter = await style(menu, "backdrop-filter");
+      const avatarFilter = await style(trigger.locator("> span > span").first(), "backdrop-filter");
       if (look.photo) {
         expect(filter).toContain("blur(");
+        expect(avatarFilter).toContain("blur(");
       } else {
         expect(filter).toBe("none");
+        expect(avatarFilter).toBe("none");
         expect(alpha(await style(menu, "background-color"))).toBe(1);
       }
 

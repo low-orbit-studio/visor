@@ -32,4 +32,9 @@ describe("ProfileMenu backdrop-filter after a Lightning CSS build", () => {
     expect(built).toContain(";backdrop-filter:var(--glass-on-blur,none)")
     expect(built).toContain("-webkit-backdrop-filter:var(--glass-on-blur,none)")
   })
+
+  it("keeps both lines of the avatar's glass control blur", () => {
+    expect(built).toContain(";backdrop-filter:var(--glass-on-control-blur,none)")
+    expect(built).toContain("-webkit-backdrop-filter:var(--glass-on-control-blur,none)")
+  })
 })
