@@ -159,7 +159,25 @@
   backdrop-filter: var(--glass-on-control-blur, none);
 }
 
+/* Over a photo no button is a bare edge (VI-829): under the glass switch the
+   outline face takes the glass control's wash, ink, ring and blur. */
+:global([data-glass="on"]) .variantOutline {
+  background-color: var(--glass-on-control-fill, var(--surface-subtle, #f3f4f6));
+  color: var(--glass-on-control-ink, var(--text-primary, #111827));
+  -webkit-backdrop-filter: var(--glass-on-control-blur, none);
+  backdrop-filter: var(--glass-on-control-blur, none);
+}
+
+:global([data-glass="on"]) .variantOutline::after {
+  outline-color: var(--glass-on-control-ring, var(--border-default, #e5e7eb));
+}
+
 @media (hover: hover) {
+  :global([data-glass="on"]) .variantOutline:hover {
+    background-color: var(--glass-on-control-hover-fill, var(--surface-muted, #f3f4f6));
+  }
+
+
   .variantDefault:hover {
     background-color: var(--button-default-bg-hover, var(--interactive-primary-bg-hover, #1f2937));
   }

@@ -79,6 +79,15 @@ describe("stylesheet", () => {
     expect(squashed).toContain("var(--glass-on-control-ring, var(--border-default, #e5e7eb))")
   })
 
+  it("gives the outline face the glass control's wash under the glass switch (VI-829)", () => {
+    const rule = (selector: string) => squashed.slice(squashed.indexOf(`${selector} {`)).split("}")[0]
+    const face = rule(':global([data-glass="on"]) .variantOutline')
+    expect(face).toContain("background-color: var(--glass-on-control-fill,")
+    expect(face).toContain("color: var(--glass-on-control-ink,")
+    expect(rule(':global([data-glass="on"]) .variantOutline::after')).toContain("outline-color: var(--glass-on-control-ring,")
+    expect(rule(':global([data-glass="on"]) .variantOutline:hover')).toContain("var(--glass-on-control-hover-fill,")
+  })
+
   it("keeps grow, press scale and shadow unset unless a theme binds them", () => {
     const layer = squashed.slice(squashed.indexOf("@layer visor-base { .variantDefault"))
     expect(layer).toContain("box-shadow: var(--button-default-shadow, revert-layer)")

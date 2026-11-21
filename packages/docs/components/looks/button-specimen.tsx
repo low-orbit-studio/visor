@@ -2,7 +2,7 @@ import { ArrowSwap, Button } from '@/components/ui/button';
 import { FormPanel } from './form-panel';
 import styles from './button-specimen.module.css';
 
-/** The kit's pill buttons in one look, on the form panel: a round glass icon button, the ink pill and the outline pill. */
+/** Three buttons in one look, on the form panel, drawn as the theme ships them: a glass icon button, the primary and an outline button. */
 export function ButtonSpecimen() {
   return (
     <FormPanel>
