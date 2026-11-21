@@ -46,7 +46,11 @@ const probe = (frame: Frame) =>
         gaps.push({ gap: rb.top - ra.bottom, a: a.className.toString(), b: b.className.toString() });
       }
     }
-    return { controls: controls.length, bare, gaps, backdrop: getComputedStyle(root).backgroundImage };
+    // A panel the look's frame cuts off: its bottom or right edge past the viewport.
+    const clipped = tiles
+      .map((t) => t.getBoundingClientRect())
+      .filter((r) => r.bottom > window.innerHeight + 0.5 || r.right > window.innerWidth + 0.5).length;
+    return { controls: controls.length, bare, gaps, clipped, backdrop: getComputedStyle(root).backgroundImage };
   });
 
 async function privateThemesInstalled(page: Page) {
@@ -57,6 +61,7 @@ function expectOnPanels(look: (typeof PHOTO_LOOKS)[number], result: Awaited<Retu
   expect(result.controls).toBeGreaterThan(0);
   expect(result.bare).toEqual([]);
   for (const g of result.gaps) expect(g.gap, `${g.a} → ${g.b}`).toBeGreaterThanOrEqual(MIN_TILE_GAP);
+  expect(result.clipped, "panels cut off by the frame").toBe(0);
   if (real) {
     // A real photo for the tone, never the gradient stand-in.
     expect(result.backdrop).toContain(`/photos/${look.mode}.`);
@@ -100,9 +105,10 @@ const GRIDS = [
   { path: "/docs/components/general/button", theme: THEME, private: false },
 ];
 
-for (const grid of GRIDS) {
-  test(`Form panel: ${grid.path} photo looks put their controls on glass`, async ({ page }) => {
+for (const grid of GRIDS) for (const width of [1440, 390]) {
+  test(`Form panel: ${grid.path} photo looks put their controls on glass at ${width}`, async ({ page }) => {
     test.setTimeout(120_000);
+    await page.setViewportSize({ width, height: 900 });
     const real = await privateThemesInstalled(page);
     test.skip(grid.private && !real, "the private themes are not installed");
     await page.addInitScript((theme) => localStorage.setItem("visor-theme", theme), THEME);
