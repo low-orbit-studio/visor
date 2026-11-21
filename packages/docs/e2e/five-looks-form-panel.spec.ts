@@ -6,7 +6,7 @@ import { test, expect, type Frame, type Page } from "@playwright/test";
 // The stock theme CI has; LOOKS_THEME=honcho-backstage draws the kit's looks locally.
 const THEME = process.env.LOOKS_THEME ?? "neutral";
 // Every specimen with form controls or tiles (the spinner has neither). Add new ones here.
-const SPECIMENS = ["theme", "button", "number-input", "alert", "glass", "key-value-list", "segmented-control"];
+const SPECIMENS = ["theme", "button", "number-input", "alert", "glass", "key-value-list", "segmented-control", "field"];
 const PHOTO_LOOKS = [
   { id: "dark-photo", mode: "dark" },
   { id: "light-photo", mode: "light" },
@@ -86,7 +86,7 @@ for (const width of [1440, 390]) {
 }
 
 test("Form panel: the plain looks draw no panel, so they are unchanged", async ({ page }) => {
-  for (const specimen of ["theme", "button", "number-input"]) {
+  for (const specimen of ["theme", "button", "number-input", "field"]) {
     for (const look of ["today", "dark", "light"]) {
       await page.goto(`/looks/panel?theme=${THEME}&look=${look}&specimen=${specimen}`);
       await expect(page.locator(`body.${THEME}-theme`)).toHaveCount(1);
@@ -141,6 +141,7 @@ const GRIDS = [
   { path: "/themes/private", theme: "honcho-backstage", private: true },
   { path: "/docs/components/form/number-input", theme: THEME, private: false },
   { path: "/docs/components/general/button", theme: THEME, private: false },
+  { path: "/docs/components/form/field", theme: THEME, private: false },
 ];
 
 for (const grid of GRIDS) for (const width of [1440, 390]) {
