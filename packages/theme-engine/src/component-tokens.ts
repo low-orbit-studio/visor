@@ -1487,9 +1487,9 @@ const segmentedControlFamily: ComponentTokenFamily = {
   family: "segmented-control",
   prefix: "segmented-control",
   description:
-    "SegmentedControl — the well, its corner radius and padding, the segment height, sides, label size and corners, the sliding pill and its corners, the ink and the state edge on it. The resting edge is the shared `control` edge.",
+    "SegmentedControl — the well, its corner radius and padding, the segment height, sides, label size and corners, the sliding pill and its corners, the ink and the state edge on it. The resting edge is the shared `control` edge. Under `data-glass=\"on\"` the well blurs the photo and, unbound, takes the glass layer's control fill.",
   tokens: [
-    { key: "track-bg", property: "background-color", description: "The well the pill slides in. Default is the page nudged 12% toward the ink, so it reads as a well in light and dark.", consumers: at(SEGMENTED_CONTROL, "color-mix(in srgb, var(--text-primary, #111827) 12%, var(--surface-page, #ffffff))") },
+    { key: "track-bg", property: "background-color", description: "The well the pill slides in. Default is the page nudged 12% toward the ink, so it reads as a well in light and dark; under glass, the glass layer's control fill.", consumers: at(SEGMENTED_CONTROL, "var(--glass-on-control-fill, color-mix(in srgb, var(--text-primary, #111827) 12%, var(--surface-page, #ffffff)))") },
     {
       key: "radius",
       property: "border-radius",
