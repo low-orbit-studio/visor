@@ -1,6 +1,7 @@
 import { mkdirSync } from "node:fs";
 import { join } from "node:path";
 import { test, expect, type Frame, type Page } from "@playwright/test";
+import { TODAY_THEMES } from "../components/looks/looks";
 
 // VI-806: the docs ToggleGroup page shows option rows with descriptions (and, in the
 // single group, the round mark) in all five looks, at 390 and 1440 wide, with the docs
@@ -9,6 +10,7 @@ import { test, expect, type Frame, type Page } from "@playwright/test";
 const PAGE = "/docs/components/form/toggle-group";
 const THEME = process.env.VISOR_LOOKS_THEME ?? "neutral";
 const OUT = join(__dirname, "..", "..", "..", ".visor", "renders", "VI-806");
+const HIDE_DEV_OVERLAY = "nextjs-portal{display:none!important}";
 const LOOKS = [
   { id: "today", photo: false },
   { id: "dark", photo: false, mode: "dark" },
@@ -31,10 +33,12 @@ async function openDocs(page: Page, mode: "light" | "dark") {
 
 async function lookFrame(page: Page, id: string): Promise<Frame> {
   const iframe = page.locator(`[data-slot="five-looks"] [data-look="${id}"] iframe`);
+  // Honcho Backstage draws its Today on honcho (VI-829).
+  const theme = id === "today" ? (TODAY_THEMES[THEME] ?? THEME) : THEME;
   // The frames first render on the default theme, then reload on the docs theme after hydration.
-  await expect(iframe).toHaveAttribute("src", new RegExp(`theme=${THEME}`), { timeout: 20_000 });
+  await expect(iframe).toHaveAttribute("src", new RegExp(`theme=${theme}&`), { timeout: 20_000 });
   const frame = await (await iframe.elementHandle())!.contentFrame();
-  await expect.poll(() => frame!.url()).toContain(`theme=${THEME}`);
+  await expect.poll(() => frame!.url()).toContain(`theme=${theme}&`);
   await frame!.waitForSelector(`[data-slot="look-panel"][data-look="${id}"] [data-slot="toggle-group-description"]`);
   return frame!;
 }
@@ -85,9 +89,11 @@ for (const width of [1440, 390]) {
         }).toPass({ timeout: 30_000 });
 
         const figure = page.locator(`[data-slot="five-looks"] [data-look="${look.id}"]`);
+        // A clean shot: the Next.js dev badge stays out of the page and out of each look's frame.
+        for (const f of [page.mainFrame(), await lookFrame(page, look.id)]) await f.addStyleTag({ content: HIDE_DEV_OVERLAY });
         await figure.scrollIntoViewIfNeeded();
         await page.mouse.move(0, 0);
-        await figure.screenshot({ path: join(OUT, `${THEME}__${look.id}__docs-${docsMode}__${width}.png`) });
+        await figure.screenshot({ path: join(OUT, `${THEME}__${look.id}__docs-${docsMode}__${width}.png`), animations: "disabled" });
       }
 
       const overflow = await page.evaluate(
