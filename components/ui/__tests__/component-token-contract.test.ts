@@ -233,6 +233,9 @@ describe("VI-625 component token contract", () => {
           // Spinner writes its `delay` prop as an inline style (VI-797), like
           // the sidebar rail geometry above.
           "spinner-delay",
+          // A StatusDot colour outside its tones is set per dot (VI-801), like a
+          // row's role colour; a theme binding it would flatten every tone.
+          "status-dot-color",
           // The Tier-1 hairline colours share the `hairline` prefix; only
           // `--hairline-width` is the family's.
           "hairline",

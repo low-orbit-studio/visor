@@ -74,9 +74,10 @@ const INIT_SCRIPT = `(function(){` +
 // Fontshare CSS — loaded via <link> rather than the engine's @import emission
 // because Next.js strips external @import statements from bundled CSS. See
 // docs/wisdom/W027 and VI-360. Weights cover Blackout/Borderless/Space (400, 700)
-// plus Strata's display slot (900).
+// plus Strata's display slot (900). `1` adds the 300-900 variable face, so
+// themes drawing intermediate weights (honcho-backstage's 520, 620) get them. VI-826.
 const FONTSHARE_SATOSHI_URL =
-  'https://api.fontshare.com/v2/css?f[]=satoshi@400,700,900&display=swap';
+  'https://api.fontshare.com/v2/css?f[]=satoshi@1,400,700,900&display=swap';
 
 // Google Fonts Source Code Pro for Space's mono slot — same W027/VI-360
 // reasoning as Fontshare above: the engine emits an `@import` in the bundled

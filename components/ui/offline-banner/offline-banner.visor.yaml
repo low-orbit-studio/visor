@@ -1,5 +1,5 @@
 name: OfflineBanner
-description: App-shell sticky banner for network connectivity loss with offline, reconnecting, and restored states.
+description: App-shell sticky banner, or a compact top-bar pill, for network connectivity loss with offline, reconnecting, and restored states.
 extends: HTMLDivElement
 category: feedback
 
@@ -8,6 +8,7 @@ when_to_use:
   - As the primary offline indicator below the navigation bar in a full-page shell
   - When stale data should remain visible and the app should remain navigable while offline
   - When you need a manual retry action that checks connectivity without forcing a page reload
+  - As a small pill in a top bar (variant="pill"), with a detail such as when the page was saved
 
 when_not_to_use:
   - For generic informational messages unrelated to network status (use Banner or Alert)
@@ -25,6 +26,7 @@ why: >
 
 variants:
   networkState: [online, offline, reconnecting, restored]
+  variant: [banner, pill]
 
 props:
   - name: networkState
@@ -44,6 +46,42 @@ props:
   - name: retryLabel
     type: string
     default: "Retry"
+  - name: variant
+    type: "'banner' | 'pill'"
+    default: "'banner'"
+    description: >
+      `pill` draws a compact inline pill for a top bar instead of the full-width sticky bar.
+      Its offline label defaults to "Offline". Solid by default; inside data-glass="on" it
+      reads the glass layer's control fill, ring, ink and blur.
+  - name: detail
+    type: React.ReactNode
+    description: >
+      Shown after the label as "· {detail}", lighter, e.g. "saved 9PM". With a detail the
+      root drops its aria-label, so the status region reads the whole text.
+
+theme_hooks:
+  - name: --offline-banner-pill-height
+    description: Pill height.
+  - name: --offline-banner-pill-padding-x
+    description: Pill horizontal padding.
+  - name: --offline-banner-pill-gap
+    description: Space between the icon, label and detail.
+  - name: --offline-banner-pill-font-size
+    description: Pill type size.
+  - name: --offline-banner-pill-font-weight
+    description: Label weight.
+  - name: --offline-banner-pill-detail-font-weight
+    description: Detail weight.
+  - name: --offline-banner-pill-detail-opacity
+    description: Detail opacity.
+  - name: --offline-banner-pill-icon-size
+    description: Icon size.
+  - name: --offline-banner-pill-bg
+    description: Solid pill fill.
+  - name: --offline-banner-pill-text-color
+    description: Pill ink (label, detail and icon).
+  - name: --offline-banner-pill-border
+    description: Solid pill edge colour.
 
 dependencies:
   - "@phosphor-icons/react"
@@ -59,3 +97,4 @@ preview_url: "https://visor.loworbit.studio/docs/components/feedback/offline-ban
 example: |
   const { networkState, retry } = useNetworkStatus();
   <OfflineBanner networkState={networkState} onRetry={retry} />
+  <OfflineBanner networkState="offline" variant="pill" detail="saved 9PM" />

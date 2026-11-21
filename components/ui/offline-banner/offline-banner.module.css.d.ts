@@ -9,6 +9,8 @@ declare const styles: {
   readonly label: string
   readonly retryBtn: string
   readonly retryIcon: string
+  readonly detail: string
+  readonly pill: string
 }
 
 export default styles

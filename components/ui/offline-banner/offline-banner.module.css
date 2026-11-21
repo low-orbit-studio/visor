@@ -133,3 +133,73 @@
   width: 0.875rem;
   height: 0.875rem;
 }
+
+/* ── Detail, after the label ("· saved 9PM") ─────────────────────────────── */
+.detail {
+  flex: 1;
+  font-size: var(--font-size-sm, 0.875rem);
+  line-height: 1;
+  opacity: var(--opacity-80, 0.8);
+}
+
+/* The label takes the free space only when no detail follows it. */
+.label:has(+ .detail) {
+  flex: none;
+}
+
+/* ── Pill (VI-801): a compact inline status for a top bar ───────────────── */
+/* Solid by default. Inside data-glass="on" it reads the glass layer's shared
+   control values (fill, ring, ink, blur), as ThemeToggle and the glass icon
+   Button do. One element with no blurred children, so it carries its own blur;
+   the prefixed line comes first so Lightning CSS keeps both (VI-788). */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--offline-banner-pill-gap, var(--spacing-2, 0.5rem));
+  height: var(--offline-banner-pill-height, 2.5rem);
+  padding: 0 var(--offline-banner-pill-padding-x, var(--spacing-4, 1rem));
+  border-radius: var(--radius-full, 9999px);
+  background-color: var(--glass-on-control-fill, var(--offline-banner-pill-bg, var(--surface-muted, #f3f4f6)));
+  box-shadow: inset 0 0 0 var(--stroke-width-thin, 1px) var(--glass-on-control-ring, var(--offline-banner-pill-border, var(--border-default, #e5e7eb)));
+  color: var(--glass-on-control-ink, var(--offline-banner-pill-text-color, var(--text-primary, #111827)));
+  -webkit-backdrop-filter: var(--glass-on-control-blur, none);
+  backdrop-filter: var(--glass-on-control-blur, none);
+  font-size: var(--offline-banner-pill-font-size, var(--font-size-sm, 0.875rem));
+  white-space: nowrap;
+}
+
+.pill .label {
+  flex: none;
+  font-size: inherit;
+  font-weight: var(--offline-banner-pill-font-weight, var(--font-weight-semibold, 600));
+}
+
+.pill .detail {
+  flex: none;
+  font-size: inherit;
+  font-weight: var(--offline-banner-pill-detail-font-weight, var(--font-weight-medium, 500));
+  opacity: var(--offline-banner-pill-detail-opacity, var(--opacity-80, 0.8));
+}
+
+.pill .iconSlot,
+.pill .iconOffline,
+.pill .iconRestored {
+  width: var(--offline-banner-pill-icon-size, 1.125rem);
+  height: var(--offline-banner-pill-icon-size, 1.125rem);
+}
+
+/* Every state's icon takes the pill's ink. */
+.pill .iconOffline,
+.pill .iconRestored {
+  color: inherit;
+}
+
+.pill .spinner {
+  border-color: color-mix(in srgb, currentColor 30%, transparent);
+  border-top-color: currentColor;
+}
+
+.pill .retryBtn {
+  margin-left: 0;
+  color: inherit;
+}

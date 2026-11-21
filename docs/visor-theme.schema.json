@@ -553,6 +553,13 @@
             "$ref": "#/$defs/componentTokenBinding"
           }
         },
+        "status-dot": {
+          "type": "object",
+          "description": "StatusDot size. A caller sets `--status-dot-color` on a dot for a colour outside its five tones. Keys: size.",
+          "additionalProperties": {
+            "$ref": "#/$defs/componentTokenBinding"
+          }
+        },
         "status-badge": {
           "type": "object",
           "description": "Status-badge indicator dot and the mono readout label. Chrome is inherited from the Badge family. Keys: dot-size, dot-radius, mono-font-family, mono-font-size, mono-letter-spacing.",
@@ -744,7 +751,7 @@
         },
         "text": {
           "type": "object",
-          "description": "Text type treatment, per size — set `sm-font-size: 13px` for a 13px step, or caps and tracking on `xs` for a state tag. Every key begins with a size. Keys: xs-font-size, xs-text-transform, xs-letter-spacing, sm-font-size, sm-text-transform, sm-letter-spacing, md-font-size, md-text-transform, md-letter-spacing, lg-font-size, lg-text-transform, lg-letter-spacing, xl-font-size, xl-text-transform, xl-letter-spacing.",
+          "description": "Text type treatment, per size — set `sm-font-size: 13px` for a 13px step, or caps and tracking on `xs` for a state tag. `eyebrow` also takes a weight, colour and gap. Every key begins with a size. Keys: xs-font-size, xs-text-transform, xs-letter-spacing, sm-font-size, sm-text-transform, sm-letter-spacing, md-font-size, md-text-transform, md-letter-spacing, lg-font-size, lg-text-transform, lg-letter-spacing, xl-font-size, xl-text-transform, xl-letter-spacing, eyebrow-font-size, eyebrow-text-transform, eyebrow-letter-spacing, eyebrow-font-weight, eyebrow-color, eyebrow-gap.",
           "additionalProperties": {
             "$ref": "#/$defs/componentTokenBinding"
           }
@@ -815,6 +822,13 @@
         "number-input": {
           "type": "object",
           "description": "NumberInput \u2014 the field fill (resting and focused), edge colour, corner radius, height, the value's width, size and weight, and the \u2212 and + buttons' size, inset, corners, ink, hover fill and icon size. Under `data-glass=\"on\"` the field reads the glass layer's control values instead. Keys: bg, bg-focus, border, radius, height, value-width, value-font-size, value-font-weight, button-size, button-inset, button-radius, button-color, button-hover-bg, icon-size.",
+          "additionalProperties": {
+            "$ref": "#/$defs/componentTokenBinding"
+          }
+        },
+        "offline-banner": {
+          "type": "object",
+          "description": "OfflineBanner's pill variant \u2014 height, padding, gap, type size, label and detail weight, detail opacity, icon size, fill, ink and edge. Under `data-glass=\"on\"` the pill reads the glass layer's control values instead. Keys: pill-height, pill-padding-x, pill-gap, pill-font-size, pill-font-weight, pill-detail-font-weight, pill-detail-opacity, pill-icon-size, pill-bg, pill-text-color, pill-border.",
           "additionalProperties": {
             "$ref": "#/$defs/componentTokenBinding"
           }

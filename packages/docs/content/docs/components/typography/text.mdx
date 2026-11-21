@@ -6,6 +6,8 @@ description: A body text component with size, weight, family, color, and line-he
 import { ComponentPreview } from '@/components/preview';
 import { PropsTable } from '@/components/props-table';
 import { Text } from '@/components/ui/text';
+import { StatusDot } from '@/components/ui/status-dot';
+import { FiveLooks } from '@/components/looks/five-looks';
 
 ## Sizes
 
@@ -97,6 +99,44 @@ components:
     xs-text-transform: uppercase
     xs-letter-spacing: "0.12em"
 ```
+
+## Eyebrow
+
+`size="eyebrow"` is an all-caps label above a section, laid out as a row so a leading
+dot or icon sits beside it. It takes its weight and colour from the `--text-eyebrow-*`
+hooks (semibold, `--text-secondary`) unless you pass `weight` or `color`, and its case
+and tracking match PageHeader's eyebrow.
+
+<ComponentPreview
+  title="Eyebrow"
+  code={"<Text size=\"eyebrow\">\n  <StatusDot tone=\"info\" />\n  Your Shifts\n</Text>\n<Text size=\"eyebrow\">Your Roles at Campout 2027</Text>"}
+>
+  <div style={{ display: 'grid', gap: '0.75rem' }}>
+    <Text size="eyebrow"><StatusDot tone="info" /> Your Shifts</Text>
+    <Text size="eyebrow">Your Roles at Campout 2027</Text>
+  </div>
+</ComponentPreview>
+
+A theme binds the eyebrow under `components.text`:
+
+```yaml
+components:
+  text:
+    eyebrow-font-size: "12px"
+    eyebrow-font-weight: "680"
+    eyebrow-letter-spacing: "0.08em"
+    eyebrow-color: "var(--ink-64)"
+```
+
+### In Five Looks
+
+The itinerary's labels in each look, on the theme picked in the docs: the offline pill
+from the top bar, and a tile of eyebrows with role dots and chips. The specimen binds
+the Honcho kit's sizes the way a theme would, and reads the theme's fill and inks. Only
+the two Photo looks turn glass on: the tile and the pill turn to glass, while the
+chips, dots and eyebrows never blur themselves.
+
+<FiveLooks specimen="itinerary-labels" height={460} />
 
 ## Line Height
 

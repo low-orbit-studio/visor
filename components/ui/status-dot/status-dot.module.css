@@ -7,31 +7,37 @@
  * table status cells. Tone colors resolve from the same semantic tokens
  * StatusBadge uses for its leading indicator so the two read as one
  * coherent system across surfaces.
+ *
+ * VI-801: a theme sets the size through the status-dot family. A caller sets
+ * --status-dot-color on the dot (or a wrapper) for a colour outside the five
+ * tones, such as a role colour; unset, each tone keeps its token.
  */
 .dot {
   display: inline-block;
-  width: 6px;
-  height: 6px;
+  width: var(--status-dot-size, 6px);
+  height: var(--status-dot-size, 6px);
   flex-shrink: 0;
   border-radius: var(--radius-full, 9999px);
+  /* VI-801: a dot stays a circle when a theme draws squircle corners (VI-796). */
+  --corner-shape: round;
 }
 
 .dot[data-tone="mint"] {
-  background-color: var(--surface-success-default, #22c55e);
+  background-color: var(--status-dot-color, var(--surface-success-default, #22c55e));
 }
 
 .dot[data-tone="warn"] {
-  background-color: var(--surface-warning-default, #f59e0b);
+  background-color: var(--status-dot-color, var(--surface-warning-default, #f59e0b));
 }
 
 .dot[data-tone="muted"] {
-  background-color: var(--text-tertiary, #6b7280);
+  background-color: var(--status-dot-color, var(--text-tertiary, #6b7280));
 }
 
 .dot[data-tone="danger"] {
-  background-color: var(--surface-error-default, #ef4444);
+  background-color: var(--status-dot-color, var(--surface-error-default, #ef4444));
 }
 
 .dot[data-tone="info"] {
-  background-color: var(--surface-info-default, #0ea5e9);
+  background-color: var(--status-dot-color, var(--surface-info-default, #0ea5e9));
 }
