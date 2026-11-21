@@ -77,14 +77,22 @@ describe("SegmentedControl state edge (real browser)", () => {
     expect(on.root).toEqual(off.root)
   })
 
-  it("reaches 3:1 against the pill and the well (neutral light), and says what the fill alone gives", async (ctx) => {
+  it("reaches 3:1 against the pill and the well (neutral light)", async (ctx) => {
     if (!ready()) return ctx.skip()
     const e = await read()
     const edge = channels(e.ink), fill = channels(e.fill), well = channels(e.rootBg)
     expect(ratio(edge, fill)).toBeGreaterThanOrEqual(3)
     expect(ratio(edge, well)).toBeGreaterThanOrEqual(3)
-    // The fill alone is under 3:1 against the well here: that is why the edge exists.
+  })
+
+  it("still reaches 3:1 when the fill alone does not (a pale pill on the well)", async (ctx) => {
+    if (!ready()) return ctx.skip()
+    // Neutral's primary fill now clears 3:1 on its own (3.65:1), so pin a pale pill to keep proving the edge carries the boundary.
+    const e = await read({ scopeCss: "--segmented-control-indicator-bg: var(--surface-card);" })
+    const edge = channels(e.ink), fill = channels(e.fill), well = channels(e.rootBg)
     expect(ratio(fill, well)).toBeLessThan(3)
+    expect(ratio(edge, fill)).toBeGreaterThanOrEqual(3)
+    expect(ratio(edge, well)).toBeGreaterThanOrEqual(3)
   })
 
   it("mutation control: with the edge removed, the measurement reads no edge", async (ctx) => {

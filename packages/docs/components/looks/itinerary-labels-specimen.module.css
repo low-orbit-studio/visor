@@ -1,0 +1,57 @@
+/* The itinerary hooks bound the way a theme binds them (components.chip,
+   status-dot, text, offline-banner), with the Honcho kit's numbers as
+   intentional values. Fill and inks read the Backstage theme's --fill, --ink-80
+   and --ink-64 where it sets them, and the matching Visor roles elsewhere. */
+.kit {
+  --chip-md-height: 30px;
+  --chip-md-padding-x: 13px;
+  --chip-md-font-size: 13px;
+  --chip-font-weight: 600;
+  --chip-bg: var(--fill, var(--surface-muted, #f3f4f6));
+  --chip-text-color: var(--ink-80, var(--text-primary, #111827));
+  --status-dot-size: 9px;
+  --text-eyebrow-font-size: 12px;
+  --text-eyebrow-font-weight: 680;
+  --text-eyebrow-letter-spacing: 0.08em;
+  --text-eyebrow-color: var(--ink-64, var(--text-secondary, #6b7280));
+  --text-eyebrow-gap: 8px;
+  --offline-banner-pill-height: 42px;
+  --offline-banner-pill-padding-x: 16px;
+  --offline-banner-pill-gap: 6px;
+  --offline-banner-pill-font-size: 14px;
+  --offline-banner-pill-font-weight: 680;
+  --offline-banner-pill-detail-font-weight: 520;
+  --offline-banner-pill-icon-size: 17px;
+
+  display: grid;
+  gap: var(--spacing-4, 1rem);
+  justify-items: center;
+  width: 100%;
+  max-width: 22rem;
+}
+
+.pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-2, 0.5rem);
+  justify-content: center;
+}
+
+.tile {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-2, 0.5rem);
+}
+
+.staff {
+  --status-dot-color: var(--staff, var(--accent, #0ea5e9));
+}
+
+.artist {
+  --status-dot-color: var(--artist, var(--surface-warning-default, #f59e0b));
+}

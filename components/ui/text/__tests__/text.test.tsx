@@ -1,6 +1,7 @@
 import { render, screen } from "@testing-library/react"
 import { describe, it, expect } from "vitest"
 import { Text } from "../text"
+import styles from "../text.module.css"
 import { checkA11y } from "../../../../test-utils/a11y"
 
 describe("Text", () => {
@@ -95,5 +96,34 @@ describe("accessibility", () => {
   it("has no WCAG 2.1 AA violations (secondary color)", async () => {
     const { container } = render(<Text color="secondary">Muted text</Text>)
     await checkA11y(container)
+  })
+})
+
+// VI-801: the eyebrow, an all-caps label with room for a leading dot.
+describe("Text eyebrow", () => {
+  it("drops the default weight and colour classes so its own hooks set them", () => {
+    render(<Text size="eyebrow">Your Shifts</Text>)
+    const el = screen.getByText("Your Shifts")
+    expect(el).toHaveClass(styles.sizeEyebrow)
+    expect(el).not.toHaveClass(styles.weightNormal)
+    expect(el).not.toHaveClass(styles.colorPrimary)
+  })
+
+  it("still applies a weight or colour the caller passes", () => {
+    render(
+      <Text size="eyebrow" weight="bold" color="tertiary">
+        Your Performance
+      </Text>
+    )
+    const el = screen.getByText("Your Performance")
+    expect(el).toHaveClass(styles.weightBold)
+    expect(el).toHaveClass(styles.colorTertiary)
+  })
+
+  it("keeps the default weight and colour on other sizes", () => {
+    render(<Text size="xs">Small</Text>)
+    const el = screen.getByText("Small")
+    expect(el).toHaveClass(styles.weightNormal)
+    expect(el).toHaveClass(styles.colorPrimary)
   })
 })

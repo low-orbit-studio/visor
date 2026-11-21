@@ -5,6 +5,7 @@ declare const styles: {
   readonly sizeMd: string
   readonly sizeLg: string
   readonly sizeXl: string
+  readonly sizeEyebrow: string
   readonly weightNormal: string
   readonly weightMedium: string
   readonly weightSemibold: string

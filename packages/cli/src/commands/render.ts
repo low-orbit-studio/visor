@@ -429,6 +429,11 @@ export const FIXTURES: Record<string, Record<string, Fixture>> = {
         React.createElement(__mod.Text, { key: "warning", "data-face": "warning", color: "warning" }, "Left to Assign")
       ] }`,
     },
+    // VI-801: an eyebrow with a leading mark, so its gap has something to space.
+    eyebrow: {
+      export: "Text",
+      props: `{ size: "eyebrow", children: [React.createElement("span", { key: "m", "aria-hidden": true, style: { width: 9, height: 9, borderRadius: 9999, background: "currentColor" } }), "Your Shifts"] }`,
+    },
   },
   // VI-714: the end-of-flow panel with a check list and an action.
   "success-feedback": {

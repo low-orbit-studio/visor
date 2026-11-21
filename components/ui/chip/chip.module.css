@@ -39,9 +39,12 @@
 }
 
 /* Variant: default (filled/tonal surface) */
+/* VI-801: the default variant reads the chip's own fill and ink hooks, falling
+   back to what it drew before, so a theme binding the chip family's bg and text-color
+   reaches the chips most callers render. */
 .variantDefault {
-  background-color: var(--surface-muted, #f3f4f6);
-  color: var(--text-primary, #111827);
+  background-color: var(--chip-bg, var(--surface-muted, #f3f4f6));
+  color: var(--chip-text-color, var(--text-primary, #111827));
 }
 
 .variantDefault::after {
