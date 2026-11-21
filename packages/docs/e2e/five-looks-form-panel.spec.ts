@@ -140,8 +140,8 @@ const HONCHO_LOOKS = [
 const RETIRED_FONTS = /montserrat|arny sans|bbb dm sans/i;
 
 // Every grid as the operator opens it, with Honcho Backstage picked in the docs: each look's frame
-// is on the right theme, draws Satoshi only and squircle buttons, and Today's primary button is the
-// pink key. Visiting /looks/panel directly cannot see a grid that hands Today the wrong theme
+// is on the right theme, draws Satoshi only and squircle buttons, paints none of Visor's default
+// greys, and Today's primary button is the pink key. Visiting /looks/panel directly cannot see a grid that hands Today the wrong theme
 // (VI-829 v4: the Button page drew Today on honcho-backstage, so its primary was black).
 const HONCHO_GRIDS = [
   { path: "/themes/private", primary: true },
@@ -151,18 +151,57 @@ const HONCHO_GRIDS = [
   { path: "/docs/components/data-display/key-value-list", primary: false },
   { path: "/docs/components/form/segmented-control", primary: false },
   { path: "/docs/themes/glass", primary: false },
+  { path: "/docs/components/form/chip", primary: false },
+  { path: "/docs/components/feedback/offline-banner", primary: false },
+  { path: "/docs/components/data-display/spinner", primary: false },
+  { path: "/docs/components/typography/text", primary: false },
+  { path: "/docs/components/data-display/status-dot", primary: false },
 ];
 
+// Visor's default greys (Tailwind Gray 50-900 fallbacks). Honcho binds every role a component
+// reads (BO-86), so none of them may show in any look, and no field may fill with the default white.
+const DEFAULT_GREYS = ["#1f2937", "#374151", "#4b5563", "#111827", "#f9fafb", "#f3f4f6", "#e5e7eb", "#d1d5db"];
+
+/** Every painted colour in a look that is one of Visor's default greys, or a default white field in Light. */
+const scanDefaultGreys = (frame: Frame, light: boolean) =>
+  frame.evaluate(
+    ({ greys, light }) => {
+      const rgb = greys.map((hex) => [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16)).join(", "));
+      const isGrey = (v: string) => rgb.some((g) => v.includes(`(${g})`) || v.includes(`(${g},`));
+      const hits: string[] = [];
+      for (const el of [document.body, ...document.querySelectorAll('[data-slot="look-panel"], [data-slot="look-panel"] *')]) {
+        const cs = getComputedStyle(el);
+        const box = el.getBoundingClientRect();
+        if (!box.width || !box.height || cs.visibility === "hidden") continue;
+        const id = `${el.tagName.toLowerCase()}[${el.getAttribute("data-slot") ?? ""}]`;
+        const paints: [string, string][] = [["background", cs.backgroundColor], ["shadow", cs.boxShadow], ["background-image", cs.backgroundImage]];
+        for (const side of ["Top", "Right", "Bottom", "Left"] as const)
+          if (parseFloat(cs[`border${side}Width`]) > 0 && cs[`border${side}Style`] !== "none") paints.push([`border-${side}`, cs[`border${side}Color`]]);
+        if (cs.outlineStyle !== "none" && parseFloat(cs.outlineWidth) > 0) paints.push(["outline", cs.outlineColor]);
+        if (el.matches("input, textarea") || [...el.childNodes].some((n) => n.nodeType === 3 && n.textContent!.trim())) paints.push(["color", cs.color]);
+        if (el instanceof SVGElement) paints.push(["fill", cs.fill], ["stroke", cs.stroke]);
+        for (const [prop, value] of paints) if (isGrey(value)) hits.push(`${id} ${prop} ${value}`);
+        if (light && el.matches('input, textarea, select, [data-slot*="input"], [data-slot*="field"]') && /^rgba?\(255, 255, 255(, 1)?\)$/.test(cs.backgroundColor))
+          hits.push(`${id} default white field ${cs.backgroundColor}`);
+      }
+      return [...new Set(hits)];
+    },
+    { greys: DEFAULT_GREYS, light },
+  );
+
 for (const grid of HONCHO_GRIDS) for (const width of [1440, 390]) {
-  test(`Honcho grid: ${grid.path} draws Today on honcho with the pink key, Satoshi and squircles at ${width}`, async ({ page }) => {
+  test(`Honcho grid: ${grid.path} draws Today on honcho with the pink key, Satoshi, squircles and no default greys at ${width}`, async ({ page }) => {
     test.setTimeout(120_000);
     await page.setViewportSize({ width, height: 900 });
     test.skip(!(await privateThemesInstalled(page)), "the private themes are not installed");
     await page.addInitScript(() => localStorage.setItem("visor-theme", "honcho-backstage"));
     await page.goto(grid.path);
-    for (const { theme, look } of HONCHO_LOOKS) {
-      const where = `${grid.path} · ${look}`;
-      const iframe = page.locator(`[data-slot="five-looks"] [data-look="${look}"] iframe`).first();
+    await expect(page.locator('[data-slot="five-looks"]').first()).toBeVisible();
+    // Every grid on the page (Segmented Control's has two).
+    const grids = await page.locator('[data-slot="five-looks"]').count();
+    for (let g = 0; g < grids; g++) for (const { theme, look, mode } of HONCHO_LOOKS) {
+      const where = `${grid.path} #${g} · ${look}`;
+      const iframe = page.locator('[data-slot="five-looks"]').nth(g).locator(`[data-look="${look}"] iframe`);
       await expect(iframe, `${where} theme`).toHaveAttribute("src", new RegExp(`theme=${theme}&`), { timeout: 20_000 });
       await expect(async () => {
         const frame = (await (await iframe.elementHandle())!.contentFrame())!;
@@ -185,6 +224,9 @@ for (const grid of HONCHO_GRIDS) for (const width of [1440, 390]) {
           if (grid.primary) expect(drawn.primary.length, `${where} primary buttons`).toBeGreaterThan(0);
           for (const fill of drawn.primary) expect(fill, `${where} primary button fill`).toBe("rgb(255, 45, 138)");
         }
+        // Today's white field is honcho's own declared surface (#ffffff, the site's white), not a default.
+        const lightBackstage = mode === "light" && theme === "honcho-backstage";
+        expect(await scanDefaultGreys(frame, lightBackstage), `${where} Visor default greys`).toEqual([]);
       }).toPass({ timeout: 20_000 });
     }
   });
