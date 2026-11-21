@@ -191,13 +191,19 @@ for (const width of [1440, 390]) {
       }
 
       // The VI-777 keyboard walk, on the Dark + Photo instance.
-      const frame = await lookFrame(grid, "dark-photo", "honcho-backstage");
-      const group = frame.getByRole("radiogroup", { name: "Signature mode" });
-      const draw = group.getByRole("radio", { name: "Draw", exact: true });
-      const type = group.getByRole("radio", { name: "Type", exact: true });
-      await draw.focus();
-      await page.keyboard.press("ArrowRight");
-      await expect(type).toBeFocused();
+      // The frame can reload once more onto the docs mode after lookFrame returns, so the
+      // first step retries on a fresh frame until a key lands.
+      let draw!: Locator;
+      let type!: Locator;
+      await expect(async () => {
+        const frame = await lookFrame(grid, "dark-photo", "honcho-backstage");
+        const group = frame.getByRole("radiogroup", { name: "Signature mode" });
+        draw = group.getByRole("radio", { name: "Draw", exact: true });
+        type = group.getByRole("radio", { name: "Type", exact: true });
+        await draw.focus();
+        await page.keyboard.press("ArrowRight");
+        await expect(type).toBeFocused({ timeout: 1_000 });
+      }).toPass({ timeout: 20_000 });
       await page.keyboard.press("ArrowLeft");
       await expect(draw).toBeFocused();
       await page.keyboard.press("ArrowRight");
