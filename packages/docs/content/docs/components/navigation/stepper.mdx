@@ -149,9 +149,9 @@ The `rail` variant is a side list of form sections, the desktop companion to a p
 
 ### Over a Photo
 
-Glass is off unless an ancestor sets `data-glass="on"` (see [Glass](/docs/themes/glass)). On a plain page the rail draws theme ink with no shadow and no blur. Over a photo, like any form content, it sits on a glass form panel, never straight on the photo: the same ramp runs on the glass layer's `ink`, with its `ink-shadow` to seat the labels. Row sizes bind under `components.stepper` (`rail-padding`, `rail-font-size`, `rail-mark-size` and so on, see [Component Tokens](/docs/themes/component-tokens)).
+Glass is off unless an ancestor sets `data-glass="on"` (see [Glass](/docs/themes/glass)). On a plain page the rail draws theme ink with no shadow and no blur. Over a photo, like any form content, it sits on a glass form panel, never straight on the photo: the panel's glass is the glass layer's dark `scrim`, and the same ramp runs on its `scrim-ink` (white in both photo looks, the way FormDeck draws labels over a photo), with its `ink-shadow` to seat the labels. White on the scrim clears 4.5:1 even over a bright day photo. Row sizes bind under `components.stepper` (`rail-padding`, `rail-font-size`, `rail-mark-size` and so on, see [Component Tokens](/docs/themes/component-tokens)).
 
-Below, the rail sits on a panel built from the glass recipe: a solid card in the plain looks, glass in the Photo looks.
+Below, the rail sits on a panel built from the glass recipe: a solid card in the plain looks, the glass scrim in the Photo looks.
 
 <FiveLooks specimen="stepper-rail" height={340} />
 

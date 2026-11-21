@@ -205,8 +205,8 @@
  * row-wide button holding a dot mark and its label. The four states are the
  * kit's ink ramp: one ink at 100% (active), 64% (complete), 40% (upcoming) and
  * 24% (locked). The ink is the theme's --text-primary, or under data-glass="on"
- * (VI-795) the glass layer's on-photo ink with its shadow. Nothing here sets a
- * backdrop-filter.
+ * (VI-795) the glass layer's scrim ink (white) with its shadow, the way FormDeck
+ * draws labels over a photo in both tones. Nothing here sets a backdrop-filter.
  */
 .stepperRail {
   gap: var(--stepper-rail-gap, 0);
@@ -217,7 +217,7 @@
 }
 
 .railTrigger {
-  --_rail-ink: var(--glass-on-ink, var(--text-primary, #111827));
+  --_rail-ink: var(--glass-on-scrim-ink, var(--text-primary, #111827));
   --_rail-strength: 40%;
   display: flex;
   align-items: center;

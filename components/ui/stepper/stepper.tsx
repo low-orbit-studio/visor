@@ -44,7 +44,8 @@ export interface StepperProps extends React.HTMLAttributes<HTMLDivElement> {
    *   children), with no circles and no separators. The current row's mark
    *   stretches to a pill. The states are one ink at 100/64/40/24%: the
    *   theme's `--text-primary`, or under `data-glass="on"` the glass layer's
-   *   on-photo ink with its shadow.
+   *   scrim ink (white) with its shadow; over a photo, sit it on the glass
+   *   layer's `scrim` so white clears contrast.
    *   Use with `orientation="vertical"`.
    */
   variant?: "default" | "prominent" | "rail"

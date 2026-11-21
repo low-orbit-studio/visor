@@ -231,6 +231,8 @@ components:
       dark: "transparent"
     shadow: "0 48px 120px -48px #000"
     ink: "#ffffff"
+    scrim: "#0000009e"
+    scrim-ink: "#fffff0"
     ink-shadow: "0 0 10px #0000008c"
     control-fill:
       light: "#ffffff24"

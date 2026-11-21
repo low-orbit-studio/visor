@@ -54,7 +54,7 @@ variants:
       stretches to a pill and its trigger carries aria-current="step". The
       states are one ink at 100% (active), 64% (complete), 40% (upcoming) and
       24% (locked): the theme's --text-primary, or under data-glass="on" the
-      glass layer's on-photo ink with its ink shadow. Sizes bind through the stepper component-token
+      glass layer's scrim ink (white) with its ink shadow, on the glass scrim. Sizes bind through the stepper component-token
       family (--stepper-rail-*).
   - name: status
     values:

@@ -389,7 +389,7 @@ Dialog's panel and page scrim — width, corners, fill, inset, shadow, a backdro
 
 ### `glass`
 
-The glass layer over a photo: surface fill, blur, edge, lift, shadow, on-photo ink and its shadow, plus the glass values controls read. No component reads these directly. visor-core's `data-glass="on"` switch copies each one into a `--glass-on-<key>` variable, and components read those, so glass draws only where the switch is on. See [Glass](/docs/themes/glass).
+The glass layer over a photo: surface fill, blur, edge, lift, shadow, on-photo ink, the scrim under white labels with its ink and shadow, plus the glass values controls read. No component reads these directly. visor-core's `data-glass="on"` switch copies each one into a `--glass-on-<key>` variable, and components read those, so glass draws only where the switch is on. See [Glass](/docs/themes/glass).
 
 | Token | Binds | Recommended (Visor default) |
 |---|---|---|
@@ -399,7 +399,9 @@ The glass layer over a photo: surface fill, blur, edge, lift, shadow, on-photo i
 | `--glass-lift` | White lift laid over the fill, e.g. `rgb(255 255 255 / 0.45)` in light. | `transparent` |
 | `--glass-shadow` | Glass surface shadow. | `var(--shadow-xl)` |
 | `--glass-ink` | Text colour on glass over a photo. | `var(--text-primary)` |
-| `--glass-ink-shadow` | Shadow under labels laid straight on the photo, e.g. a rail beside the glass card. | `0 0 10px color-mix(in srgb, var(--surface-page) 55%, transparent), 0 1px 3px color-mix(in srgb, var(--surface-page) 50%, transparent)` |
+| `--glass-scrim` | Dark glass laid under white labels on a photo (e.g. Stepper's rail panel), dark enough that white clears 4.5:1 on a bright photo. | `rgb(0 0 0 / 0.5)` |
+| `--glass-scrim-ink` | Label colour on the scrim, in both photo looks. | `#ffffff` |
+| `--glass-ink-shadow` | Shadow under the scrim ink, seating the labels. | `0 0 10px rgb(0 0 0 / 0.55), 0 1px 3px rgb(0 0 0 / 0.5)` |
 | `--glass-control-fill` | Glass control fill (icon buttons, toggles). | `color-mix(in srgb, var(--text-primary) 14%, transparent)` |
 | `--glass-control-hover-fill` | Glass control fill on hover. | `color-mix(in srgb, var(--text-primary) 24%, transparent)` |
 | `--glass-control-ring` | Glass control ring colour. | `color-mix(in srgb, var(--text-primary) 16%, transparent)` |
@@ -481,7 +483,7 @@ Inline loading ring — track, leading edge, per-size geometry, cycle length, th
 
 ### `stepper`
 
-Stepper's `rail` variant — row gap and inset, the space between mark and label, label size, weight and tracking, and the dot mark's size and current width. The rail's ink is `--text-primary`, or the glass ink over a photo, at the kit's 100/64/40/24% ramp.
+Stepper's `rail` variant — row gap and inset, the space between mark and label, label size, weight and tracking, and the dot mark's size and current width. The rail's ink is `--text-primary`, or the glass scrim ink over a photo, at the kit's 100/64/40/24% ramp.
 
 | Token | Binds | Falls back to |
 |---|---|---|

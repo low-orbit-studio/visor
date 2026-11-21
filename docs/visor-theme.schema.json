@@ -632,7 +632,7 @@
         },
         "glass": {
           "type": "object",
-          "description": "The glass layer over a photo: surface fill, blur, edge, lift, shadow, on-photo ink and its shadow, plus the glass values controls read. Draws only inside `data-glass=\"on\"`; elsewhere components keep their solid surface and border. Keys: fill, blur, edge, lift, shadow, ink, ink-shadow, control-fill, control-hover-fill, control-ring, control-ink, control-blur.",
+          "description": "The glass layer over a photo: surface fill, blur, edge, lift, shadow, on-photo ink, the scrim under white labels with its ink and shadow, plus the glass values controls read. Draws only inside `data-glass=\"on\"`; elsewhere components keep their solid surface and border. Keys: fill, blur, edge, lift, shadow, ink, scrim, scrim-ink, ink-shadow, control-fill, control-hover-fill, control-ring, control-ink, control-blur.",
           "additionalProperties": {
             "$ref": "#/$defs/componentTokenBinding"
           }

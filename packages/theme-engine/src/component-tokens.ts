@@ -630,7 +630,7 @@ const glassFamily: ComponentTokenFamily = {
   family: "glass",
   prefix: "glass",
   description:
-    "The glass layer over a photo: surface fill, blur, edge, lift, shadow, on-photo ink and its shadow, plus the glass values controls read. Draws only inside `data-glass=\"on\"`; elsewhere components keep their solid surface and border.",
+    "The glass layer over a photo: surface fill, blur, edge, lift, shadow, on-photo ink, the scrim under white labels with its ink and shadow, plus the glass values controls read. Draws only inside `data-glass=\"on\"`; elsewhere components keep their solid surface and border.",
   tokens: [
     { key: "fill", property: "background", description: "Glass surface fill, see-through.", consumers: [], recommended: "color-mix(in srgb, var(--text-primary) 5%, transparent)" },
     { key: "blur", property: "backdrop-filter", description: "Filter on the photo behind a glass surface.", consumers: [], recommended: "blur(32px) saturate(110%)" },
@@ -638,8 +638,11 @@ const glassFamily: ComponentTokenFamily = {
     { key: "lift", property: "background", description: "White lift laid over the fill, e.g. `rgb(255 255 255 / 0.45)` in light.", consumers: [], recommended: "transparent" },
     { key: "shadow", property: "box-shadow", description: "Glass surface shadow.", consumers: [], recommended: "var(--shadow-xl)" },
     { key: "ink", property: "color", description: "Text colour on glass over a photo.", consumers: [], recommended: "var(--text-primary)" },
-    // VI-810: FormDeck's soft label shadow (10px / 3px), in the page colour so it seats the ink of either tone.
-    { key: "ink-shadow", property: "text-shadow", description: "Shadow under labels laid straight on the photo, e.g. a rail beside the glass card.", consumers: [], recommended: "0 0 10px color-mix(in srgb, var(--surface-page) 55%, transparent), 0 1px 3px color-mix(in srgb, var(--surface-page) 50%, transparent)" },
+    // VI-810: a dark scrim under white labels, so white clears 4.5:1 even on a bright, white-veiled day photo
+    // (measured 5.1:1 worst at 50% black under the light tone's blur), and FormDeck's label shadow.
+    { key: "scrim", property: "background", description: "Dark glass laid under white labels on a photo (e.g. Stepper's rail panel), dark enough that white clears 4.5:1 on a bright photo.", consumers: [], recommended: "rgb(0 0 0 / 0.5)" },
+    { key: "scrim-ink", property: "color", description: "Label colour on the scrim, in both photo looks.", consumers: [], recommended: "#ffffff" },
+    { key: "ink-shadow", property: "text-shadow", description: "Shadow under the scrim ink, seating the labels.", consumers: [], recommended: "0 0 10px rgb(0 0 0 / 0.55), 0 1px 3px rgb(0 0 0 / 0.5)" },
     { key: "control-fill", property: "background", description: "Glass control fill (icon buttons, toggles).", consumers: [], recommended: "color-mix(in srgb, var(--text-primary) 14%, transparent)" },
     { key: "control-hover-fill", property: "background", description: "Glass control fill on hover.", consumers: [], recommended: "color-mix(in srgb, var(--text-primary) 24%, transparent)" },
     { key: "control-ring", property: "box-shadow (inset ring)", description: "Glass control ring colour.", consumers: [], recommended: "color-mix(in srgb, var(--text-primary) 16%, transparent)" },
