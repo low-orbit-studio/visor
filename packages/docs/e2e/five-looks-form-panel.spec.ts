@@ -6,7 +6,7 @@ import { test, expect, type Frame, type Page } from "@playwright/test";
 // The stock theme CI has; LOOKS_THEME=honcho-backstage draws the kit's looks locally.
 const THEME = process.env.LOOKS_THEME ?? "neutral";
 // Every specimen with form controls or tiles (the spinner has neither). Add new ones here.
-const SPECIMENS = ["theme", "button", "number-input", "alert", "glass", "key-value-list", "segmented-control"];
+const SPECIMENS = ["theme", "button", "number-input", "alert", "glass", "key-value-list", "segmented-control", "toggle-group"];
 const PHOTO_LOOKS = [
   { id: "dark-photo", mode: "dark" },
   { id: "light-photo", mode: "light" },
@@ -136,11 +136,12 @@ test("Button specimen: a stock theme's Today, Dark and Light draw the kit's pill
   }
 });
 
-// The grids the operator reviews: Honcho's five looks, and two components' In Five Looks grids.
+// The grids the operator reviews: Honcho's five looks, and the components' In Five Looks grids.
 const GRIDS = [
   { path: "/themes/private", theme: "honcho-backstage", private: true },
   { path: "/docs/components/form/number-input", theme: THEME, private: false },
   { path: "/docs/components/general/button", theme: THEME, private: false },
+  { path: "/docs/components/form/toggle-group", theme: THEME, private: false },
 ];
 
 for (const grid of GRIDS) for (const width of [1440, 390]) {
