@@ -8,6 +8,8 @@ when_to_use:
   - Dashboard widgets with title, content, and action footer
   - Product or profile cards with structured layout
   - Any self-contained content block that needs a bordered surface
+  - A panel over a photo (variant="glass" inside data-glass="on"), with fields inside that blur the photo themselves
+  - A tile the user taps to edit its value (editable), flashing after a save
 
 when_not_to_use:
   - Full-width page sections without visual boundaries (use plain layout)
@@ -20,13 +22,30 @@ why: >
   title/description, flexible content area, and aligned footer. The two size
   variants (default and sm) control internal spacing. Border is rendered via
   box-shadow for clean border-radius handling, and all surfaces reference tokens
-  for full theme compatibility.
+  for full theme compatibility. The glass variant draws its fill and edge on
+  sibling layers before the content, never on an ancestor of it, so a blurred field
+  inside still blurs the photo; never put a blurred, filtered, masked, transformed,
+  blended or translucent element between a field and the photo. Glass is off
+  unless an ancestor sets data-glass="on". The editable state is a real button
+  whose hover steps the fill and shadow without moving the card.
 
 props:
   - name: size
     type: '"default" | "sm"'
     default: '"default"'
     description: "Controls internal padding and gap spacing"
+  - name: variant
+    type: '"default" | "glass"'
+    default: '"default"'
+    description: 'Glass fill and blended edge on sibling layers under data-glass="on"; the card surface and a border elsewhere'
+  - name: editable
+    type: boolean
+    default: "false"
+    description: "The whole card is a button with a pen, a hover lift, and a save flash on data-flash"
+  - name: as
+    type: '"div" | "section" | "main" | "button"'
+    default: '"div" ("button" when editable)'
+    description: "The element to render"
 
 sub_components:
   - name: CardHeader
@@ -40,7 +59,8 @@ sub_components:
   - name: CardFooter
     description: Bottom section with flex layout for actions.
 
-dependencies: []
+dependencies:
+  - "@phosphor-icons/react"
 
 preview_url: "https://visor.loworbit.studio/docs/components/data-display/card"
 

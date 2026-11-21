@@ -156,6 +156,7 @@ const RESIZABLE_SPLIT = "components/ui/resizable-split/resizable-split.module.cs
 const DIALOG = "components/ui/dialog/dialog.module.css";
 const STAT_CARD = "components/ui/stat-card/stat-card.module.css";
 const KEY_VALUE_LIST = "components/ui/key-value-list/key-value-list.module.css";
+const CARD = "components/ui/card/card.module.css";
 
 /** Shorthand for the common single-consumer case. */
 function at(file: string, fallback: string | null): ComponentTokenConsumer[] {
@@ -1687,6 +1688,38 @@ const layerChartFamily: ComponentTokenFamily = {
   ],
 };
 
+// VI-804: Card's corner, its glass variant's layers and its editable state. The glass
+// keys are the hooks honcho-planning's GlassCard consumers already set, so a surface
+// with its own glass maps onto them one for one. Each falls back to what Card drew
+// before; the glass layers fall back to the glass switch (VI-795), so glass shows
+// only under data-glass="on".
+const cardFamily: ComponentTokenFamily = {
+  family: "card",
+  prefix: "card",
+  description:
+    "Card \u2014 the corner radius, the glass variant's fill, blur, shadow and layers, and the editable state's hover fill and shadow and its pen's size and inset.",
+  tokens: [
+    { key: "radius", property: "border-radius", description: "Card corner radius.", consumers: at(CARD, "var(--radius-xl, 1rem)") },
+    { key: "glass-bg", property: "background", description: "Glass layer fill. Unset, the glass switch's lift over its fill, or the card surface where glass is off.", consumers: at(CARD, "linear-gradient(var(--glass-on-lift, transparent) 0 0), var(--glass-on-fill, var(--surface-card, #ffffff))") },
+    { key: "glass-filter", property: "backdrop-filter", description: "Filter on the photo behind the glass layer. Unset, the glass switch's blur; none where glass is off. A bound value applies with glass off too.", consumers: at(CARD, "var(--glass-on-blur, none)") },
+    { key: "glass-shadow", property: "box-shadow", description: "Glass layer shadow. Unset, the glass switch's shadow, or Card's own where glass is off.", consumers: at(CARD, "var(--glass-on-shadow, var(--shadow-sm))") },
+    { key: "glass-display", property: "display", description: "`none` drops the glass layer and its edge.", consumers: at(CARD, "block") },
+    { key: "edge-display", property: "display", description: "`none` drops the edge layer only (a surface that draws its own edge).", consumers: at(CARD, "var(--card-glass-display, block)") },
+    {
+      key: "editable-hover-bg",
+      property: "background",
+      description: "Editable card fill on hover. Unset, the interactive hover surface; on glass, the fill moved 40% toward the card surface.",
+      consumers: [
+        { file: CARD, fallback: "var(--surface-interactive-hover, #f3f4f6)" },
+        { file: CARD, fallback: "linear-gradient(var(--glass-on-lift, transparent) 0 0), color-mix(in srgb, var(--glass-on-fill, var(--surface-interactive-hover, #f3f4f6)), var(--surface-card, #ffffff) 40%)" },
+      ],
+    },
+    { key: "editable-hover-shadow", property: "box-shadow", description: "Editable card shadow on hover.", consumers: at(CARD, "var(--shadow-lg)") },
+    { key: "pen-size", property: "width / height", description: "Pen badge size.", consumers: at(CARD, "var(--spacing-8, 2rem)") },
+    { key: "pen-inset", property: "top / right", description: "Pen distance from the top and right edges.", consumers: at(CARD, "var(--spacing-4, 1rem)") },
+  ],
+};
+
 // VI-782: the summary card (Paper's Money home and Today money card). Where the sm size, the
 // highlight variant or a hero/compact value sets its own padding, size or shadow, that rule wins.
 // Type hooks are longhands: a `font` shorthand's fallback must name a family, and these inherit.
@@ -1802,6 +1835,7 @@ export const COMPONENT_TOKEN_FAMILIES: readonly ComponentTokenFamily[] = [
   layerChartFamily,
   statCardFamily,
   keyValueListFamily,
+  cardFamily,
   adminUiFamily,
 ];
 

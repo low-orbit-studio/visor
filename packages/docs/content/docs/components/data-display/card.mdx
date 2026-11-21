@@ -7,6 +7,8 @@ import { ComponentPreview } from '@/components/preview';
 import { PropsTable } from '@/components/props-table';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { FiveLooks } from '@/components/looks/five-looks';
+import { CardSpecimen } from '@/components/looks/card-specimen';
 
 ## Default
 
@@ -64,6 +66,29 @@ The `sm` size variant reduces internal padding and gap spacing.
   </Card>
 </ComponentPreview>
 
+## Glass and Editable
+
+`variant="glass"` draws the card on two layers placed before its content: a glass fill and an edge. Glass is off by default. Inside `data-glass="on"` (see [Glass](/docs/themes/glass)), the fill turns see-through, blurs the photo behind it and takes the theme's lift, and the edge blends `soft-light` with the photo. Everywhere else the layers draw the card surface and a plain border, with no blur.
+
+Because the layers are siblings of the content, never its ancestors, a blurred field inside the card (the stepper below) still blurs the photo rather than the card. Keep it that way: put no `filter`, `backdrop-filter`, `opacity` below 1, `mask`, `transform` or blend mode on anything between a blurred field and the photo.
+
+`editable` makes the whole card a button (`type="button"`). It gets a pen in the top-right corner, and on hover the fill steps up, the shadow deepens and the pen fills with the theme's key colour (`--interactive-primary-bg`). The card does not move on hover; it presses in slightly while held. Keyboard focus draws an outline in the key colour, and Enter or Space activates it. After a save, set `data-flash` on the card to play a 1.6s ring in the key colour. To replay it, remove the attribute, force a reflow and set it again. The corner shape comes from the theme's `corners`.
+
+<ComponentPreview
+  title="Glass and Editable"
+  code={"import { Button } from '@/components/ui/button/button';\nimport { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card/card';\nimport { NumberInput } from '@/components/ui/number-input/number-input';\n\n<Card variant=\"glass\">\n  <CardHeader>\n    <CardTitle>Friday Night</CardTitle>\n    <CardDescription>The field below blurs the photo through the card.</CardDescription>\n  </CardHeader>\n  <CardContent>\n    <NumberInput defaultValue={2} min={0} max={9} aria-label=\"Guests\" />\n  </CardContent>\n  <CardFooter>\n    <Button variant=\"glass\" onClick={save}>Save</Button>\n  </CardFooter>\n</Card>\n\n// After a save: el.removeAttribute('data-flash'); void el.offsetWidth; el.setAttribute('data-flash', '')\n<Card ref={tile} variant=\"glass\" editable onClick={openEditor}>\n  <span>Doors</span>\n  <span>9PM</span>\n</Card>"}
+>
+  <CardSpecimen />
+</ComponentPreview>
+
+A theme sets the corner, the glass layers, the hover fill and shadow, and the pen's size and inset through the `card` hooks. Each falls back to the look above. The full list is on [Component Tokens](/docs/themes/component-tokens#card).
+
+### In Five Looks
+
+The glass card and the editable tile in each look, on the theme picked in the docs. Only the Photo looks turn glass on. Hover the tile, Tab to it, or press Save to see the flash.
+
+<FiveLooks specimen="card" height={460} />
+
 ## Installation
 
 ```bash
@@ -103,7 +128,7 @@ import {
 
 <PropsTable component="card" />
 
-The component also accepts all standard `<div>` HTML attributes.
+The component also accepts all standard HTML attributes of the element it renders (`<div>` by default, `<button>` when `editable`).
 
 ## Sub-components
 
@@ -120,4 +145,7 @@ The component also accepts all standard `<div>` HTML attributes.
 
 - Card is a presentational container — it does not add any ARIA roles by default.
 - Use semantic heading elements inside `CardTitle` when appropriate for document outline.
-- Interactive cards should wrap the entire card in an anchor or button as needed.
+- An `editable` card is a native `<button type="button">`: it is in the tab order, Enter and Space activate it, and focus draws an outline in the key colour. Give it an accessible name (`aria-label`, or text inside). Keep its content to phrasing elements (`<span>`), and put no other control inside it.
+- The glass layers and the pen are `aria-hidden`.
+- Under `prefers-reduced-motion: reduce` the press does not scale and colour changes are instant.
+- Interactive cards that navigate should wrap the entire card in an anchor.

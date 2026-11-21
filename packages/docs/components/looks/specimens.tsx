@@ -1,6 +1,7 @@
 import type { ComponentType } from 'react';
 import { AlertSpecimen } from './alert-specimen';
 import { ButtonSpecimen } from './button-specimen';
+import { CardSpecimen } from './card-specimen';
 import { GlassSpecimen } from './glass-specimen';
 import { ItineraryLabelsSpecimen } from './itinerary-labels-specimen';
 import { KeyValueListSpecimen } from './key-value-list-specimen';
@@ -17,6 +18,7 @@ import { ThemeSpecimen } from './theme-specimen';
 export const LOOK_SPECIMENS: Record<string, ComponentType> = {
   alert: AlertSpecimen,
   button: ButtonSpecimen,
+  card: CardSpecimen,
   glass: GlassSpecimen,
   'itinerary-labels': ItineraryLabelsSpecimen,
   'key-value-list': KeyValueListSpecimen,

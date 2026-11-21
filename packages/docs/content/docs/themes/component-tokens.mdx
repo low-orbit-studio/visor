@@ -1272,6 +1272,36 @@ LayerChart and SpanStrip — the investment hue (`hue="tide"`), the unresolved f
 
 Client blocks draw in Paper's project hues (`--paper-hue-<angle>-*`) and need no binding. Paper binds the investment hue to Tide and the unresolved fill to coral mixed into the page.
 
+### `card`
+
+Card — the corner radius, the glass variant's fill, blur, shadow and layers, and the editable state's hover fill and shadow and its pen's size and inset. The glass layers read the [glass switch](/docs/themes/glass) first, so glass shows only under `data-glass="on"`.
+
+| Token | Binds | Falls back to |
+|---|---|---|
+| `--card-radius` | Card corner radius. | `var(--radius-xl, 1rem)` |
+| `--card-glass-bg` | Glass layer fill. Unset, the glass switch's lift over its fill, or the card surface where glass is off. | `linear-gradient(var(--glass-on-lift, transparent) 0 0), var(--glass-on-fill, var(--surface-card, #ffffff))` |
+| `--card-glass-filter` | Filter on the photo behind the glass layer. Unset, the glass switch's blur; none where glass is off. A bound value applies with glass off too. | `var(--glass-on-blur, none)` |
+| `--card-glass-shadow` | Glass layer shadow. Unset, the glass switch's shadow, or Card's own where glass is off. | `var(--glass-on-shadow, var(--shadow-sm))` |
+| `--card-glass-display` | `none` drops the glass layer and its edge. | `block` |
+| `--card-edge-display` | `none` drops the edge layer only (a surface that draws its own edge). | `var(--card-glass-display, block)` |
+| `--card-editable-hover-bg` | Editable card fill on hover. Unset, the interactive hover surface; on glass, the fill moved 40% toward the card surface. | `var(--surface-interactive-hover, #f3f4f6)` |
+| `--card-editable-hover-shadow` | Editable card shadow on hover. | `var(--shadow-lg)` |
+| `--card-pen-size` | Pen badge size. | `var(--spacing-8, 2rem)` |
+| `--card-pen-inset` | Pen distance from the top and right edges. | `var(--spacing-4, 1rem)` |
+
+The pen fills with the key colour (`--interactive-primary-bg` and `--interactive-primary-text`) on hover, and the save flash draws in it. The corner shape comes from the theme's `corners`.
+
+```yaml
+components:
+  card:
+    radius: "28px"
+    editable-hover-bg:
+      light: "hsl(220 8% 100% / 0.82)"
+      dark: "hsl(220 8% 12% / 0.88)"
+    pen-size: "30px"
+    pen-inset: "18px"
+```
+
 ### `stat-card`
 
 StatCard — the card's edge, corners, elevation and inset, the rule above the footer, and the label, value and footer type.
