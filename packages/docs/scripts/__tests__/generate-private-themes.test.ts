@@ -255,6 +255,55 @@ colors:
     });
   });
 
+  describe("look photos (VI-829)", () => {
+    let fixtureRoot: string;
+    // One theme ships both tones' photos, one ships only a night photo: only a full pair is used.
+    const PAIRED = "vi829photosfix";
+    const HALF = "vi829halffix";
+    const publicThemesDir = resolve(__dirname, "../../public/themes");
+    const yaml = (name: string) => FIXTURE_THEME_YAML.replace("name: testbrand", `name: ${name}`);
+
+    beforeAll(() => {
+      fixtureRoot = mkdtempSync(join(tmpdir(), "vi829-photos-"));
+      for (const [slug, files] of [[PAIRED, ["dark.webp", "light.webp", "notes.txt"]], [HALF, ["dark.webp"]]] as const) {
+        const photosDir = join(fixtureRoot, "themes", slug, "photos");
+        mkdirSync(photosDir, { recursive: true });
+        writeFileSync(join(fixtureRoot, "themes", slug, "theme.visor.yaml"), yaml(slug), "utf-8");
+        writeFileSync(join(fixtureRoot, "themes", slug, "meta.json"), JSON.stringify({ name: slug, group: "Test", private: true }), "utf-8");
+        for (const file of files) writeFileSync(join(photosDir, file), "photo", "utf-8");
+      }
+    });
+
+    afterAll(() => {
+      rmSync(fixtureRoot, { recursive: true, force: true });
+      rmSync(join(publicThemesDir, PAIRED), { recursive: true, force: true });
+      rmSync(join(publicThemesDir, HALF), { recursive: true, force: true });
+    });
+
+    it("copies a theme's dark and light photos into public/ and lists them in the manifest", () => {
+      const result = runGenerator(fixtureRoot);
+      expect(result.status).toBe(0);
+
+      const ts = readFileSync(TS_PATH, "utf-8");
+      const pairedLine = ts.split("\n").find((l) => l.includes(`slug: "${PAIRED}"`)) ?? "";
+      expect(pairedLine).toContain(
+        `lookPhotos: {"dark":"/themes/${PAIRED}/photos/dark.webp","light":"/themes/${PAIRED}/photos/light.webp"}`,
+      );
+      expect(existsSync(join(publicThemesDir, PAIRED, "photos", "dark.webp"))).toBe(true);
+      expect(existsSync(join(publicThemesDir, PAIRED, "photos", "light.webp"))).toBe(true);
+      // Only the tone photos are copied.
+      expect(existsSync(join(publicThemesDir, PAIRED, "photos", "notes.txt"))).toBe(false);
+    });
+
+    it("lists no photos for a theme that ships only one tone", () => {
+      runGenerator(fixtureRoot);
+      const ts = readFileSync(TS_PATH, "utf-8");
+      const halfLine = ts.split("\n").find((l) => l.includes(`slug: "${HALF}"`)) ?? "";
+      expect(halfLine).not.toBe("");
+      expect(halfLine).not.toContain("lookPhotos");
+    });
+  });
+
   describe("public bundle leak guard (build artifact)", () => {
     const NEXT_DIR = resolve(__dirname, "../../.next");
     const KNOWN_PRIVATE_SLUGS = [

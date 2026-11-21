@@ -49,6 +49,12 @@ export interface PrivateThemeEntry {
    * YAML by `scripts/generate-private-themes.mjs`.
    */
   defaultMode?: "dark" | "light";
+  /**
+   * Real photos behind the five-looks demos' photo looks: `dark` for Dark + Photo, `light` for
+   * Light + Photo (VI-829). Present only when the theme ships `photos/dark.*` and `photos/light.*`;
+   * `scripts/generate-private-themes.mjs` copies them into public/ (gitignored).
+   */
+  lookPhotos?: { dark: string; light: string };
 }
 
 export { PRIVATE_THEMES } from "./private-themes.generated";

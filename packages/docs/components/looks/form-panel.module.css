@@ -1,0 +1,18 @@
+/* The glass recipe's panel (glass-specimen.module.css), drawn only under data-glass="on".
+ * Off the photo it is a bare wrapper: no fill, edge, padding or positioning, so the
+ * controls inside render exactly as they did without it. */
+.panel {
+  min-width: 0;
+  border-radius: var(--radius-lg, 0.5rem);
+}
+
+:global([data-glass='on']) .panel {
+  position: relative;
+  padding: var(--spacing-6, 1.5rem);
+  color: var(--glass-on-ink, var(--text-primary, #111827));
+}
+
+/* Above the glass layer, and never its ancestor, so fields inside still blur the photo. */
+:global([data-glass='on']) .content {
+  position: relative;
+}
