@@ -6,13 +6,55 @@ import { CheckIcon } from "@phosphor-icons/react"
 import { cn } from "../../../lib/utils"
 import styles from "./popover.module.css"
 
-function Popover({ ...props }: React.ComponentProps<typeof PopoverPrimitive.Root>) {
-  return <PopoverPrimitive.Root data-slot="popover" {...props} />
+// The open state and the trigger, so stay-mounted content can go inert while closed
+// and hand focus back to the trigger (Radix returns focus only on unmount).
+interface PopoverContextValue {
+  open: boolean
+  triggerRef: React.MutableRefObject<HTMLButtonElement | null>
+}
+
+const PopoverContext = React.createContext<PopoverContextValue>({
+  open: false,
+  triggerRef: { current: null },
+})
+
+function Popover({
+  open: openProp,
+  defaultOpen = false,
+  onOpenChange,
+  ...props
+}: React.ComponentProps<typeof PopoverPrimitive.Root>) {
+  const [uncontrolledOpen, setUncontrolledOpen] = React.useState(defaultOpen)
+  const open = openProp ?? uncontrolledOpen
+  const triggerRef = React.useRef<HTMLButtonElement | null>(null)
+  const handleOpenChange = React.useCallback(
+    (next: boolean) => {
+      setUncontrolledOpen(next)
+      onOpenChange?.(next)
+    },
+    [onOpenChange]
+  )
+  const value = React.useMemo(() => ({ open, triggerRef }), [open])
+
+  return (
+    <PopoverContext.Provider value={value}>
+      <PopoverPrimitive.Root data-slot="popover" open={open} onOpenChange={handleOpenChange} {...props} />
+    </PopoverContext.Provider>
+  )
 }
 Popover.displayName = "Popover"
 
-function PopoverTrigger({ ...props }: React.ComponentProps<typeof PopoverPrimitive.Trigger>) {
-  return <PopoverPrimitive.Trigger data-slot="popover-trigger" {...props} />
+function PopoverTrigger({ ref, ...props }: React.ComponentProps<typeof PopoverPrimitive.Trigger>) {
+  const { triggerRef } = React.useContext(PopoverContext)
+  const setRef = React.useCallback(
+    (el: HTMLButtonElement | null) => {
+      triggerRef.current = el
+      if (typeof ref === "function") ref(el)
+      else if (ref) ref.current = el
+    },
+    [ref, triggerRef]
+  )
+  return <PopoverPrimitive.Trigger data-slot="popover-trigger" ref={setRef} {...props} />
 }
 PopoverTrigger.displayName = "PopoverTrigger"
 
@@ -24,18 +66,50 @@ PopoverAnchor.displayName = "PopoverAnchor"
 const PopoverContent = React.forwardRef<
   React.ComponentRef<typeof PopoverPrimitive.Content>,
   React.ComponentProps<typeof PopoverPrimitive.Content>
->(({ className, align = "center", sideOffset = 4, ...props }, ref) => (
-  <PopoverPrimitive.Portal>
+>(({ className, align = "center", sideOffset = 4, forceMount, onOpenAutoFocus, ...props }, forwardedRef) => {
+  const { open, triggerRef } = React.useContext(PopoverContext)
+  const panelRef = React.useRef<HTMLDivElement | null>(null)
+  const ref = React.useCallback(
+    (el: HTMLDivElement | null) => {
+      panelRef.current = el
+      if (typeof forwardedRef === "function") forwardedRef(el)
+      else if (forwardedRef) forwardedRef.current = el
+    },
+    [forwardedRef]
+  )
+
+  // Stay-mounted content never unmounts, so give focus back to the trigger on close
+  // when it was inside the panel. Runs before the browser drops focus from the inert panel.
+  const wasOpen = React.useRef(open)
+  React.useLayoutEffect(() => {
+    if (forceMount && wasOpen.current && !open && panelRef.current?.contains(document.activeElement)) {
+      triggerRef.current?.focus()
+    }
+    wasOpen.current = open
+  }, [forceMount, open, triggerRef])
+
+  const content = (
     <PopoverPrimitive.Content
       ref={ref}
       data-slot="popover-content"
       align={align}
       sideOffset={sideOffset}
-      className={cn(styles.content, className)}
+      className={cn(styles.content, forceMount && styles.stayMounted, className)}
+      forceMount={forceMount}
+      // Stay-mounted content mounts with the page, where Radix would move focus into it.
+      // Focus stays on the trigger, then and on every open.
+      onOpenAutoFocus={forceMount ? (e) => { onOpenAutoFocus?.(e); e.preventDefault() } : onOpenAutoFocus}
+      inert={(forceMount && !open) || undefined}
       {...props}
     />
-  </PopoverPrimitive.Portal>
-))
+  )
+
+  // shortcut: a closed stay-mounted panel is still a Radix dismissable layer, so one mounted
+  // inside an open Dialog after it swallows the Dialog's Escape; mount it before any Dialog opens.
+  // Stay-mounted content renders in place, so it reads the glass switch around it and sits next
+  // to its trigger in the tab order; the caller places it (see `.stayMounted`).
+  return forceMount ? content : <PopoverPrimitive.Portal>{content}</PopoverPrimitive.Portal>
+})
 PopoverContent.displayName = "PopoverContent"
 
 function PopoverFooter({ className, ...props }: React.ComponentProps<"div">) {

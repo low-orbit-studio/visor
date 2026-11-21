@@ -630,6 +630,13 @@
             "$ref": "#/$defs/componentTokenBinding"
           }
         },
+        "popover": {
+          "type": "object",
+          "description": "Popover's panel — corners, inset, fill and shadow — and the stay-mounted (`forceMount`) fade's timing, curve and rise. Under `data-glass=\"on\"` the panel reads the glass layer's fill, blur, shadow and ink; a bound `bg` or `shadow` wins in every look. Keys: radius, padding, bg, shadow, duration, easing, rise, item-bg, item-bg-hover.",
+          "additionalProperties": {
+            "$ref": "#/$defs/componentTokenBinding"
+          }
+        },
         "glass": {
           "type": "object",
           "description": "The glass layer over a photo: surface fill, blur, edge, lift, shadow and on-photo ink, plus the glass values controls read. Draws only inside `data-glass=\"on\"`; elsewhere components keep their solid surface and border. Keys: fill, blur, edge, lift, shadow, ink, control-fill, control-hover-fill, control-ring, control-ink, control-blur.",

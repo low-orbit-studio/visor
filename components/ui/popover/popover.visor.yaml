@@ -30,7 +30,9 @@ sub_components:
   - name: PopoverTrigger
     description: Element that toggles the popover on click.
   - name: PopoverContent
-    description: The floating content panel rendered in a portal.
+    description: >
+      The floating content panel, rendered in a portal. With forceMount it stays
+      mounted and renders in place after its trigger instead.
   - name: PopoverAnchor
     description: Optional custom anchor element for positioning.
   - name: PopoverFooter
@@ -63,6 +65,34 @@ props:
     type: number
     default: "4"
     description: Distance in pixels between trigger and content
+  - name: forceMount
+    type: "true"
+    description: >
+      On PopoverContent. Keeps the panel mounted, in place after its trigger: it
+      fades in and out, is inert while closed, leaves focus on the trigger when it
+      opens and returns focus to the trigger on close when focus was inside it.
+      The caller places it with its own class (side, align and sideOffset do
+      nothing). Only an in-place panel can read the glass switch around it.
+
+theme_hooks:
+  - name: --popover-radius
+    description: Panel corners.
+  - name: --popover-padding
+    description: Panel inset, one length.
+  - name: --popover-bg
+    description: Panel fill in every look. Unset, the glass fill over a photo and --surface-popover elsewhere.
+  - name: --popover-shadow
+    description: Panel shadow in every look. Unset, the glass shadow over a photo and --shadow-lg elsewhere.
+  - name: --popover-duration
+    description: Stay-mounted fade length.
+  - name: --popover-easing
+    description: Stay-mounted fade curve.
+  - name: --popover-rise
+    description: How far the stay-mounted panel rises as it fades in. None under reduced motion.
+  - name: --popover-item-bg
+    description: Menu row fill (a ghost Button in a stay-mounted panel). Unset, the glass control fill over a photo and a faint ink tint elsewhere.
+  - name: --popover-item-bg-hover
+    description: Menu row fill on hover. Unset, the glass control hover fill over a photo and a stronger ink tint elsewhere.
 
 dependencies:
   - "@radix-ui/react-popover"
@@ -94,6 +124,12 @@ notes: >
   and the slot bakes in no autoFocus override. Responsive: popovers are floating
   panels; actions do not stack at breakpoints — if they don't fit on one row,
   widen the popover rather than wrapping the buttons.
+  Stay mounted (forceMount): images inside load with the page, even with
+  loading="lazy", so set their src when the panel opens if that matters. Known
+  limit: a closed stay-mounted panel is still a Radix dismissable layer, so one
+  mounted inside an open Dialog after it swallows the Dialog's Escape. Mount it
+  before any Dialog opens. Glass: under data-glass="on" the panel reads the
+  glass layer's fill, lift, blur, shadow and ink; elsewhere it has no blur.
 
 examples:
   - title: Multi-select filter (checkbox mode)
