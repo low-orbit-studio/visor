@@ -7,11 +7,15 @@ export interface FontScenario { name: string; theme: string; extraCss: string }
 const CDN = "https://fonts.visor.design/low-orbit-studio"
 const GSTATIC = "https://fonts.gstatic.com/s"
 
-/** The body-font scope for a face loaded by a fixture @font-face, with the vertical metrics the engine would publish for it (VI-684). */
+/**
+ * The body-font scope for a face loaded by a fixture @font-face, with the vertical metrics the engine would publish for it (VI-684).
+ * The theme class sits on <body>, so font-family is re-applied here: a control that inherits its face (Input) would otherwise keep
+ * the theme's system-ui and be measured against another font's metrics (VI-827).
+ */
 const fixture = (family: string, metricsKey: string, faces: string): string => {
   const m = FONT_VERTICAL_METRICS[metricsKey]
   return `${faces}
-#theme-scope { --font-body: "${family} [fixture]", sans-serif; --font-sans: "${family} [fixture]", sans-serif; --font-ascent: ${m.ascent}; --font-descent: ${m.descent}; }`
+#theme-scope { --font-body: "${family} [fixture]", sans-serif; --font-sans: "${family} [fixture]", sans-serif; font-family: var(--font-sans); --font-ascent: ${m.ascent}; --font-descent: ${m.descent}; }`
 }
 const face = (family: string, url: string, weight: number, format: string) =>
   `@font-face { font-family: "${family} [fixture]"; src: url("${url}") format("${format}"); font-weight: ${weight}; font-display: block; }`
@@ -22,7 +26,7 @@ const face = (family: string, url: string, weight: number, format: string) =>
  * (modern-minimal, blackout, neutral); the rest load their real font files into the neutral theme.
  */
 export const FONT_SCENARIOS: FontScenario[] = [
-  { name: "Arial (system)", theme: "neutral", extraCss: `#theme-scope { --font-body: Arial; --font-sans: Arial; --font-ascent: ${FONT_VERTICAL_METRICS.arial.ascent}; --font-descent: ${FONT_VERTICAL_METRICS.arial.descent}; }` },
+  { name: "Arial (system)", theme: "neutral", extraCss: `#theme-scope { --font-body: Arial; --font-sans: Arial; font-family: var(--font-sans); --font-ascent: ${FONT_VERTICAL_METRICS.arial.ascent}; --font-descent: ${FONT_VERTICAL_METRICS.arial.descent}; }` },
   { name: "system-ui (neutral)", theme: "neutral", extraCss: "" },
   { name: "Satoshi (blackout)", theme: "blackout", extraCss: "" },
   { name: "Product Sans (modern-minimal)", theme: "modern-minimal", extraCss: "" },
