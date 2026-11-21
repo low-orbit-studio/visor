@@ -57,17 +57,24 @@ for (const width of [1440, 390]) {
 
 // The panel the review link opens. Click only once the first photo has settled, so the next one
 // has been preloaded and is ready the moment it mounts: that case once dropped the new layer, so
-// Next Photo did nothing.
+// Next Photo did nothing. Two committed images, so the walk is the same with or without the private
+// themes (whose one real photo per tone would otherwise replace the stand-in pair).
+const TWO_PHOTOS = "/astronaut.png,/visor-logo.png";
 for (const look of ["dark-photo", "light-photo"]) {
   test(`PhotoBackdrop: Next Photo crossfades to the other photo in ${look}`, async ({ page }) => {
-    await page.goto(`/looks/panel?theme=neutral&look=${look}&specimen=photo-backdrop`);
+    await page.goto(`/looks/panel?theme=neutral&look=${look}&specimen=photo-backdrop&photo=${TWO_PHOTOS}`);
     const layers = page.locator('[data-slot="photo-backdrop-layer"]');
     await expect(layers).toHaveCount(1);
     await expect(layers).toHaveAttribute("data-ready", "");
     const first = await layers.locator("img").getAttribute("src");
     await expect.poll(() => layers.evaluate((el) => el.getAnimations().length), { timeout: 10_000 }).toBe(0);
 
-    await page.getByRole("button", { name: "Next Photo" }).click();
+    // Over a photo Next Photo is never a bare outline: the shared Button gives it the glass wash (VI-824).
+    const next = page.getByRole("button", { name: "Next Photo" });
+    await expect(next).not.toHaveCSS("background-color", "rgba(0, 0, 0, 0)");
+    await expect(next).toHaveCSS("backdrop-filter", /blur\(/);
+
+    await next.click();
     await expect(layers).toHaveCount(2);
     const top = layers.nth(1);
     await expect(layers.nth(0).locator("img")).toHaveAttribute("src", first!);
