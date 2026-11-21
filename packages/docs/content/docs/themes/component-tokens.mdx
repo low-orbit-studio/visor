@@ -735,6 +735,11 @@ Button type treatment and rounding. The unprefixed keys set every size at once; 
 | `--button-default-shadow-hover` | `default` variant drop shadow on hover. Defaults to `default-shadow`. | `var(--button-default-shadow, revert-layer)` |
 | `--button-outline-text` | `outline` variant ink. | `var(--text-primary, #111827)` |
 | `--button-outline-bg-hover` | `outline` variant fill on hover. | `var(--surface-muted, #f3f4f6)` |
+| `--button-outline-bg` | `outline` variant fill at rest. Unbound, it is transparent. | `transparent` |
+| `--button-outline-padding` | `outline` variant padding on every labelled size, over the size's own padding (`0 26px` for the kit). Unbound, each size keeps its padding. | — (each size's padding) |
+| `--button-outline-font-weight` | `outline` variant weight on every size, over the size and family weights (`520` for the kit). Unbound, each size keeps its weight. | — (each size's weight) |
+| `--button-outline-ring-color` | `outline` variant ring colour, apart from the shared `--control-edge-color`. | `var(--control-edge-color, var(--border-strong, #e5e7eb))` |
+| `--button-outline-backdrop-filter` | `outline` variant backdrop filter, so it can frost over a photo like the glass icon button. Unbound, none. | `none` |
 | `--button-hover-scale` | Grow on hover, every variant (`1.06` for the kit). Off for disabled, gated and pending buttons. | `revert-layer` |
 | `--button-press-scale` | Scale while pressed (`0.97` for the kit). Replaces the hover grow while held. | `revert-layer` |
 | `--button-press-transform` | Press nudge. Bind `none` when `press-scale` carries the press. | `translateY(1px)` |
@@ -914,11 +919,11 @@ ProportionBar — the default part fills by position, the built-in hatched, stri
 
 ### `segmented-control`
 
-SegmentedControl — the well, its corner radius and padding, the segment height, sides, label size and corners, the sliding pill and its corners, the ink and the state edge on it. The resting edge is the shared `control` edge.
+SegmentedControl — the well, its corner radius and padding, the segment height, sides, label size and corners, the sliding pill and its corners, the ink and the state edge on it. The resting edge is the shared `control` edge. Under `data-glass="on"` the well blurs the photo and, unbound, takes the glass layer's control fill.
 
 | Token | Binds | Falls back to |
 |---|---|---|
-| `--segmented-control-track-bg` | The well the pill slides in. Default is the page nudged 12% toward the ink, so it reads as a well in light and dark. | `color-mix(in srgb, var(--text-primary, #111827) 12%, var(--surface-page, #ffffff))` |
+| `--segmented-control-track-bg` | The well the pill slides in. Default is the page nudged 12% toward the ink, so it reads as a well in light and dark; under glass, the glass layer's control fill. | `var(--glass-on-control-fill, color-mix(in srgb, var(--text-primary, #111827) 12%, var(--surface-page, #ffffff)))` |
 | `--segmented-control-radius` | Track corner radius. Unset, each size keeps its ToggleGroup radius. | xs `var(--radius-md, 0.375rem)`, sm and md `var(--radius-lg, 0.5rem)`, lg `var(--radius-xl, 0.75rem)` |
 | `--segmented-control-track-padding` | Inset between the well's edge and the segments. | xs `calc(var(--spacing-1, 0.25rem) / 2)`, sm, md and lg `var(--spacing-1, 0.25rem)` |
 | `--segmented-control-item-height` | Segment height; the pill follows it. | xs `1.5rem`, sm `1.75rem`, md `2.25rem`, lg `2.75rem` |

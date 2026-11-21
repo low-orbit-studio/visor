@@ -66,10 +66,12 @@ describe('variant="glass"', () => {
 })
 
 describe("stylesheet", () => {
-  it("draws a backdrop-filter only from the glass switch's control blur", () => {
+  it("draws a backdrop-filter only from the glass switch's control blur or the outline's own hook (unbound: none)", () => {
     const filters = [...squashed.matchAll(/backdrop-filter:\s*([^;]+);/g)].map((m) => m[1].trim())
     expect(filters.length).toBeGreaterThan(0)
-    for (const value of filters) expect(value).toBe("var(--glass-on-control-blur, none)")
+    for (const value of filters) {
+      expect(["var(--glass-on-control-blur, none)", "var(--button-outline-backdrop-filter, none)"]).toContain(value)
+    }
   })
 
   it("reads the glass layer's shared control values with a solid ringed control as fallback", () => {
@@ -77,6 +79,15 @@ describe("stylesheet", () => {
     expect(squashed).toContain("background-color: var(--glass-on-control-hover-fill, var(--surface-muted, #f3f4f6))")
     expect(squashed).toContain("color: var(--glass-on-control-ink, var(--text-primary, #111827))")
     expect(squashed).toContain("var(--glass-on-control-ring, var(--border-default, #e5e7eb))")
+  })
+
+  it("gives the outline face the glass control's wash under the glass switch (VI-829)", () => {
+    const rule = (selector: string) => squashed.slice(squashed.indexOf(`${selector} {`)).split("}")[0]
+    const face = rule(':global([data-glass="on"]) .variantOutline')
+    expect(face).toContain("background-color: var(--glass-on-control-fill,")
+    expect(face).toContain("color: var(--glass-on-control-ink,")
+    expect(rule(':global([data-glass="on"]) .variantOutline::after')).toContain("outline-color: var(--glass-on-control-ring,")
+    expect(rule(':global([data-glass="on"]) .variantOutline:hover')).toContain("var(--glass-on-control-hover-fill,")
   })
 
   it("keeps grow, press scale and shadow unset unless a theme binds them", () => {

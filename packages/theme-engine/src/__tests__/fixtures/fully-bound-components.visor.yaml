@@ -368,6 +368,11 @@ components:
     default-shadow-hover: "0 18px 40px -14px rgb(0 0 0 / 0.45)"
     outline-text: "#c7b8d6"
     outline-bg-hover: "#2ce0e6"
+    outline-bg: "#1a1a1c"
+    outline-padding: "0 26px"
+    outline-font-weight: "520"
+    outline-ring-color: "rgba(255, 255, 255, 0.24)"
+    outline-backdrop-filter: "blur(24px)"
     hover-scale: "1.06"
     press-scale: "0.97"
     press-transform: none

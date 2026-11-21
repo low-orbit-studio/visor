@@ -11,6 +11,13 @@ export const LOOKS = [
   { id: 'light-photo', label: 'Light + Photo', mode: 'light', photo: true },
 ] as const;
 
+/**
+ * A theme whose Today look is another theme: Honcho's Today is `honcho`, and its Dark, Light and
+ * Photo looks are `honcho-backstage`. Every five-looks grid reads this, so a component page with
+ * Honcho Backstage picked draws Today on honcho too (VI-829).
+ */
+export const TODAY_THEMES: Record<string, string> = { 'honcho-backstage': 'honcho' };
+
 export type LookId = (typeof LOOKS)[number]['id'];
 export type LookMode = 'light' | 'dark';
 

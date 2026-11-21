@@ -14,6 +14,9 @@ const config = {
   // Tell Next.js where the monorepo root is so it can resolve workspace packages
   outputFileTracingRoot: path.join(__dirname, '../../'),
   experimental: {},
+  // Dev only: Next 16 blocks dev resources (HMR, client chunks) for other hosts, so a page opened
+  // through 127.0.0.1 or a review proxy (app-web.<ticket>.visor.localhost) never hydrates.
+  allowedDevOrigins: ['127.0.0.1', '**.localhost'],
   async redirects() {
     return [
       {

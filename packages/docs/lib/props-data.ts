@@ -1236,8 +1236,14 @@ export const propsData: Record<string, PropDef[]> = {
     },
     {
       name: 'steps',
-      type: "{ label: ReactNode; state?: 'done' | 'current' | 'pending' | 'failed' }[]",
-      description: 'One entry per step: a segment with its label under it. The bar is then aria-hidden and summary is read in its place; total and aria-label are not used.',
+      type: "{ label: ReactNode; state?: 'done' | 'current' | 'pending' | 'failed'; weight?: number; onSelect?: () => void; fill?: number }[]",
+      description: 'One entry per step: a segment with its label under it. The bar is then aria-hidden and summary is read in its place; total and aria-label are not used. weight (default 1) is the step\'s share of the width; onSelect makes the step a button, for jumping back to a finished step; fill (0 to 1, default 0.55) is how far a current step is filled.',
+    },
+    {
+      name: 'revealLabels',
+      type: 'boolean',
+      default: 'false',
+      description: 'With steps, hides each pending label and fades it in when its step fills. Labels filled on first render show without animating.',
     },
     {
       name: 'summary',

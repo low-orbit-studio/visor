@@ -9,6 +9,7 @@ when_to_use:
   - Short sequence indicators (≤12 steps) where a pill-per-step treatment reads clearly
   - Inline progress in cards or compact surfaces where a stepper is too heavy
   - A segmented stepper with a label under each bar, including a failed step (pass `steps`)
+  - A multi-step form's section bar, each section sized by its slide count, finished sections tappable to jump back, labels fading in as sections fill (`weight`, `onSelect`, `revealLabels`)
 
 when_not_to_use:
   - Use `progress` for continuous values like upload percentage or loading progress
@@ -37,8 +38,12 @@ props:
     required: true
     description: Count of completed segments. Indices 0..value-1 render as done. With `steps`, the default for a step that sets no `state`.
   - name: steps
-    type: "{ label: ReactNode; state?: 'done' | 'current' | 'pending' | 'failed' }[]"
-    description: One entry per step, each a segment with its label under it. A step without a `state` follows `value` and `current`. A failed step fills with --interactive-destructive-bg and its label reads in --text-error with a warning icon; a done label carries a check-circle. The bar is aria-hidden and `summary` is read in its place. Labels are 12px (sm) and 14px (md), rebindable through --segmented-progress-sm-label-font-size and --segmented-progress-md-label-font-size.
+    type: "{ label: ReactNode; state?: 'done' | 'current' | 'pending' | 'failed'; weight?: number; onSelect?: () => void; fill?: number }[]"
+    description: One entry per step, each a segment with its label under it. A step without a `state` follows `value` and `current`. A failed step fills with --interactive-destructive-bg and its label reads in --text-error with a warning icon; a done label carries a check-circle. The bar is aria-hidden and `summary` is read in its place. Labels are 12px (sm) and 14px (md), rebindable through --segmented-progress-sm-label-font-size and --segmented-progress-md-label-font-size. `weight` (default 1) is the step's share of the width after the gaps. `onSelect` makes the step a button (named "Go to {label}") that calls it, for jumping back to a finished step; steps without it are not focusable. `fill` (0-1, default 0.55) is how far a current step's segment is filled. Under data-glass="on" the labels read --glass-on-control-ink and the track --glass-on-fill and --glass-on-blur; elsewhere they keep the theme's text inks and a solid track.
+  - name: revealLabels
+    type: boolean
+    default: "false"
+    description: With `steps`, hides each pending step's label and fades it in (opacity, a 4px rise and a 6px blur, over --motion-duration-enter on --motion-easing-enter) when its step fills. Labels filled on first render show without animating; under prefers-reduced-motion they switch with no transition.
   - name: summary
     type: ReactNode
     description: 'With `steps`, the visually hidden line a screen reader hears. Defaults to "Step 2 of 3: Bank Details", naming the failed, current or next step.'

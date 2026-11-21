@@ -104,8 +104,14 @@
 }
 
 .variantOutline {
-  background-color: transparent;
+  background-color: var(--button-outline-bg, transparent);
   color: var(--button-outline-text, var(--text-primary, #111827));
+  -webkit-backdrop-filter: var(--button-outline-backdrop-filter, none);
+  backdrop-filter: var(--button-outline-backdrop-filter, none);
+  /* VI-824: outline-only padding and weight. The size rules read these first;
+     unbound they are invalid, so each size keeps its own padding and weight. */
+  --_button-padding: var(--button-outline-padding);
+  --_button-font-weight: var(--button-outline-font-weight);
 }
 
 /* Edged faces (VI-655). The resting edge is an inset outline over the border
@@ -132,7 +138,7 @@
 }
 
 .variantOutline::after {
-  outline-color: var(--control-edge-color, var(--border-strong, #e5e7eb));
+  outline-color: var(--button-outline-ring-color, var(--control-edge-color, var(--border-strong, #e5e7eb)));
 }
 
 .variantGhost {
@@ -159,7 +165,25 @@
   backdrop-filter: var(--glass-on-control-blur, none);
 }
 
+/* Over a photo no button is a bare edge (VI-829): under the glass switch the
+   outline face takes the glass control's wash, ink, ring and blur. */
+:global([data-glass="on"]) .variantOutline {
+  background-color: var(--glass-on-control-fill, var(--surface-subtle, #f3f4f6));
+  color: var(--glass-on-control-ink, var(--text-primary, #111827));
+  -webkit-backdrop-filter: var(--glass-on-control-blur, none);
+  backdrop-filter: var(--glass-on-control-blur, none);
+}
+
+:global([data-glass="on"]) .variantOutline::after {
+  outline-color: var(--glass-on-control-ring, var(--border-default, #e5e7eb));
+}
+
 @media (hover: hover) {
+  :global([data-glass="on"]) .variantOutline:hover {
+    background-color: var(--glass-on-control-hover-fill, var(--surface-muted, #f3f4f6));
+  }
+
+
   .variantDefault:hover {
     background-color: var(--button-default-bg-hover, var(--interactive-primary-bg-hover, #1f2937));
   }
@@ -249,19 +273,19 @@
 .sizeSm {
   --label-box-height: 2rem;
   height: var(--label-box-height);
-  padding: 0 var(--spacing-3, 0.75rem);
+  padding: var(--_button-padding, 0 var(--spacing-3, 0.75rem));
   font-size: var(--button-sm-font-size, var(--font-size-xs, 0.75rem));
-  font-weight: var(--button-sm-font-weight, var(--button-font-weight, var(--font-weight-medium, 500)));
+  font-weight: var(--_button-font-weight, var(--button-sm-font-weight, var(--button-font-weight, var(--font-weight-medium, 500))));
   border-radius: var(--button-sm-radius, var(--button-radius, var(--radius-md, 0.375rem)));
 }
 
 .sizeMd {
   --label-box-height: 2.5rem;
   height: var(--button-md-height, var(--label-box-height));
-  padding: var(--button-md-padding, 0 var(--spacing-4, 1rem));
+  padding: var(--_button-padding, var(--button-md-padding, 0 var(--spacing-4, 1rem)));
   line-height: 1;
   font-size: var(--button-md-font-size, var(--font-size-sm, 0.875rem));
-  font-weight: var(--button-md-font-weight, var(--button-font-weight, var(--font-weight-medium, 500)));
+  font-weight: var(--_button-font-weight, var(--button-md-font-weight, var(--button-font-weight, var(--font-weight-medium, 500))));
   border-radius: var(--button-md-radius, var(--button-radius, var(--radius-md, 0.375rem)));
 }
 
@@ -278,9 +302,9 @@
 .sizeLg {
   --label-box-height: 3rem;
   height: var(--button-lg-height, var(--label-box-height));
-  padding: var(--button-lg-padding, 0 var(--spacing-6, 1.5rem));
+  padding: var(--_button-padding, var(--button-lg-padding, 0 var(--spacing-6, 1.5rem)));
   font-size: var(--button-lg-font-size, var(--font-size-base, 1rem));
-  font-weight: var(--button-lg-font-weight, var(--button-font-weight, var(--font-weight-medium, 500)));
+  font-weight: var(--_button-font-weight, var(--button-lg-font-weight, var(--button-font-weight, var(--font-weight-medium, 500))));
   border-radius: var(--button-lg-radius, var(--button-radius, var(--radius-md, 0.375rem)));
 }
 
@@ -294,9 +318,9 @@
    variant="destructive" (refined below to a subtle-danger face). */
 .sizeDlg {
   height: auto;
-  padding: var(--button-dlg-padding, var(--spacing-2, 0.5rem) var(--spacing-3, 0.75rem));
+  padding: var(--_button-padding, var(--button-dlg-padding, var(--spacing-2, 0.5rem) var(--spacing-3, 0.75rem)));
   font-size: var(--button-dlg-font-size, var(--font-size-2xs, 0.6875rem));
-  font-weight: var(--button-dlg-font-weight, var(--button-font-weight, var(--font-weight-semibold, 600)));
+  font-weight: var(--_button-font-weight, var(--button-dlg-font-weight, var(--button-font-weight, var(--font-weight-semibold, 600))));
   line-height: 1;
   border-radius: var(--button-dlg-radius, var(--button-radius, var(--radius-lg, 0.5rem)));
 }
