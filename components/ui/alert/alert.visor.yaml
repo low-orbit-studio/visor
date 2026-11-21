@@ -28,6 +28,8 @@ why: >
   rather than a sibling InlineAlert, so spacing and type tune in one place (the
   --alert-* component tokens). FieldError stays the per-input hint, ErrorPlacard the
   failed-load card with a retry, and Banner the full-width page notice.
+  Over a photo (data-glass="on") the soft alert reads the glass layer and draws every
+  tone in ink with a full outline and its icon, replacing the Honcho kit's Notice.
 
 variants:
   variant: [default, destructive, success, warning, info]
@@ -52,6 +54,8 @@ props:
     default: "default"
     description: >
       soft draws a tinted fill with no edge or shadow, a tone icon and the body in secondary ink.
+      Inside the glass layer's data-glass="on" switch it draws on glass with a full outline, every
+      tone in the glass ink rather than its tone colour.
       Under soft, info falls back to the neutral default note, and role defaults to alert for
       destructive and status for the rest (an explicit role still wins).
   - name: icon

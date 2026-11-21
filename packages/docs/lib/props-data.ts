@@ -19,7 +19,7 @@ export const propsData: Record<string, PropDef[]> = {
       type: "'default' | 'soft'",
       default: "'default'",
       description:
-        'soft draws a tinted fill with no edge or shadow, a tone icon and the body in secondary ink.',
+        'soft draws a tinted fill with no edge or shadow, a tone icon and the body in secondary ink. Inside data-glass="on" it draws on glass with a full outline, every tone in the glass ink.',
     },
     {
       name: 'icon',
