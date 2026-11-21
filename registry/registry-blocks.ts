@@ -355,7 +355,7 @@ export const blocks: Registry = [
     type: "registry:block",
     category: "admin",
     description:
-      "Sidebar-footer profile menu composing an avatar + identity row trigger and an upward-opening DropdownMenu of account, notifications, appearance, keyboard shortcut, help, and sign-out items. Supports status dots, badges, and per-item shortcuts. Drop-in for the AdminShell sidebarFooter slot.",
+      "Sidebar-footer profile menu composing an avatar + identity row trigger and an upward-opening DropdownMenu of account, notifications, appearance, keyboard shortcut, help, and sign-out items. Supports status dots, badges, and per-item shortcuts. Drop-in for the AdminShell sidebarFooter slot. With trigger=\"avatar\", a top bar's account menu: the round avatar alone, ringed in the key colour, opening in place on Popover's skin (glass under data-glass=\"on\").",
     dependencies: ["@loworbitstudio/visor-core", "@phosphor-icons/react"],
     registryDependencies: ["utils", "avatar", "dropdown-menu"],
     files: [

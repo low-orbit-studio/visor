@@ -10,6 +10,7 @@ import { NumberInputSpecimen } from './number-input-specimen';
 import { PhotoDropSpecimen } from './photo-drop-specimen';
 import { PhotoPickerSpecimen } from './photo-picker-specimen';
 import { PopoverSpecimen } from './popover-specimen';
+import { ProfileMenuSpecimen } from './profile-menu-specimen';
 import { RichTextSpecimen } from './rich-text-specimen';
 import { ScrollHintSpecimen } from './scroll-hint-specimen';
 import { SegmentedControlSpecimen } from './segmented-control-specimen';
@@ -36,6 +37,7 @@ export const LOOK_SPECIMENS: Record<string, ComponentType> = {
   'photo-drop': PhotoDropSpecimen,
   'photo-picker': PhotoPickerSpecimen,
   popover: PopoverSpecimen,
+  'profile-menu': ProfileMenuSpecimen,
   'rich-text': RichTextSpecimen,
   'scroll-hint': ScrollHintSpecimen,
   'segmented-control': SegmentedControlSpecimen,

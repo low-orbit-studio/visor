@@ -83,6 +83,12 @@ props:
       The breakout variant raises z-index to 200 and deepens the shadow so the menu
       escapes the stacking context. The "default" value is byte-identical to
       pre-variant rendering — no consumer migration required.
+  - name: container (DropdownMenuContent)
+    type: "HTMLElement | null"
+    description: >
+      Where the menu portals to. Unset (or null), the end of the page. Pass an
+      element to render the menu in place, inside it, so it reads an ancestor's
+      switches such as the glass layer's data-glass="on".
 
 dependencies:
   - "@radix-ui/react-dropdown-menu"
