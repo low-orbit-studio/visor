@@ -25,6 +25,13 @@ describe('FiveLooks', () => {
     ]);
   });
 
+  it('puts the night photo behind Dark + Photo and the day photo behind Light + Photo', () => {
+    window.history.replaceState(null, '', '/?photo-dark=/night.webp&photo-light=/day.webp');
+    const { container } = render(<FiveLooks specimen="theme" />);
+    expect(srcs(container).map((p) => p.get('photo'))).toEqual([null, '/night.webp', '/night.webp', '/day.webp', '/day.webp']);
+    window.history.replaceState(null, '', '/');
+  });
+
   it('draws Today on todayTheme when one is given', () => {
     const { container } = render(<FiveLooks specimen="theme" theme="neutral" todayTheme="space" />);
     expect(srcs(container).map((p) => p.get('theme'))).toEqual(['space', 'neutral', 'neutral', 'neutral', 'neutral']);
