@@ -98,6 +98,44 @@ test("Form panel: the plain looks draw no panel, so they are unchanged", async (
   }
 });
 
+// The Button specimen binds the kit's pill hooks on every stock theme, as on main: Dark and Light
+// draw the ink-on-paper pill, Today the theme's key colour, all squircle-cornered pills. Only the
+// Honcho themes, which bind the hooks themselves, take their own values (covered below).
+test("Button specimen: a stock theme's Today, Dark and Light draw the kit's pills", async ({ page }) => {
+  for (const look of ["today", "dark", "light"]) {
+    await page.goto(`/looks/panel?theme=neutral&look=${look}&specimen=button`);
+    await expect(page.locator("body.neutral-theme")).toHaveCount(1);
+    await page.mouse.move(0, 0);
+    await page.addStyleTag({ content: "*,*::before,*::after{transition:none!important;animation:none!important}" });
+    const read = await page.evaluate(() => {
+      const pills = document.querySelector<HTMLElement>('[data-slot="button-specimen"]')!;
+      const ink = (value: string) => {
+        const i = pills.appendChild(document.createElement("i"));
+        i.style.backgroundColor = value;
+        const color = getComputedStyle(i).backgroundColor;
+        i.remove();
+        return color;
+      };
+      return {
+        buttons: [...pills.querySelectorAll("button")].map((b) => {
+          const cs = getComputedStyle(b);
+          return { radius: cs.borderTopLeftRadius, cornerShape: cs.getPropertyValue("corner-shape"), bg: cs.backgroundColor, height: cs.height, primary: /variantDefault/.test(b.className) };
+        }),
+        ink: ink("var(--text-primary)"),
+        key: ink("var(--interactive-primary-bg)"),
+      };
+    });
+    expect(read.buttons).toHaveLength(3);
+    for (const b of read.buttons) {
+      expect(b.radius, `${look} radius`).toBe("999px");
+      expect(b.cornerShape, `${look} corner-shape`).toBe("squircle");
+    }
+    const primary = read.buttons.find((b) => b.primary)!;
+    expect(primary.height, `${look} lg height`).toBe("54px");
+    expect(primary.bg, `${look} primary fill`).toBe(look === "today" ? read.key : read.ink);
+  }
+});
+
 // The grids the operator reviews: Honcho's five looks, and two components' In Five Looks grids.
 const GRIDS = [
   { path: "/themes/private", theme: "honcho-backstage", private: true },
