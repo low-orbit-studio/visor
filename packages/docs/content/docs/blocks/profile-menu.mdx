@@ -50,7 +50,7 @@ import { FiveLooks } from '@/components/looks/five-looks';
 
 Pass `trigger="avatar"` for a top bar's account menu. The trigger is the round avatar alone, ringed in the theme's key colour (`--primary`) on hover and while open. The menu opens below and aligned to the end, and its header shows the name and the email.
 
-The avatar menu draws on Popover's skin: it reads the [popover hooks](/docs/themes/component-tokens#popover) (corners, inset, fill, shadow and the rows' fill) and renders in place beside its trigger, so a glass switch around it reaches it. Glass is off by default: on a plain page the menu is solid with no blur. Inside `data-glass="on"` (see [Glass](/docs/themes/glass)) it takes the glass layer's fill, blur, shadow and ink. The rows sit softly in the panel with a gap between them, never as solid slabs.
+The avatar menu draws on Popover's skin: it reads the [popover hooks](/docs/themes/component-tokens#popover) (corners, inset, fill, shadow and the rows' fill) and renders in place beside its trigger, so a glass switch around it reaches it. Glass is off by default: on a plain page the menu is solid with no blur. Inside `data-glass="on"` (see [Glass](/docs/themes/glass)) it takes the glass layer's fill, blur, shadow and ink, and the avatar itself becomes a glass control (the control fill, blur and ink), so its initials never sit on the bare photo. The rows sit softly in the panel with a gap between them, never as solid slabs.
 
 <BlockPreview
   title="Profile Menu — avatar trigger"
