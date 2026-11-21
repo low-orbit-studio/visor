@@ -101,6 +101,8 @@ packages/docs/lib/private-themes.generated.ts
 # public repo). The committed Visor default brand under visor/brand/ is re-included.
 packages/docs/public/themes/*/brand/
 !packages/docs/public/themes/visor/brand/
+# Private theme look photos (VI-829) — copied the same way, never committed.
+packages/docs/public/themes/*/photos/
 
 # All custom theme CSS files are generated; stock themes are explicit re-includes
 packages/docs/app/*-theme.css
