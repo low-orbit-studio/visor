@@ -24,15 +24,25 @@
   --button-motion-duration: 0.5s;
   --button-motion-easing: var(--motion-easing-enter, cubic-bezier(0.22, 1, 0.36, 1));
   /* The outline squircle button (VI-824): its own padding, weight and 24% ink
-     ring, resting on the back-arrow button's wash. */
+     ring, on the back-arrow button's solid wash. Over a photo it sits on the
+     glass surface fill instead, never on a ring alone: the back arrow's thin
+     control wash left its label at 3.2:1 on real photos. */
   --button-outline-padding: 0 26px;
   --button-outline-font-weight: 520;
   --button-outline-ring-color: color-mix(in srgb, var(--text-primary) 24%, transparent);
-  --button-outline-bg: var(--glass-on-control-fill, var(--surface-subtle));
+  --button-outline-bg: var(--glass-on-fill, var(--surface-subtle));
+  /* The kit's buttons are squircles in every look, Today included. */
+  --corner-shape: squircle;
 
   display: flex;
   flex-wrap: wrap;
   gap: var(--spacing-3, 0.75rem);
   align-items: center;
   justify-content: center;
+}
+
+/* Over a photo the outline keeps the glass fill on hover too, so its label
+   never drops to a thin wash; the grow is the hover cue. */
+:global([data-glass="on"]) .pills {
+  --button-outline-bg-hover: var(--glass-on-fill);
 }
