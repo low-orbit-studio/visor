@@ -34,6 +34,8 @@ function demo(page: Page) {
 }
 
 const style = (el: Locator, prop: string) => el.evaluate((n, p) => getComputedStyle(n).getPropertyValue(p), prop);
+/** Alpha of a computed colour (`rgba(…, a)` or `color(… / a)`); 1 when opaque. */
+const alpha = (c: string) => Number((c.match(/(?:,|\/)\s*([\d.]+)\)$/) ?? [])[1] ?? 1);
 
 /** Open with Enter from the trigger, retrying until hydration has wired the trigger. */
 async function openWithEnter(page: Page) {
@@ -139,6 +141,11 @@ for (const width of [1440, 390]) {
           } else {
             expect(filters).toEqual(["none", "none"]);
           }
+          // Menu rows are a see-through tint, never a solid slab, and stacked rows never touch.
+          const rows = [panel.getByRole("button", { name: "Change Email" }), panel.getByRole("button", { name: "Sign Out" })];
+          for (const row of rows) expect(alpha(await style(row, "background-color"))).toBeLessThan(1);
+          const [a, b] = await Promise.all(rows.map((r) => r.boundingBox()));
+          expect(b!.y - (a!.y + a!.height)).toBeGreaterThanOrEqual(8);
         }).toPass({ timeout: 20_000 });
       }
 

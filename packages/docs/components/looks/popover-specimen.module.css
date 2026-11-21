@@ -18,13 +18,14 @@
   left: 0;
   right: 0;
   display: grid;
+  /* Stacked rows never touch. */
+  gap: var(--spacing-2, 0.5rem);
 }
 
 .who {
   display: grid;
   gap: var(--spacing-1, 0.25rem);
   padding: var(--spacing-2, 0.5rem) var(--spacing-3, 0.75rem) var(--spacing-3, 0.75rem);
-  margin-bottom: var(--spacing-1, 0.25rem);
   border-bottom: var(--stroke-width-thin, 1px) solid var(--border-default, #e5e7eb);
   font-size: var(--font-size-sm, 0.875rem);
 }

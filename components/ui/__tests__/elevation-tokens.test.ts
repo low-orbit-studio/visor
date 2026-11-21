@@ -91,11 +91,7 @@ describe('Elevation token coverage — VI-131', () => {
           // theme-bindable shadow can't quietly smuggle in an inline rgba. The chain
           // may pass through more hooks first (Popover: --popover-shadow, then glass).
           if (
-<<<<<<< HEAD
-            /^var\(--[a-z0-9_-]+,\s*(var\(--shadow-|none\s*\))/.test(value)
-=======
-            /^(var\(--[a-z0-9-]+,\s*)+(var\(--shadow-|none\s*\))/.test(value)
->>>>>>> c8d8d45b (VI-808 feat: popover skin hooks, glass and a stay-mounted fade that keeps focus)
+            /^(var\(--[a-z0-9_-]+,\s*)+(var\(--shadow-|none\s*\))/.test(value)
           ) {
             return false
           }

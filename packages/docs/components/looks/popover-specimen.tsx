@@ -33,7 +33,7 @@ export function PopoverStayMountedDemo({ defaultOpen = false }: { defaultOpen?: 
             </Button>
           </PopoverContent>
         </Popover>
-        <Button variant="outline">Help</Button>
+        <Button variant="glass">Help</Button>
       </div>
     </div>
   );

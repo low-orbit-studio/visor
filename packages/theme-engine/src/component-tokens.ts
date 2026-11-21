@@ -639,6 +639,8 @@ const popoverFamily: ComponentTokenFamily = {
     { key: "duration", property: "transition-duration", description: "Stay-mounted fade length.", consumers: each([POPOVER, POPOVER, POPOVER], "var(--motion-duration-normal, 200ms)") },
     { key: "easing", property: "transition-timing-function", description: "Stay-mounted fade curve.", consumers: each([POPOVER, POPOVER], "var(--motion-easing-enter, ease-out)") },
     { key: "rise", property: "translate", description: "How far the stay-mounted panel rises as it fades in. None under reduced motion.", consumers: at(POPOVER, "6px") },
+    { key: "item-bg", property: "background-color", description: "Menu row fill (a ghost Button in a stay-mounted panel). Unset, the glass layer's control fill over a photo and a faint ink tint elsewhere.", consumers: at(POPOVER, "var(--glass-on-control-fill, color-mix(in srgb, var(--text-primary, #111827) 5%, transparent))") },
+    { key: "item-bg-hover", property: "background-color", description: "Menu row fill on hover. Unset, the glass layer's control hover fill over a photo and a stronger ink tint elsewhere.", consumers: at(POPOVER, "var(--glass-on-control-hover-fill, color-mix(in srgb, var(--text-primary, #111827) 10%, transparent))") },
   ],
 };
 
