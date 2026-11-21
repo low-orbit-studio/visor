@@ -51,3 +51,11 @@
   --glass-on-control-fill: var(--glass-on-fill);
   --glass-on-control-hover-fill: var(--glass-on-fill);
 }
+
+/* Today is the theme as it ships, so the primary takes the theme's own key
+   colour (honcho's pink since BO-80), not the ink face the other looks draw. */
+:global([data-look="today"]) .pills {
+  --button-default-bg: initial;
+  --button-default-bg-hover: initial;
+  --button-default-text: initial;
+}
