@@ -10,6 +10,8 @@ const withMDX = createMDX();
 /** @type {import('next').NextConfig} */
 const config = {
   reactStrictMode: true,
+  // Dev only: lets the dev server hydrate when opened by IP or a *.localhost name (review links, Playwright).
+  allowedDevOrigins: ['127.0.0.1', '*.localhost'],
   transpilePackages: [],
   // Tell Next.js where the monorepo root is so it can resolve workspace packages
   outputFileTracingRoot: path.join(__dirname, '../../'),

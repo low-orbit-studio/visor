@@ -54,21 +54,29 @@ const PhotoBackdrop = React.forwardRef<HTMLDivElement, PhotoBackdropProps>(
   ({ backgrounds, current, upcoming = [], srcSet, sizes = "100vw", className, ...props }, ref) => {
     const shown = current && backgrounds[current] ? current : null
 
-    // At most two layers: the one fading in on top, the one it covers.
-    const [layers, setLayers] = React.useState<string[]>(shown ? [shown] : [])
-    const [ready, setReady] = React.useState<ReadonlySet<string>>(() => new Set())
-    const [last, setLast] = React.useState(shown)
-    if (shown !== last) {
-      setLast(shown)
-      const top = layers[layers.length - 1]
-      // Cover the top layer if it has loaded, else the one under it, so a quick run of changes never shows a blank.
-      const below = top && ready.has(top) ? top : layers[layers.length - 2]
-      setLayers(shown ? [...(below && below !== shown ? [below] : []), shown] : [])
-      if (shown) setReady((r) => new Set([...r].filter((k) => k !== shown)))
-    }
+    // At most two layers: the one fading in on top, the one it covers. One state, changed only
+    // by updaters: Next's React dropped a layer set during render when a cached photo's ref
+    // marked it ready in the same commit, so Next Photo did nothing (VI-811).
+    const [{ layers, ready }, setState] = React.useState<{ layers: string[]; ready: ReadonlySet<string> }>(() => ({
+      layers: shown ? [shown] : [],
+      ready: new Set(),
+    }))
+    React.useLayoutEffect(() => {
+      setState((s) => {
+        const top = s.layers[s.layers.length - 1]
+        if (top === (shown ?? undefined)) return s
+        if (!shown) return { ...s, layers: [] }
+        // Cover the top layer if it has loaded, else the one under it, so a quick run of changes never shows a blank.
+        const below = top && s.ready.has(top) ? top : s.layers[s.layers.length - 2]
+        return {
+          layers: [...(below && below !== shown ? [below] : []), shown],
+          ready: new Set([...s.ready].filter((k) => k !== shown)),
+        }
+      })
+    }, [shown])
 
     const markReady = React.useCallback((key: string) => {
-      setReady((r) => (r.has(key) ? r : new Set(r).add(key)))
+      setState((s) => (s.ready.has(key) ? s : { ...s, ready: new Set(s.ready).add(key) }))
     }, [])
 
     // The photo on screen loads first, alone and at high priority; only then does the queue start.
@@ -113,7 +121,7 @@ const PhotoBackdrop = React.forwardRef<HTMLDivElement, PhotoBackdropProps>(
               data-ready={isReady ? "" : undefined}
               className={styles.layer}
               onAnimationEnd={(e) => {
-                if (top && e.target === e.currentTarget) setLayers((l) => (l.length > 1 ? [key] : l))
+                if (top && e.target === e.currentTarget) setState((s) => (s.layers.length > 1 ? { ...s, layers: [key] } : s))
               }}
             >
               {bg.kind === "photo" ? (
