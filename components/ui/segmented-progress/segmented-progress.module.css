@@ -61,25 +61,65 @@
   position: relative;
 }
 
+/* Under the glass switch the labels sit on the photo, as the glass controls
+   do, so they take the glass layer's control ink (VI-809). Off the switch it
+   is unset, so --_glass-ink is too and the labels keep the theme's text inks. */
+.labelled {
+  --_glass-ink: var(--glass-on-control-ink);
+}
+
 .labelled.sizeMd {
   gap: var(--spacing-2, 0.5rem);
 }
 
+/* `weight` (VI-809) is the step's share of the width after the gaps. */
 .step {
   display: flex;
-  flex: 1;
+  flex: var(--segmented-progress-weight, 1) 1 0%;
   flex-direction: column;
   gap: var(--spacing-2, 0.5rem);
   min-width: 0;
 }
 
+/* A step with `onSelect` is a button (VI-809): the whole step, segment and
+   label, is the target, so it stays taller than 24px with no padding. */
+button.step {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-sm, 0.25rem);
+  background: none;
+  color: inherit;
+  text-align: start;
+  cursor: pointer;
+}
+
+button.step:focus-visible {
+  outline: var(--focus-ring-width, 2px) solid var(--border-focus, #111827);
+  outline-offset: var(--focus-ring-offset, 2px);
+}
+
+@media (hover: hover) {
+  button.step:hover .label {
+    color: var(--_glass-ink, var(--text-primary, #111827));
+  }
+
+  button.step:hover .fill.segmentDone::before {
+    background: var(--interactive-primary-bg-hover, var(--interactive-primary-bg, var(--primary, #111827)));
+  }
+}
+
 /* The track is muted; the fill is a layer clipped to the state's extent, so
-   it can draw in from the left. */
+   it can draw in from the left. Under data-glass="on" (VI-795) the track is
+   the glass layer's fill and blurs the photo behind it; elsewhere it is solid. */
 .segment.fill {
   flex: none;
   position: relative;
   overflow: hidden;
-  background: var(--surface-muted, #e5e7eb);
+  background: var(--glass-on-fill, var(--surface-muted, #e5e7eb));
+  /* Prefixed line first, so Lightning CSS keeps both (VI-788). */
+  -webkit-backdrop-filter: var(--glass-on-blur, none);
+  backdrop-filter: var(--glass-on-blur, none);
 }
 
 .fill::before {
@@ -99,7 +139,8 @@
 
 .fill.segmentCurrent::before {
   background: var(--button-strong-fill, var(--interactive-primary-bg, var(--primary, #111827)));
-  clip-path: inset(0 45% 0 0 round var(--radius-full, 9999px));
+  /* `fill` (VI-809) writes the inset; unset it is the 55% the bar always drew. */
+  clip-path: inset(0 var(--segmented-progress-fill-inset, 45%) 0 0 round var(--radius-full, 9999px));
 }
 
 .fill.segmentFailed::before {
@@ -116,7 +157,7 @@
   min-width: 0;
   font-size: var(--segmented-progress-sm-label-font-size, var(--font-size-xs, 0.75rem));
   line-height: var(--line-height-tight, 1.25);
-  color: var(--text-tertiary, #9ca3af);
+  color: var(--_glass-ink, var(--text-tertiary, #9ca3af));
 }
 
 .sizeMd .label {
@@ -137,13 +178,14 @@
   color: var(--interactive-primary-bg, var(--primary, #111827));
 }
 
+/* Over a photo every label takes the glass control ink above (VI-809); a failed one stays red. */
 .step[data-state="current"] .label {
-  color: var(--text-primary, #111827);
+  color: var(--_glass-ink, var(--text-primary, #111827));
   font-weight: var(--font-weight-bold, 700);
 }
 
 .step[data-state="done"] .label {
-  color: var(--text-secondary, #6b7280);
+  color: var(--_glass-ink, var(--text-secondary, #6b7280));
 }
 
 .step[data-state="failed"] .label,
@@ -166,6 +208,35 @@
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border-width: 0;
+}
+
+/* `revealLabels` (VI-809): a pending label is hidden, and fades, rises and
+   sharpens in when its step fills. A transition never runs on mount, so labels
+   already filled on first render simply show. */
+.labelled[data-reveal] .step[data-state="pending"] .label {
+  opacity: 0;
+  translate: 0 var(--spacing-1, 0.25rem);
+  /* Intentional: the kit's 6px blur, sharpening as the label arrives. */
+  filter: blur(6px);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .labelled[data-reveal] .label {
+    transition-property: opacity, translate, filter, color;
+    transition-duration: var(--motion-duration-enter, var(--motion-duration-800, 800ms));
+    transition-timing-function: var(--motion-easing-enter, var(--motion-easing-ease-out, cubic-bezier(0, 0, 0.2, 1)));
+  }
+}
+
+/* Under reduced motion a label switches at once: 0s outright. It sits in
+   visor-base beside visor-core's global 0.01ms pin, because an important
+   declaration in a layer beats an unlayered one; there this selector outranks `*`. */
+@layer visor-base {
+  @media (prefers-reduced-motion: reduce) {
+    .labelled[data-reveal] .label {
+      transition-duration: 0s !important;
+    }
+  }
 }
 
 /* Fill once on mount, each segment ~140ms after the one before it. */

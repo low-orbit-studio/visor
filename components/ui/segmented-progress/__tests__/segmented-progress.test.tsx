@@ -1,6 +1,7 @@
 import { render, screen } from "@testing-library/react"
 import { renderToString } from "react-dom/server"
-import { describe, it, expect } from "vitest"
+import userEvent from "@testing-library/user-event"
+import { describe, it, expect, vi } from "vitest"
 import { SegmentedProgress, type SegmentedProgressStep } from "../segmented-progress"
 import { checkA11y } from "../../../../test-utils/a11y"
 
@@ -273,5 +274,101 @@ describe("SegmentedProgress with steps (VI-713)", () => {
   it("has no WCAG 2.1 AA violations", async () => {
     const { container } = render(<SegmentedProgress steps={[...STEPS, { label: "Paid", state: "failed" }]} />)
     await checkA11y(container)
+  })
+})
+
+describe("SegmentedProgress sections (VI-809)", () => {
+  const steps = (container: HTMLElement) =>
+    Array.from(container.querySelectorAll<HTMLElement>('[data-slot="segmented-progress-step"]'))
+
+  it("writes each step's weight, and none when unset", () => {
+    const { container } = render(
+      <SegmentedProgress steps={[{ label: "A", weight: 2 }, { label: "B", weight: 1 }, { label: "C", weight: 3 }, { label: "D" }]} />
+    )
+    expect(steps(container).map((s) => s.style.getPropertyValue("--segmented-progress-weight"))).toEqual(["2", "1", "3", ""])
+  })
+
+  it("only a step with onSelect is a button, and a click calls it once", async () => {
+    const onSelect = vi.fn()
+    const { container } = render(
+      <SegmentedProgress
+        steps={[{ label: "About You", state: "done", onSelect }, { label: "Tickets", state: "current" }, { label: "Travel", state: "pending" }]}
+      />
+    )
+    const buttons = screen.getAllByRole("button")
+    expect(buttons).toHaveLength(1)
+    expect(buttons[0]).toHaveAccessibleName("Go to About You")
+    expect(buttons[0]).toHaveAttribute("type", "button")
+    expect(buttons[0]).not.toHaveAttribute("aria-hidden")
+    expect(steps(container).map((s) => s.tagName)).toEqual(["BUTTON", "DIV", "DIV"])
+    await userEvent.click(buttons[0])
+    expect(onSelect).toHaveBeenCalledTimes(1)
+  })
+
+  it("Tab visits only the button steps, and Enter and Space fire them", async () => {
+    const user = userEvent.setup()
+    const first = vi.fn()
+    const second = vi.fn()
+    render(
+      <SegmentedProgress
+        steps={[
+          { label: "A", state: "done", onSelect: first },
+          { label: "B", state: "done", onSelect: second },
+          { label: "C", state: "current" },
+          { label: "D", state: "pending" },
+        ]}
+      />
+    )
+    await user.tab()
+    expect(document.activeElement).toHaveAccessibleName("Go to A")
+    await user.keyboard("{Enter}")
+    expect(first).toHaveBeenCalledTimes(1)
+    await user.tab()
+    expect(document.activeElement).toHaveAccessibleName("Go to B")
+    await user.keyboard(" ")
+    expect(second).toHaveBeenCalledTimes(1)
+    await user.tab()
+    expect(document.activeElement).toBe(document.body)
+  })
+
+  it("keeps the summary and hides no focusable element, with buttons present", async () => {
+    const { container } = render(
+      <SegmentedProgress
+        steps={[{ label: "Your Info", state: "done", onSelect: () => {} }, { label: "Bank Details", state: "current" }, { label: "W-9", state: "pending" }]}
+      />
+    )
+    expect(container.querySelector('[data-slot="segmented-progress-summary"]')?.textContent).toBe(
+      "Step 2 of 3: Bank Details"
+    )
+    expect(container.querySelectorAll('[aria-hidden="true"] button, [aria-hidden="true"][tabindex], button[aria-hidden="true"]')).toHaveLength(0)
+    await checkA11y(container)
+  })
+
+  it("a step whose label is not a string is named by its words", () => {
+    render(<SegmentedProgress steps={[{ label: <em>Paid</em>, state: "done", onSelect: () => {} }]} />)
+    expect(screen.getByRole("button")).toHaveAccessibleName("Paid")
+  })
+
+  it("fill writes the current fill's inset, clamped to 0 to 1", () => {
+    const { container } = render(
+      <SegmentedProgress
+        steps={[{ label: "A", state: "current", fill: 0.25 }, { label: "B", fill: 2 }, { label: "C", fill: -1 }, { label: "D" }]}
+      />
+    )
+    expect(steps(container).map((s) => s.style.getPropertyValue("--segmented-progress-fill-inset"))).toEqual(["75%", "0%", "100%", ""])
+  })
+
+  it("revealLabels marks the root, and is off by default", () => {
+    const { container, rerender } = render(<SegmentedProgress steps={[{ label: "A" }]} />)
+    const root = () => container.querySelector('[data-slot="segmented-progress"]')!
+    expect(root()).not.toHaveAttribute("data-reveal")
+    rerender(<SegmentedProgress revealLabels steps={[{ label: "A" }]} />)
+    expect(root()).toHaveAttribute("data-reveal", "")
+  })
+
+  it("steps with none of the new fields render exactly the 1.39 markup", () => {
+    expect(renderToString(<SegmentedProgress steps={[{ label: "A", state: "done" }]} />)).not.toMatch(
+      /button|data-reveal|weight|fill-inset/
+    )
   })
 })
