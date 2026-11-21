@@ -32,6 +32,14 @@ describe('FiveLooks', () => {
     window.history.replaceState(null, '', '/');
   });
 
+  it('passes ?tile-photo= to every look (VI-812)', () => {
+    window.history.replaceState(null, '', '/?tile-photo=/face.webp');
+    const { container } = render(<FiveLooks specimen="photo-drop" />);
+    expect(srcs(container).map((p) => p.get('tile-photo'))).toEqual(Array(5).fill('/face.webp'));
+    window.history.replaceState(null, '', '/');
+    expect(LOOK_SPECIMENS['photo-drop']).toBeTypeOf('function');
+  });
+
   it('registers the theme specimen', () => {
     expect(LOOK_SPECIMENS.theme).toBeTypeOf('function');
   });

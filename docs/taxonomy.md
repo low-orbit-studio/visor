@@ -80,6 +80,7 @@ Interactive controls that accept user input.
 | otp-input | ✅ Documented | One-time password input |
 | password-input | ✅ Documented | Password input with visibility toggle |
 | phone-input | ✅ Documented | Phone number input with country code |
+| photo-drop | ✅ Documented | Squircle photo or file drop tile with an upload ring, Try Again, locked and read-only |
 | photo-picker | ✅ Documented | Photo thumbnail grid, one chosen, with a draw wave on open |
 | position-picker | ✅ Documented | 3x3 anchor grid, value is a { y, x } pair |
 | radio-group | ✅ Documented | Single-select from a group of options |

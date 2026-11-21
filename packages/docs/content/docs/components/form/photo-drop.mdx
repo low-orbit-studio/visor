@@ -1,0 +1,144 @@
+---
+title: Photo Drop
+description: A squircle drop tile for one photo or file, with marching ants, an upload ring, Try Again, locked and read-only.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import {
+  PhotoDropDefaultDemo,
+  PhotoDropUploadDemo,
+  PhotoDropStatesDemo,
+  PhotoDropFileDemo,
+  PhotoDropSizesDemo,
+} from '@/components/ui/photo-drop-demos';
+import { FiveLooks } from '@/components/looks/five-looks';
+import { PRIVATE_THEMES } from '@/lib/private-themes';
+
+export const HONCHO_BACKSTAGE = PRIVATE_THEMES.some((t) => t.slug === 'honcho-backstage');
+
+## Default
+
+An empty squircle with a dashed edge and a `+`. Hover it, tab to it or drag a file over it and the edge wakes into marching ants. The real file input covers the tile, so a click, a drop and the keyboard all open the browser's own picker. A picked photo fills the same shape, and a camera badge shows when the tile wakes.
+
+<ComponentPreview
+  title="Photo Drop"
+  code={"const [src, setSrc] = React.useState('');\n\n<label htmlFor=\"photo\">Your Photo</label>\n<PhotoDrop id=\"photo\" src={src} onPick={(url) => setSrc(url)} alt=\"Your photo\" />"}
+>
+  <PhotoDropDefaultDemo />
+</ComponentPreview>
+
+## Uploading and Failed
+
+`onPick` hands you a preview URL and the `File`, so you upload it yourself. Pass `progress` (0 to 1) while it goes: a ring in the key colour fills along the edge from the top, the photo dims, and the tile takes no new file. If the upload stops, set `failed`: the edge turns the error colour and Try Again calls `onRetry`. A tap still picks a different file. Pick a photo here to watch it upload; the first one fails.
+
+<ComponentPreview
+  title="Uploading and Failed"
+  code={"<PhotoDrop\n  id=\"photo\"\n  src={src}\n  onPick={(url, file) => { setSrc(url); upload(file); }}\n  progress={uploading ? progress : undefined}\n  failed={failed}\n  onRetry={retry}\n/>"}
+>
+  <PhotoDropUploadDemo />
+</ComponentPreview>
+
+## States
+
+Uploading with a known amount and with `progress="indeterminate"` (a sweeping arc), failed, locked and read-only. Locked shows a lock badge where the camera sits, "Locked" and your `lockedReason`. Read-only shows the photo only, with a quiet rim and no hint. Neither has an input, so nothing inside takes focus.
+
+<ComponentPreview
+  title="States"
+  code={"<PhotoDrop id=\"a\" src={src} alt=\"Your photo\" size={128} progress={0.4} />\n<PhotoDrop id=\"b\" src={src} alt=\"Your photo\" size={128} progress=\"indeterminate\" />\n<PhotoDrop id=\"c\" src={src} alt=\"Your photo\" size={128} failed onRetry={retry} />\n<PhotoDrop id=\"d\" src={src} alt=\"Your photo\" size={128} locked lockedReason=\"Check-in has started.\" />\n<PhotoDrop id=\"e\" src={src} alt=\"Your photo\" size={128} readOnly />"}
+>
+  <PhotoDropStatesDemo />
+</ComponentPreview>
+
+## File
+
+With `file`, the tile holds an icon instead of a photo, `src` is the file's name, and Remove calls `onClear`. It is 128px unless you set `size`.
+
+<ComponentPreview
+  title="File"
+  code={"<PhotoDrop\n  id=\"insurance\"\n  src={name}\n  file={{\n    icon: <FilePdf weight=\"light\" />,\n    accept: 'application/pdf',\n    onFile: (f) => setName(f.name),\n    onClear: () => setName(''),\n  }}\n/>"}
+>
+  <PhotoDropFileDemo />
+</ComponentPreview>
+
+## Sizes
+
+`size` sets the tile's side in px. The clip and the edge are drawn from the same squircle path at any size. The default is 220, or 128 in file mode.
+
+<ComponentPreview
+  title="Sizes"
+  code={"<PhotoDrop id=\"s\" src={src} size={96} readOnly />\n<PhotoDrop id=\"m\" src={src} size={128} readOnly />\n<PhotoDrop id=\"l\" src={src} size={220} readOnly />"}
+>
+  <PhotoDropSizesDemo />
+</ComponentPreview>
+
+## In Five Looks
+
+Empty, uploading, failed, locked and read-only in each look on the theme picked in the docs. The Photo looks turn glass on over a photo: the tiles sit on a glass form panel and take the glass layer's control fill, and the badges blur the photo. Elsewhere nothing blurs.
+
+<FiveLooks specimen="photo-drop" height={980} />
+
+{HONCHO_BACKSTAGE && (
+  <section data-slot="honcho-backstage-looks" aria-label="Honcho Backstage">
+    <h3>Honcho Backstage</h3>
+    <p>
+      The tile in the Honcho kit's ink and field fill, from the theme alone. Today is the <code>honcho</code> theme;
+      the other four looks are <code>honcho-backstage</code>. Over a photo the tiles sit on a glass form panel.
+    </p>
+    <FiveLooks specimen="photo-drop" theme="honcho-backstage" todayTheme="honcho" height={980} />
+  </section>
+)}
+
+## Installation
+
+```bash
+npx visor add photo-drop
+```
+
+This copies two files into your project:
+
+- `components/ui/photo-drop/photo-drop.tsx` — the component
+- `components/ui/photo-drop/photo-drop.module.css` — the styles
+
+## Usage
+
+```tsx
+import { PhotoDrop } from '@/components/ui/photo-drop/photo-drop';
+
+<label htmlFor="photo">Your Photo</label>
+<PhotoDrop id="photo" src={photo} onPick={(url, file) => { setPhoto(url); upload(file); }} />
+```
+
+## Theming
+
+| Variable | Default | Sets |
+|---|---|---|
+| `--photo-drop-ink` | `--text-primary` | The edge, the awake icon, the lead and the badge glyph |
+| `--photo-drop-bg` | `--glass-on-control-fill`, else `--input-bg`, else `--surface-interactive-default` | The tile's fill, and Remove and Try Again |
+| `--photo-drop-bg-hover` | `--glass-on-control-hover-fill`, else the fill 4% nearer the ink | The awake tile's fill |
+| `--photo-drop-ring` | `--interactive-primary-bg` | The upload ring |
+| `--photo-drop-error` | `--border-error` | The edge when invalid or failed |
+| `--photo-drop-badge-bg` | `--surface-page`, at 72% under glass | The camera and lock badges and the progress pill |
+| `--photo-drop-dim` | `brightness(0.7) saturate(0.8)` | The photo while uploading or failed |
+| `--photo-drop-duration` | `--motion-duration-500` | Fill, colour and badge transitions |
+| `--photo-drop-ease` | `--motion-easing-enter` | Every transition's curve |
+| `--photo-drop-hint-font-size` | `15px` | The hint beside the tile |
+| `--photo-drop-lead-font-size` | `--font-size-lg` | The hint's first line |
+
+The squircle exponent is 5, the kit's soft corner. The edge is `--stroke-width-regular` and dashes 7px on, 6px off.
+
+## API Reference
+
+### PhotoDropProps
+
+<PropsTable component="photo-drop" />
+
+## Accessibility
+
+- The file input covers the tile and takes the focus; label it with a `<label htmlFor={id}>` (4.1.2)
+- The input is described by the tile's own hint and any ids you pass in `describedBy`; `invalid` and `required` set `aria-invalid` and `aria-required` (3.3.1)
+- Focus wakes the edge and draws a ring around the tile and its hint at the focus-ring tokens, outside the clip (2.4.7)
+- Uploading is a `progressbar` named "Uploading" with its value, and the hint says how far it is in a status region (4.1.3)
+- A failed upload is announced in a status region, and Try Again is a native button after the input in the tab order
+- Locked, read-only and uploading render no input, so the tab order skips the tile. Give the photo an `alt` when it means something
+- With `prefers-reduced-motion: reduce`, the marching ants and the sweeping arc stop; focus still changes the edge and draws the ring (2.3.3)

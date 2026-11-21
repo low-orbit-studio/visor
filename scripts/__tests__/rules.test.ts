@@ -234,6 +234,11 @@ describe('focus-ring-tokens', () => {
     const results = await focusRingTokens.run();
     expect(results.length).toBeGreaterThan(0);
   });
+
+  it('skips an ancestor styled through :has(:focus-visible) (VI-812)', async () => {
+    const results = await focusRingTokens.run();
+    expect(results.filter((r) => !r.pass && r.file?.includes('photo-drop'))).toEqual([]);
+  });
 });
 
 describe('theme-structure', () => {

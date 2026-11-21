@@ -2012,6 +2012,25 @@ export const propsData: Record<string, PropDef[]> = {
     },
   ],
 
+  'photo-drop': [
+    { name: 'id', type: 'string', description: "The file input's id, for a <label htmlFor>. Required." },
+    { name: 'src', type: 'string', description: "The picked photo's URL (in file mode, the file's name), or empty. Required." },
+    { name: 'onPick', type: '(url: string, file: File) => void', description: 'Called with a preview object URL and the picked File, so you can upload it.' },
+    { name: 'size', type: 'number', default: '220 (128 in file mode)', description: 'Side of the tile, in px.' },
+    { name: 'file', type: '{ icon: ReactNode; accept?: string; onFile: (file: File) => void; onClear: () => void }', description: "File mode: the tile shows the icon, the file's name sits beside it, and Remove calls onClear." },
+    { name: 'progress', type: 'number | "indeterminate"', description: 'Uploading: 0 to 1, drawn as a ring along the edge in the key colour, or "indeterminate" for a sweeping arc. The tile takes no new file while it uploads.' },
+    { name: 'failed', type: 'boolean', description: 'The upload stopped: an error edge, "didn\'t upload" and Try Again. A tap still picks a new file.' },
+    { name: 'onRetry', type: '() => void', description: 'Called by Try Again.' },
+    { name: 'locked', type: 'boolean', description: 'Locked: the photo or file shows with a lock badge, "Locked" and no input.' },
+    { name: 'lockedReason', type: 'ReactNode', description: 'Why it is locked, shown under "Locked".' },
+    { name: 'readOnly', type: 'boolean', description: 'Read-only: the photo (or file name) only, with a quiet rim, no hint and no input.' },
+    { name: 'alt', type: 'string', default: '""', description: "The photo's alt text. Give one when the photo means something, as in read-only and locked." },
+    { name: 'invalid', type: 'boolean', description: 'Sets aria-invalid on the input and draws the edge in the error colour.' },
+    { name: 'required', type: 'boolean', description: 'Sets aria-required on the input.' },
+    { name: 'describedBy', type: 'string', description: "More ids for the input's aria-describedby (a field's hint or error), after the tile's own hint." },
+    { name: '...props', type: 'React.HTMLAttributes<HTMLDivElement>', description: 'Standard div attributes are forwarded to the row (tile and hint).' },
+  ],
+
   'photo-picker': [
     {
       name: 'photos',

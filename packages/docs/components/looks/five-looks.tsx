@@ -32,11 +32,13 @@ export interface FiveLooksProps {
  * only hold one light/dark mode per theme. Today follows the docs site's mode.
  * A `?photo=/path.jpg` on the page swaps the stand-in photo for a real one; `?photo-dark=` and
  * `?photo-light=` set one per tone (a night photo behind Dark + Photo, a day photo behind Light + Photo).
+ * `?tile-photo=` passes a photo to specimens that show one inside a component (PhotoDrop's tiles).
  */
 export function FiveLooks({ specimen, height = 340, theme: themeProp, todayTheme }: FiveLooksProps) {
   const theme = useActiveTheme(themeProp, PRIVATE_SLUGS);
   const [mode, setMode] = useState<LookMode>('light');
   const [photos, setPhotos] = useState<Record<LookMode, string>>({ dark: '', light: '' });
+  const [tilePhoto, setTilePhoto] = useState('');
 
   useEffect(() => {
     const read = () => setMode(readDocsMode());
@@ -46,6 +48,7 @@ export function FiveLooks({ specimen, height = 340, theme: themeProp, todayTheme
     const params = new URLSearchParams(window.location.search);
     const photo = params.get('photo') ?? '';
     setPhotos({ dark: params.get('photo-dark') ?? photo, light: params.get('photo-light') ?? photo });
+    setTilePhoto(params.get('tile-photo') ?? '');
     return () => observer.disconnect();
   }, []);
 
@@ -56,6 +59,7 @@ export function FiveLooks({ specimen, height = 340, theme: themeProp, todayTheme
         const query = new URLSearchParams({ theme: lookTheme, look: look.id, mode, specimen });
         const photo = look.mode ? photos[look.mode] : '';
         if (photo) query.set('photo', photo);
+        if (tilePhoto) query.set('tile-photo', tilePhoto);
         return (
           <figure key={look.id} className={styles.look} data-look={look.id}>
             <figcaption className={styles.label}>{look.label}</figcaption>
