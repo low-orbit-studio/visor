@@ -58,9 +58,12 @@ theme_hooks:
       Theme key: components.toggle-group.xs-track-radius.
   - name: --toggle-group-xs-item-radius
     description: >
-      Compact (xs) option and indicator corners; concentric is the track radius
-      minus its 2px inset. Falls back to var(--radius-sm, 0.25rem). Theme key:
-      components.toggle-group.xs-item-radius.
+      Compact (xs) option and indicator corners. Leave unset: every outline
+      size derives its item and indicator radius from the track (track radius
+      minus track padding minus the 1px border), so the corners stay
+      concentric (VI-837). Bound, it is an explicit override. The default
+      variant has no track and falls back to var(--radius-sm, 0.25rem). Theme
+      key: components.toggle-group.xs-item-radius.
   - name: --toggle-group-option-*
     description: >
       Option variant rows (VI-787): option-gap, option-inner-gap,

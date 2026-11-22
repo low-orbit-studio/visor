@@ -10,8 +10,13 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: var(--tabs-list-radius, var(--radius-full, 9999px));
-  padding: var(--tabs-list-padding, calc(var(--spacing-1, 0.25rem) * 0.75));
+  --_track-radius: var(--tabs-list-radius, var(--radius-full, 9999px));
+  --_track-padding: var(--tabs-list-padding, calc(var(--spacing-1, 0.25rem) * 0.75));
+  border-radius: var(--_track-radius);
+  padding: var(--_track-padding);
+  /* Concentric triggers (VI-837): the rail radius minus the vertical gap to the
+     trigger, its padding plus the 1px the trigger's calc(100% - 2px) height leaves. */
+  --_inner-radius: max(0px, calc(var(--_track-radius) - var(--_track-padding) - 1px));
   color: var(--tabs-list-color, var(--text-secondary, #6b7280));
   height: var(--tabs-list-height, 2.25rem);
   width: fit-content;
@@ -26,6 +31,8 @@
   gap: var(--spacing-2, 0.5rem);
   background-color: transparent;
   border-radius: 0;
+  /* No rail around the triggers: they keep a plain rounded focus ring. */
+  --_inner-radius: var(--radius-md, 0.375rem);
   /* The border is geometry; the rail rule is painted by border-image at
      --hairline-width, so --hairline-width: 0 removes it with no layout shift.
      A bound --tabs-line-border-bottom (a full border shorthand) is not valid
@@ -57,7 +64,7 @@
   align-items: center;
   justify-content: center;
   gap: calc(var(--spacing-1, 0.25rem) * 1.5);
-  border-radius: var(--tabs-trigger-radius, var(--radius-md, 0.375rem));
+  border-radius: var(--tabs-trigger-radius, var(--_inner-radius));
   border: 1px solid transparent;
   padding: var(--tabs-trigger-padding, var(--spacing-1, 0.25rem) var(--spacing-2, 0.5rem));
   font-size: var(--tabs-trigger-font-size, var(--font-size-sm, 0.875rem));
