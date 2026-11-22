@@ -108,6 +108,8 @@ let drawn: { n: number; max: number } | null = null
 const available: Record<Engine, boolean> = { chromium: false, webkit: false }
 let focus: { input: { n: number }; button: { n: number }; corner: { n: number } } | null = null
 let concentric: ReturnType<typeof scanConcentric> = []
+/** The edge layers in WebKit: Button's ::after ring, and the SegmentedControl track's (off, as its own edge is). */
+let rings: { button: string; buttonPaint: string; track: string } | null = null
 
 /** Pixels that change in a band outside the box when it takes focus. */
 async function ringOutside(page: PageLike, sel: string): Promise<{ band: Buffer; corner: Buffer }> {
@@ -116,7 +118,7 @@ async function ringOutside(page: PageLike, sel: string): Promise<{ band: Buffer;
     // A strip above the box, clear of it by a pixel.
     band: await page.screenshot({ clip: { x: r.x + r.width / 4, y: r.y - 5, width: r.width / 2, height: 4 } }),
     // The square beyond the top-left corner, where the clip would cut a ring.
-    corner: await page.screenshot({ clip: { x: r.x - 5, y: r.y - 5, width: 6, height: 6 } }),
+    corner: await page.screenshot({ clip: { x: r.x - 4, y: r.y - 4, width: 7, height: 7 } }),
   }
 }
 
@@ -134,6 +136,18 @@ async function collect(engine: Engine): Promise<void> {
   }
   if (engine === "webkit") {
     drawn = await unchanged("button", "default", SQUIRCLE)
+    const edgeLayer = async (component: string, fixture: string, sel: string, pseudo: string) => {
+      const page = await open(component, fixture, { theme: SQUIRCLE })
+      const read = JSON.parse((await page.evaluate(`JSON.stringify((function () {
+        var el = document.querySelector(${JSON.stringify(sel)}), s = getComputedStyle(el, ${JSON.stringify(pseudo)});
+        return { clip: s.clipPath, paint: s.outlineWidth, style: s.outlineStyle + "/" + getComputedStyle(el).outlineStyle };
+      })())`)) as string) as { clip: string; paint: string; style: string }
+      await page.close()
+      return read
+    }
+    const outline = await edgeLayer("button", "lg-outline", "#root button", "::after")
+    const track = await edgeLayer("segmented-control", "default", "#root [data-variant=outline]", "::before")
+    rings = { button: outline.clip, buttonPaint: outline.paint, track: track.style }
     // Focus rings: the input's halo and the button's outline sit outside the box, which the clip keeps.
     const shots = async (component: string, fixture: string, sel: string) => {
       const page = await open(component, fixture, { theme: SQUIRCLE, scale: 2 })
@@ -179,8 +193,9 @@ describe("VI-839 squircle fallback: theme engine", () => {
   it("gates on the missing property and on the theme's corner, and clips with shape()", () => {
     expect(SQUIRCLE_FALLBACK).toContain("@supports not (corner-shape: squircle)")
     expect(SQUIRCLE_FALLBACK).toContain("@container style(--corner-shape: squircle)")
-    expect(SQUIRCLE_FALLBACK).toMatch(/--squircle-clip: shape\(evenodd from /)
+    expect(SQUIRCLE_FALLBACK).toMatch(/--squircle-clip: shape\(nonzero from /)
     expect(SQUIRCLE_FALLBACK).toContain("--squircle-radius: calc(var(--squircle-r) * 0.54);")
+    expect(SQUIRCLE_FALLBACK).toMatch(/--squircle-ring: shape\(evenodd from /)
   })
 })
 
@@ -201,7 +216,7 @@ describe("VI-839 squircle fallback: Chromium and WebKit", () => {
       squircle.forEach((b, i) => {
         const native = results.chromium[key].squircle[i]
         const expected = Math.min(native.radius, native.h / 2, native.w / 2)
-        expect(b.clip, `${key} ${b.sel}`).toMatch(/^shape\(evenodd /)
+        expect(b.clip, `${key} ${b.sel}`).toMatch(/^shape\(from /)
         expect(b.squircle, `${key} ${b.sel}: --squircle-r vs Chromium's drawn radius`).toBeGreaterThan(0)
         expect(Math.abs(b.squircle - expected), `${key} ${b.sel}: --squircle-r ${b.squircle} vs ${expected}`).toBeLessThanOrEqual(1)
         expect(b.radius, `${key} ${b.sel}: the circle under the clip`).toBeCloseTo(b.squircle * 0.54, 1)
@@ -226,6 +241,14 @@ describe("VI-839 squircle fallback: Chromium and WebKit", () => {
         expect(b.radius, `${key} ${b.sel}`).toBe(results.chromium[key].round[i].radius)
       })
     }
+  })
+
+  it("WebKit draws edges as squircle rings, and only where the element draws its own edge", (ctx) => {
+    if (!available.webkit || !rings) return ctx.skip()
+    expect(rings.button).toMatch(/^shape\(evenodd /)
+    expect(parseFloat(rings.buttonPaint)).toBeGreaterThan(1)
+    // Radix puts outline: none on the track; the ring follows the track's own outline style.
+    expect(rings.track).toBe("none/none")
   })
 
   it("WebKit keeps focus rings: ring pixels appear outside the clipped box", (ctx) => {

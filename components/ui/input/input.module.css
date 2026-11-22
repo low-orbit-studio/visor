@@ -407,6 +407,7 @@
     /* Two classes, so the editorial size rules cannot win the radius back. */
     .base:not(.bare),
     .affixWrapper.affixWrapper {
+      --squircle-edge: var(--control-edge-width, 1px);
       border-radius: var(--squircle-radius, var(--squircle-r));
       clip-path: var(--squircle-clip, none);
     }

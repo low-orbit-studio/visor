@@ -14,14 +14,15 @@ A squircle of radius R bulges past a circle of radius R at every corner. A clip 
 | Same, plus a `::before` / `::after` layer for ring and border | Exact | Needs the border colour on the pseudo for every state | Needs the ring colour per state | Survives | Per-state duplication; `<input>` has no pseudo-elements; Button's `::after` already draws its edge (VI-655) | Rejected |
 | SVG `mask` (or `-webkit-mask-box-image` nine-slice) | Exact, and `mask-size: auto 50%` clamps pills for free | Same as the clip | Masked away | Masked away | One rule | Rejected: the mask covers the whole painted element |
 | JS polyfill (per-element `clip-path: path()` from a ResizeObserver) | Exact | Same as the clip | Clipped | Clipped | Script on every page, a pass over every rounded element | Rejected; no maintained one found that keeps rings and shadows |
-| **Circle at 0.54 R, clip only the sliver** | Exact | Kept, follows the circle | Kept, outside the box | Kept | One `--squircle-r` per component | **Chosen** |
+| **Circle at 0.54 R, clip only the sliver, edges on a squircle ring layer** | Exact | Exact where a pseudo-element can carry it; the circle on `<input>` | Kept, follows the circle | Kept, follows the circle | One `--squircle-r` per component, a ring layer per edged component | **Chosen** |
 
 ## How the Chosen One Works
 
 1. The element draws `border-radius: 0.54 × R`. That is the largest circle that still holds the whole squircle of radius R (measured: at 0.54 the circle contains the squircle; at 0.56 it already falls 0.7% of R inside it). It differs from the squircle by at most 1.6% of R, under half a pixel on Honcho's 54px pill.
-2. `clip-path: shape(evenodd …)` removes only the sliver between that circle and the squircle. The clip is a huge rectangle with two holes nested inside it (the circle, then the squircle), so everything outside the box survives: focus rings, outer shadows, halos.
-3. The squircle is one cubic per corner with handles at 0.082 R, within 0.5% of R of `superellipse(2)` (best fit over handle positions 0.04 to 0.12).
-4. R must be clamped to half the height, as the browser clamps a radius. `shape()` cannot do that across axes (x percentages read the width), so each component sets `--squircle-r` from its own radius and height tokens.
+2. `clip-path: shape()` removes only what that circle draws outside the squircle, plus a quarter pixel so the circle's antialiased rim never shows as a seam. The clip is a huge rectangle with the circle cut out and the squircle put back (non-zero winding), so everything outside the box survives: focus rings, outer shadows, halos.
+3. Edges are redrawn on a pseudo-element clipped to `--squircle-ring` (the squircle minus the squircle inset by the edge): Button's and Chip's `::after` edge as a square outline thick enough to cover the ring's corners, SegmentedControl's track edge and pill ring, ToggleGroup's track border. The element hides its own edge (`--squircle-edge-off`). A first pass left the edge on the circle; at R = 24 it thinned by up to 40% along the curve and read as a double edge at 4x, so it was replaced.
+4. The squircle is one cubic per corner with handles at 0.082 R, within 0.5% of R of `superellipse(2)` (best fit over handle positions 0.04 to 0.12).
+5. R must be clamped to half the height, as the browser clamps a radius. `shape()` cannot do that across axes (x percentages read the width), so each component sets `--squircle-r` from its own radius and height tokens.
 
 The shared part lives in the theme engine (`SQUIRCLE_FALLBACK` in `packages/theme-engine/src/generate-css.ts`) and ships in a squircle theme's `visor-base` layer. It is gated twice: `@supports not (corner-shape: squircle)`, so Chromium keeps the native corner and the fallback switches itself off when Safari ships it, and `@container style(--corner-shape: squircle)`, so round themes and round subtrees are untouched.
 
@@ -52,7 +53,8 @@ The proof that runs in CI is `components/ui/__tests__/squircle-fallback.test.ts`
 
 ## Limits
 
-- Borders, focus rings and shadows follow the 0.54 R circle, so a 1px border thins by up to 1.6% of R along the curve, and a shadow starts up to that far from the squircle edge.
+- Focus rings and shadows follow the 0.54 R circle, so a shadow starts up to 1.6% of R (plus a quarter pixel) outside the squircle edge. On a shadow that hugs the box (Input's focus halo, a spread ring, Paper's faint `--shadow-sm` on Card) that shows as a hairline of page at the corner, visible at 4x. Safari cannot shape a box-shadow to a clip; removing it needs the fill moved to a pseudo-element under an ancestor `filter: drop-shadow()`, which loses `box-shadow` spread.
+- Input's edge stays on the circle: an `<input>` has no pseudo-element to carry a ring.
 - `--squircle-r` must be clamped by the component; a box with no known height needs a height token.
 - `--corner-shape: round` on the element itself is not seen (the style query reads the parent); on an ancestor it works.
 - Only the components listed in the theming docs opt in. A consumer's own rounded box stays round in Safari until it adds the three lines.

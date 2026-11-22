@@ -279,6 +279,7 @@
 @supports not (corner-shape: squircle) {
   @container style(--corner-shape: squircle) {
     .base {
+      --squircle-edge: 1px;
       --squircle-r: min(var(--badge-radius, var(--radius-full, 9999px)), calc(var(--label-box-height) / 2));
       border-radius: var(--squircle-radius, var(--squircle-r));
       clip-path: var(--squircle-clip, none);

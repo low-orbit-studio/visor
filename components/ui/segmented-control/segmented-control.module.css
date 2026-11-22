@@ -201,6 +201,15 @@
     .root[data-variant="outline"][data-size="md"] { --_sq-track-h: calc(var(--segmented-control-item-height, 2.25rem) + 2 * var(--_track-padding) + 2px); }
     .root[data-variant="outline"][data-size="lg"] { --_sq-track-h: calc(var(--segmented-control-item-height, 2.75rem) + 2 * var(--_track-padding) + 2px); }
 
+    /* The track's edge is the inset outline; the pill's an inset ring. */
+    .root[data-variant="outline"] {
+      --squircle-edge: var(--control-edge-width, 1px);
+    }
+
+    .root[data-variant="outline"][data-size] > [aria-hidden="true"] {
+      --squircle-edge: var(--control-state-edge-width, 1px);
+    }
+
     .root[data-variant="outline"] > [aria-hidden="true"] {
       --squircle-r: min(var(--segmented-control-indicator-radius, var(--_inner-radius)), calc(var(--_sq-track-h) / 2 - var(--_track-padding) - 1px));
     }
@@ -221,6 +230,39 @@
     .root[data-variant="outline"][data-size] [data-slot="toggle-group-item"] {
       border-radius: var(--squircle-radius, var(--squircle-r));
       clip-path: var(--squircle-clip, none);
+    }
+
+    /* The track's edge and the pill's ring are redrawn on ::before as squircle
+       rings; the element's own edge goes transparent. */
+    .root[data-variant="outline"] {
+      outline-color: var(--squircle-edge-off, var(--control-edge-color, var(--border-default, #e5e7eb)));
+    }
+
+    /* An outline in the track's own outline style, not a fill, so anything that
+       turns the track's edge off (an edge style of none, Radix's inline
+       outline: none on the focus group) turns the ring off too. */
+    .root[data-variant="outline"]::before {
+      background-color: transparent;
+      border-radius: var(--squircle-ring-radius, var(--squircle-r));
+      outline-width: var(--squircle-ring-paint, var(--control-edge-width, 1px));
+      outline-style: inherit;
+      outline-color: var(--control-edge-color, var(--border-default, #e5e7eb));
+      outline-offset: calc(-1 * var(--squircle-ring-paint, var(--control-edge-width, 1px)));
+    }
+
+    .root[data-variant="outline"][data-size] > [aria-hidden="true"] {
+      box-shadow: inset 0 0 0 var(--control-state-edge-width, 1px) var(--squircle-edge-off, var(--segmented-control-indicator-edge, var(--text-primary, #111827)));
+    }
+
+    .root[data-variant="outline"][data-size] > [aria-hidden="true"]::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      --squircle-r: inherit;
+      --squircle-edge: inherit;
+      background-color: var(--segmented-control-indicator-edge, var(--text-primary, #111827));
+      clip-path: var(--squircle-ring, inset(50%));
+      pointer-events: none;
     }
   }
 }

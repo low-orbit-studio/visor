@@ -147,43 +147,77 @@ export const CORNER_SHAPE_BINDING =
  * VI-839: the squircle for browsers without `corner-shape` (Safari, every iOS
  * browser). A component opts in by setting `--squircle-r` (its radius, clamped
  * to half its height) and drawing `border-radius: var(--squircle-radius)` with
- * `clip-path: var(--squircle-clip)`. The radius is a circle at 0.54 of the
- * squircle's, the largest that still holds the whole squircle, so borders,
- * focus rings and shadows keep a near-squircle curve and are never clipped.
- * The clip removes only the sliver between that circle and the squircle (one
- * cubic per corner, handles at 0.082 of the radius, within 0.5% of
- * superellipse(2)) and keeps everything outside the box. Gated on the missing
- * property, so Chromium keeps native `corner-shape` and the fallback switches
- * off once Safari ships it, and on `--corner-shape`, so a subtree set back to
- * round stays round.
+ * `clip-path: var(--squircle-clip)`:
+ *
+ * - The radius is a circle at 0.54 of the squircle's, the largest that still
+ *   holds the whole squircle, so focus rings and shadows keep a near-squircle
+ *   curve and are never clipped.
+ * - The clip removes only what that circle draws outside the squircle, plus
+ *   a quarter pixel, so the circle's antialiased rim never shows as a seam. The
+ *   squircle is one cubic per corner, handles at 0.082 of the radius, within
+ *   0.5% of superellipse(2). Everything outside the box is kept.
+ * - An edge (`--squircle-edge` wide) is drawn on a layer clipped to
+ *   `--squircle-ring`, the band between the squircle and the same squircle
+ *   inset by the edge, so it follows the squircle exactly. The layer paints a
+ *   square (`--squircle-ring-radius`), either a fill or an inset outline
+ *   `--squircle-ring-paint` wide, enough to cover the ring's corners, and the
+ *   element hides its own edge with `--squircle-edge-off`. Without the theme
+ *   each falls back to the element's own edge.
+ *
+ * Gated on the missing property, so Chromium keeps native `corner-shape` and
+ * the fallback switches off once Safari ships it, and on `--corner-shape`, so
+ * a subtree set back to round stays round.
  */
 export const SQUIRCLE_FALLBACK = [
   '@property --squircle-r {\n  syntax: "<length>";\n  inherits: false;\n  initial-value: 0px;\n}',
   "",
+  '@property --squircle-edge {\n  syntax: "<length>";\n  inherits: false;\n  initial-value: 0px;\n}',
+  "",
   "@supports not (corner-shape: squircle) {",
   "  @container style(--corner-shape: squircle) {",
-  "    * {",
+  "    *, *::before, *::after {",
   "      --squircle-radius: calc(var(--squircle-r) * 0.54);",
   `      --squircle-clip: ${squircleClip("var(--squircle-r)", "var(--squircle-radius)")};`,
+  "      --squircle-ring-paint: calc(var(--squircle-edge) + var(--squircle-r) * 0.2);",
+  "      --squircle-ring-radius: 0px;",
+  "      --squircle-edge-off: transparent;",
+  `      --squircle-ring: shape(evenodd ${squirclePath("var(--squircle-r)", "0px").replace(/^move to /, "from ")}, ${squirclePath("calc(var(--squircle-r) - var(--squircle-edge))", "var(--squircle-edge)")});`,
   "    }",
   "  }",
   "}",
 ].join("\n");
 
-/** Everything except the sliver between the circle of radius `c` and the squircle of radius `r`. */
-function squircleClip(r: string, c: string): string {
+/** A closed squircle of radius `r`, inset `i` from the box on every side. */
+function squirclePath(r: string, i: string): string {
   const h = `${r} * 0.082`;
+  const lo = (v: string) => `calc(${i} + ${v})`;
+  const hi = (v: string) => `calc(100% - ${i} - ${v})`;
+  const top = i, left = i, right = `calc(100% - ${i})`, bottom = `calc(100% - ${i})`;
   return [
-    "shape(evenodd from -100vmax -100vmax",
+    `move to ${lo(r)} ${top}, hline to ${hi(r)}, curve to ${right} ${lo(r)} with ${hi(h)} ${top} / ${right} ${lo(h)}`,
+    `vline to ${hi(r)}, curve to ${hi(r)} ${bottom} with ${right} ${hi(h)} / ${hi(h)} ${bottom}`,
+    `hline to ${lo(r)}, curve to ${left} ${hi(r)} with ${lo(h)} ${bottom} / ${left} ${hi(h)}`,
+    `vline to ${lo(r)}, curve to ${lo(r)} ${top} with ${left} ${lo(h)} / ${lo(h)} ${top}, close`,
+  ].join(", ");
+}
+
+/**
+ * Everything except what the circle of radius `c` draws outside the squircle
+ * of radius `r`. Non-zero winding: the page and the squircle run clockwise and
+ * the circle, grown a quarter pixel, counter-clockwise.
+ */
+function squircleClip(r: string, c: string): string {
+  const g = "0.25px";
+  const C = `calc(${c} + ${g})`;
+  const o = `calc(-1 * ${g})`, O = `calc(100% + ${g})`;
+  return [
+    "shape(nonzero from -100vmax -100vmax",
     "hline to calc(100% + 100vmax), vline to calc(100% + 100vmax), hline to -100vmax, close",
-    `move to ${c} 0, hline to calc(100% - ${c}), arc to 100% ${c} of ${c} cw`,
-    `vline to calc(100% - ${c}), arc to calc(100% - ${c}) 100% of ${c} cw`,
-    `hline to ${c}, arc to 0 calc(100% - ${c}) of ${c} cw`,
-    `vline to ${c}, arc to ${c} 0 of ${c} cw, close`,
-    `move to ${r} 0, hline to calc(100% - ${r}), curve to 100% ${r} with calc(100% - ${h}) 0 / 100% calc(${h})`,
-    `vline to calc(100% - ${r}), curve to calc(100% - ${r}) 100% with 100% calc(100% - ${h}) / calc(100% - ${h}) 100%`,
-    `hline to ${r}, curve to 0 calc(100% - ${r}) with calc(${h}) 100% / 0 calc(100% - ${h})`,
-    `vline to ${r}, curve to ${r} 0 with 0 calc(${h}) / calc(${h}) 0, close)`,
+    `move to ${c} ${o}, arc to ${o} ${c} of ${C} ccw`,
+    `vline to calc(100% - ${c}), arc to ${c} ${O} of ${C} ccw`,
+    `hline to calc(100% - ${c}), arc to ${O} calc(100% - ${c}) of ${C} ccw`,
+    `vline to ${c}, arc to calc(100% - ${c}) ${o} of ${C} ccw, close`,
+    `${squirclePath(r, "0px")})`,
   ].join(", ");
 }
 
