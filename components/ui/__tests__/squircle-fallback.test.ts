@@ -100,6 +100,8 @@ function strip(css: string): string {
 async function unchanged(component: string, fixture: string, t: Theme): Promise<{ n: number; max: number }> {
   const shot = async (componentCss: string, themeCss: string) => {
     const page = await open(component, fixture, { theme: { ...t, css: themeCss }, componentCss })
+    // SegmentedControl places its pill after mount; shoot once it is placed in both loads.
+    await page.evaluate(`new Promise(function (r) { requestAnimationFrame(function () { requestAnimationFrame(r); }); })`)
     const png = await page.screenshot({})
     await page.close()
     return png
