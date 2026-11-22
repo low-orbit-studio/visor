@@ -57,3 +57,17 @@
   padding-left: var(--spacing-6, 1.5rem);
   padding-right: var(--spacing-6, 1.5rem);
 }
+
+/* Squircle fallback (VI-839). Where the browser has no corner-shape (Safari)
+   and the theme draws squircles, the card draws the theme's squircle from
+   --squircle-radius and --squircle-clip. A card is always taller than twice its
+   radius, so the radius needs no clamp. Chromium and round themes skip this. */
+@supports not (corner-shape: squircle) {
+  @container style(--corner-shape: squircle) {
+    .card {
+      --squircle-r: var(--radius-xl, 1rem);
+      border-radius: var(--squircle-radius, var(--squircle-r));
+      clip-path: var(--squircle-clip, none);
+    }
+  }
+}

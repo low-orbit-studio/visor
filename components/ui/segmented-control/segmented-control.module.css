@@ -188,3 +188,39 @@
 .reserveInactive {
   font-weight: var(--font-weight-medium, 500);
 }
+
+/* Squircle fallback (VI-839). ToggleGroup draws the track, pill and segments
+   as the theme's squircle where the browser has no corner-shape (Safari); this
+   feeds it the segment height and the indicator and item radius overrides, so
+   each --squircle-r stays its radius clamped to half its height. Chromium and
+   round themes skip this. */
+@supports not (corner-shape: squircle) {
+  @container style(--corner-shape: squircle) {
+    .root[data-variant="outline"][data-size="xs"] { --_sq-track-h: calc(var(--segmented-control-item-height, 1.5rem) + 2 * var(--_track-padding) + 2px); }
+    .root[data-variant="outline"][data-size="sm"] { --_sq-track-h: calc(var(--segmented-control-item-height, 1.75rem) + 2 * var(--_track-padding) + 2px); }
+    .root[data-variant="outline"][data-size="md"] { --_sq-track-h: calc(var(--segmented-control-item-height, 2.25rem) + 2 * var(--_track-padding) + 2px); }
+    .root[data-variant="outline"][data-size="lg"] { --_sq-track-h: calc(var(--segmented-control-item-height, 2.75rem) + 2 * var(--_track-padding) + 2px); }
+
+    .root[data-variant="outline"] > [aria-hidden="true"] {
+      --squircle-r: min(var(--segmented-control-indicator-radius, var(--_inner-radius)), calc(var(--_sq-track-h) / 2 - var(--_track-padding) - 1px));
+    }
+
+    .root[data-variant="outline"][data-size="xs"] > [aria-hidden="true"] {
+      --squircle-r: min(var(--segmented-control-indicator-radius, var(--toggle-group-xs-item-radius, var(--_inner-radius))), calc(var(--_sq-track-h) / 2 - var(--_track-padding) - 1px));
+    }
+
+    .root[data-variant="outline"] [data-slot="toggle-group-item"] {
+      --squircle-r: min(var(--segmented-control-item-radius, var(--_inner-radius)), calc(var(--label-box-height) / 2));
+    }
+
+    .root[data-variant="outline"][data-size="xs"] [data-slot="toggle-group-item"] {
+      --squircle-r: min(var(--segmented-control-item-radius, var(--toggle-group-xs-item-radius, var(--_inner-radius))), calc(var(--label-box-height) / 2));
+    }
+
+    .root[data-variant="outline"][data-size] > [aria-hidden="true"],
+    .root[data-variant="outline"][data-size] [data-slot="toggle-group-item"] {
+      border-radius: var(--squircle-radius, var(--squircle-r));
+      clip-path: var(--squircle-clip, none);
+    }
+  }
+}

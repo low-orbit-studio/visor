@@ -169,3 +169,27 @@
 .root[data-over] .label strong {
   font-weight: 800;
 }
+
+/* Squircle fallback (VI-839). Where the browser has no corner-shape (Safari)
+   and the theme draws squircles, the track, its zones and the fill draw the
+   theme's squircle from --squircle-radius and --squircle-clip, each from its
+   radius clamped to half its height. Chromium and round themes skip this. */
+@supports not (corner-shape: squircle) {
+  @container style(--corner-shape: squircle) {
+    .track,
+    .zone {
+      --squircle-r: min(var(--_track-radius), calc(var(--_track-h) / 2));
+    }
+
+    .fill {
+      --squircle-r: min(max(0px, calc(var(--_track-radius) - var(--_inset-y))), calc(var(--_track-h) / 2 - var(--_inset-y)));
+    }
+
+    .track,
+    .zone,
+    .fill {
+      border-radius: var(--squircle-radius, var(--squircle-r));
+      clip-path: var(--squircle-clip, none);
+    }
+  }
+}

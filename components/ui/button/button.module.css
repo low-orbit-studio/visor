@@ -522,3 +522,41 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+/* Squircle fallback (VI-839). Where the browser has no corner-shape (Safari)
+   and the theme draws squircles, the button draws the theme's squircle from
+   --squircle-radius and --squircle-clip. Each size sets --squircle-r, its
+   radius clamped to half its height. Chromium and round themes skip this. */
+@supports not (corner-shape: squircle) {
+  @container style(--corner-shape: squircle) {
+    .sizeSm {
+      --squircle-r: min(var(--button-sm-radius, var(--button-radius, var(--radius-md, 0.375rem))), calc(var(--label-box-height) / 2));
+    }
+
+    .sizeMd {
+      --squircle-r: min(var(--button-md-radius, var(--button-radius, var(--radius-md, 0.375rem))), calc(var(--button-md-height, var(--label-box-height)) / 2));
+    }
+
+    :global([data-density="editorial"]) .sizeMd {
+      --squircle-r: min(var(--button-md-radius, var(--button-radius, var(--radius-md, 0.375rem))), calc(var(--label-box-height) / 2));
+    }
+
+    .sizeLg {
+      --squircle-r: min(var(--button-lg-radius, var(--button-radius, var(--radius-md, 0.375rem))), calc(var(--button-lg-height, var(--label-box-height)) / 2));
+    }
+
+    /* Height is the text plus the default padding and border. */
+    .sizeDlg {
+      --squircle-r: min(var(--button-dlg-radius, var(--button-radius, var(--radius-lg, 0.5rem))), calc((1lh + 2 * var(--spacing-2, 0.5rem) + 2px) / 2));
+    }
+
+    .sizeIcon {
+      --squircle-r: min(var(--button-icon-radius, var(--button-radius, var(--radius-md, 0.375rem))), calc((var(--button-icon-size, 1rem) + 2 * var(--button-icon-pad, var(--spacing-2, 0.5rem))) / 2));
+    }
+
+    .base {
+      border-radius: var(--squircle-radius, var(--squircle-r));
+      clip-path: var(--squircle-clip, none);
+    }
+  }
+}

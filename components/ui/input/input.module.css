@@ -373,3 +373,42 @@
   margin-right: calc(var(--affix-inset) + 1px);
 }
 
+
+/* Squircle fallback (VI-839). Where the browser has no corner-shape (Safari)
+   and the theme draws squircles, the field draws the theme's squircle from
+   --squircle-radius and --squircle-clip. Each size sets --squircle-r, its
+   radius clamped to half its height (text plus default padding and border
+   where the height is auto). Chromium and round themes skip this. */
+@supports not (corner-shape: squircle) {
+  @container style(--corner-shape: squircle) {
+    .sizeSm,
+    .affixSm {
+      --squircle-r: min(var(--radius-sm, 0.25rem), 1.125rem);
+    }
+
+    :global([data-density="editorial"]) .sizeSm,
+    :global([data-density="editorial"]) .affixSm {
+      --squircle-r: min(var(--radius-md), 16.75px);
+    }
+
+    .sizeMd {
+      --squircle-r: min(var(--input-md-radius, var(--input-radius-md, var(--radius-sm, 0.5rem))), calc(var(--input-md-height, var(--input-height-md, calc(1lh + 2 * var(--spacing-3_5, 0.875rem) + 2px))) / 2));
+    }
+
+    .affixWrapper {
+      --squircle-r: min(var(--input-radius-md, var(--radius-sm, 0.5rem)), calc(var(--input-md-height, var(--input-height-md, calc(1lh + 2 * var(--spacing-3_5, 0.875rem) + 2px))) / 2));
+    }
+
+    .sizeLg,
+    .affixLg {
+      --squircle-r: min(var(--input-radius-lg, var(--radius-sm, 0.5rem)), calc(var(--input-height-lg, calc(1lh + 2 * var(--spacing-4_5, 1.125rem) + 2px)) / 2));
+    }
+
+    /* Two classes, so the editorial size rules cannot win the radius back. */
+    .base:not(.bare),
+    .affixWrapper.affixWrapper {
+      border-radius: var(--squircle-radius, var(--squircle-r));
+      clip-path: var(--squircle-clip, none);
+    }
+  }
+}

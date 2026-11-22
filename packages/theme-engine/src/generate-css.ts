@@ -137,11 +137,55 @@ export function generateCornerShapeDecls(config: ResolvedThemeConfig): string[] 
  * VI-796: binds `corner-shape` to every element so each `border-radius` draws
  * the theme's corner. Elements outside the theme scope (or under an ancestor
  * that sets `--corner-shape: round`) resolve round, and browsers without
- * `corner-shape` drop the declaration and draw round. Adapters emit it in the
- * lowest layer (`visor-base`), so any component or consumer rule wins.
+ * `corner-shape` drop the declaration (see `SQUIRCLE_FALLBACK`). Adapters emit
+ * it in the lowest layer (`visor-base`), so any component or consumer rule wins.
  */
 export const CORNER_SHAPE_BINDING =
   "*, *::before, *::after {\n  corner-shape: var(--corner-shape);\n}";
+
+/**
+ * VI-839: the squircle for browsers without `corner-shape` (Safari, every iOS
+ * browser). A component opts in by setting `--squircle-r` (its radius, clamped
+ * to half its height) and drawing `border-radius: var(--squircle-radius)` with
+ * `clip-path: var(--squircle-clip)`. The radius is a circle at 0.54 of the
+ * squircle's, the largest that still holds the whole squircle, so borders,
+ * focus rings and shadows keep a near-squircle curve and are never clipped.
+ * The clip removes only the sliver between that circle and the squircle (one
+ * cubic per corner, handles at 0.082 of the radius, within 0.5% of
+ * superellipse(2)) and keeps everything outside the box. Gated on the missing
+ * property, so Chromium keeps native `corner-shape` and the fallback switches
+ * off once Safari ships it, and on `--corner-shape`, so a subtree set back to
+ * round stays round.
+ */
+export const SQUIRCLE_FALLBACK = [
+  '@property --squircle-r {\n  syntax: "<length>";\n  inherits: false;\n  initial-value: 0px;\n}',
+  "",
+  "@supports not (corner-shape: squircle) {",
+  "  @container style(--corner-shape: squircle) {",
+  "    * {",
+  "      --squircle-radius: calc(var(--squircle-r) * 0.54);",
+  `      --squircle-clip: ${squircleClip("var(--squircle-r)", "var(--squircle-radius)")};`,
+  "    }",
+  "  }",
+  "}",
+].join("\n");
+
+/** Everything except the sliver between the circle of radius `c` and the squircle of radius `r`. */
+function squircleClip(r: string, c: string): string {
+  const h = `${r} * 0.082`;
+  return [
+    "shape(evenodd from -100vmax -100vmax",
+    "hline to calc(100% + 100vmax), vline to calc(100% + 100vmax), hline to -100vmax, close",
+    `move to ${c} 0, hline to calc(100% - ${c}), arc to 100% ${c} of ${c} cw`,
+    `vline to calc(100% - ${c}), arc to calc(100% - ${c}) 100% of ${c} cw`,
+    `hline to ${c}, arc to 0 calc(100% - ${c}) of ${c} cw`,
+    `vline to ${c}, arc to ${c} 0 of ${c} cw, close`,
+    `move to ${r} 0, hline to calc(100% - ${r}), curve to 100% ${r} with calc(100% - ${h}) 0 / 100% calc(${h})`,
+    `vline to calc(100% - ${r}), curve to calc(100% - ${r}) 100% with 100% calc(100% - ${h}) / calc(100% - ${h}) 100%`,
+    `hline to ${r}, curve to 0 calc(100% - ${r}) with calc(${h}) 100% / 0 calc(100% - ${h})`,
+    `vline to ${r}, curve to ${r} 0 with 0 calc(${h}) / calc(${h}) 0, close)`,
+  ].join(", ");
+}
 
 /** VI-796: the out curve's value when a theme sets no `motion.easing-out`. */
 export const DEFAULT_EASING_OUT = "cubic-bezier(0, 0, 0.2, 1)";

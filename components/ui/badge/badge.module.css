@@ -271,3 +271,17 @@
     transform: translateY(calc((var(--label-box-height) + 1cap) / 2 - round((var(--label-box-height) + 1cap) / 2, 1px)));
   }
 }
+
+/* Squircle fallback (VI-839). Where the browser has no corner-shape (Safari)
+   and the theme draws squircles, the badge draws the theme's squircle from
+   --squircle-radius and --squircle-clip, its radius clamped to half its outer
+   height (--label-box-height). Chromium and round themes skip this. */
+@supports not (corner-shape: squircle) {
+  @container style(--corner-shape: squircle) {
+    .base {
+      --squircle-r: min(var(--badge-radius, var(--radius-full, 9999px)), calc(var(--label-box-height) / 2));
+      border-radius: var(--squircle-radius, var(--squircle-r));
+      clip-path: var(--squircle-clip, none);
+    }
+  }
+}
