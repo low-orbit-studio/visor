@@ -213,6 +213,48 @@ jobs:
           fi
           echo "All test shards passed."
 
+  # VI-838: nested corners must be concentric on every component page. Its own job,
+  # on the production build, so the per-theme VR job does not get longer.
+  concentric-corners:
+    name: Concentric corners
+    needs: changes
+    if: needs.changes.outputs.docs == 'true'
+    # shortcut: Playwright 1.59 has no chromium for ubuntu-26.04 (now ubuntu-latest); unpin after a Playwright upgrade that supports it.
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build packages
+        run: npm run build -w packages/theme-engine && npm run build -w packages/tokens
+
+      - name: Build docs site
+        run: npm run docs:build
+
+      - name: Install Playwright browsers (chromium only)
+        run: npx playwright install --with-deps chromium
+
+      - name: Concentric corner scan (production build)
+        run: npm run test:concentric -w packages/docs
+
+      - name: Upload scan report on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: concentric-scan-report
+          path: packages/docs/playwright-report/
+          retention-days: 14
+
   verify-docs:
     name: Verify docs build
     needs: changes

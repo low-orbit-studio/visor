@@ -3,6 +3,7 @@ declare const styles: {
   readonly slider: string
   readonly track: string
   readonly ruler: string
+  readonly paint: string
   readonly fill: string
   readonly past: string
   readonly gap: string

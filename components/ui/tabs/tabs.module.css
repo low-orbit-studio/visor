@@ -13,7 +13,9 @@
   --_track-radius: var(--tabs-list-radius, var(--radius-full, 9999px));
   --_track-padding: var(--tabs-list-padding, calc(var(--spacing-1, 0.25rem) * 0.75));
   border-radius: var(--_track-radius);
-  padding: var(--_track-padding);
+  /* The trigger's calc(100% - 2px) height leaves 1px above and below it; the
+     same 1px at the ends keeps the gap even all the way round (VI-838). */
+  padding: var(--_track-padding) calc(var(--_track-padding) + 1px);
   /* Concentric triggers (VI-837): the rail radius minus the vertical gap to the
      trigger, its padding plus the 1px the trigger's calc(100% - 2px) height leaves. */
   --_inner-radius: max(0px, calc(var(--_track-radius) - var(--_track-padding) - 1px));
