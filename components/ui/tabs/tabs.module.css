@@ -214,24 +214,3 @@
     transform: translateY(calc((var(--label-box-height) + 1cap) / 2 - round((var(--label-box-height) + 1cap) / 2, 1px)));
   }
 }
-
-/* Squircle fallback (VI-839). Where the browser has no corner-shape (Safari)
-   and the theme draws squircles, the rail and the triggers draw the theme's
-   squircle from --squircle-radius and --squircle-clip, each from its own
-   --squircle-r: its radius clamped to half its height. Chromium and round
-   themes skip this. */
-@supports not (corner-shape: squircle) {
-  @container style(--corner-shape: squircle) {
-    .listVariantDefault {
-      --squircle-r: min(var(--_track-radius), calc(var(--tabs-list-height, 2.25rem) / 2));
-      border-radius: var(--squircle-radius, var(--squircle-r));
-      clip-path: var(--squircle-clip, none);
-    }
-
-    .trigger {
-      --squircle-r: min(var(--tabs-trigger-radius, var(--_inner-radius)), calc(var(--label-box-height) / 2));
-      border-radius: var(--squircle-radius, var(--squircle-r));
-      clip-path: var(--squircle-clip, none);
-    }
-  }
-}

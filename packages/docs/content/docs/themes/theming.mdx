@@ -133,7 +133,7 @@ corners: squircle   # round (default) | squircle
 
 Safari has no `corner-shape` yet, on macOS or iOS, and every iPhone browser is Safari underneath. Without help it draws a squircle theme round. A squircle theme also ships a fallback for it, used only where `@supports not (corner-shape: squircle)` holds and only inside a squircle scope, so Chromium keeps the native corner and the fallback switches itself off once Safari ships the property.
 
-The fallback draws the curve on the components that need it: Button, Input, Card, Dialog, SegmentedControl and ToggleGroup (track, sliding pill and segments), Tabs (rail and triggers), Meter, Badge and Chip. Each sets `--squircle-r` to its radius clamped to half its height and draws two shared values from the theme:
+The fallback draws the curve on the components that need it: Button, Dialog, SegmentedControl and ToggleGroup (track, sliding pill and segments), Meter, Badge and Chip. Each sets `--squircle-r` to its radius clamped to half its height and draws two shared values from the theme:
 
 - `--squircle-radius`, a circle at 0.54 of the squircle's radius: the largest circle that still holds the whole squircle.
 - `--squircle-clip`, a `clip-path: shape()` that trims only what that circle draws outside the squircle, and keeps everything outside the box.
@@ -155,8 +155,8 @@ So the fill and those edges are the squircle, and focus rings and shadows stay w
 
 Its limits:
 
-- Focus rings and shadows follow the smaller circle, within 1.6% of the radius of the squircle. A shadow or halo that hugs the box (a spread ring, Input's focus halo, a faint `--shadow-sm`) shows a hairline of page between the squircle and the shadow at the corners. Safari cannot shape a box-shadow to a clip.
-- Input's edge is drawn round the smaller circle too (an `<input>` has no pseudo-element to carry a ring), so it thins slightly along the curve on a large radius.
+- Inputs, cards and tabs stay round in Safari. Their focus halo or shadow hugs the box, and Safari cannot shape a shadow to a clip (`filter: drop-shadow()` runs before `clip-path`), so a squircle would show a hairline of page between it and the shadow. Round is what Safari draws today; a seam is not acceptable.
+- Focus rings and shadows on the other components follow the smaller circle, within 1.6% of the radius of the squircle. Give your own element a shadow that hugs it and it has the same seam, so leave it round.
 - `--squircle-r` must already be clamped: a radius past half the box's height draws a broken clip. Components clamp against their height token; a box with no known height needs one.
 - In Safari, `--corner-shape: round` keeps an element round when it is set on an ancestor, not on the element itself.
 - Only the listed components draw it. Any other rounded element stays round in Safari until it opts in.

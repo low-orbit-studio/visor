@@ -39,22 +39,21 @@ Paper with `corners: squircle` (radii 10 to 28px, pill buttons and tabs rail) an
 | Button fill (pill) | [crop-button-fill.png](VI-839/crop-button-fill.png) |
 | Button border (outline, lg) | [crop-button-border.png](VI-839/crop-button-border.png) |
 | Button focus ring | [crop-button-focus.png](VI-839/crop-button-focus.png) |
-| Input border | [crop-input-border.png](VI-839/crop-input-border.png) |
-| Input focus ring and halo | [crop-input-focus.png](VI-839/crop-input-focus.png) |
-| Card shadow | [crop-card-shadow.png](VI-839/crop-card-shadow.png) |
+| Input border (round in Safari) | [crop-input-border.png](VI-839/crop-input-border.png) |
+| Input focus ring and halo (round in Safari) | [crop-input-focus.png](VI-839/crop-input-focus.png) |
+| Card shadow (round in Safari) | [crop-card-shadow.png](VI-839/crop-card-shadow.png) |
 | SegmentedControl track and pill | [crop-segmented-track.png](VI-839/crop-segmented-track.png) |
-| Tabs rail and trigger | [crop-tabs-rail.png](VI-839/crop-tabs-rail.png) |
+| Tabs rail and trigger (round in Safari) | [crop-tabs-rail.png](VI-839/crop-tabs-rail.png) |
 | Dialog panel and shadow | [crop-dialog-shadow.png](VI-839/crop-dialog-shadow.png) |
 | Meter track and fill | [crop-meter-track.png](VI-839/crop-meter-track.png) |
 
-Measured in WebKit on the squircle theme, nested corners stay concentric (inner = outer − inset, same squircle on both): SegmentedControl 14 − 5 = 9px, Tabs 18 − 4 = 14px, Meter 5 − 2 = 3px; with Honcho's pill track, 18 − 3 = 15px. Chromium gives the same numbers.
+Measured in WebKit on the squircle theme, nested corners stay concentric (inner = outer − inset, same squircle on both): SegmentedControl 14 − 5 = 9px, Meter 5 − 2 = 3px; with Honcho's pill track, 18 − 3 = 15px. Chromium gives the same numbers.
 
 The proof that runs in CI is `components/ui/__tests__/squircle-fallback.test.ts` (Chromium and WebKit, `VISOR_REQUIRE_BROWSER` in the concentric job) and the WebKit project of the concentric scan.
 
 ## Limits
 
-- Focus rings and shadows follow the 0.54 R circle, so a shadow starts up to 1.6% of R (plus a quarter pixel) outside the squircle edge. On a shadow that hugs the box (Input's focus halo, a spread ring, Paper's faint `--shadow-sm` on Card) that shows as a hairline of page at the corner, visible at 4x. Safari cannot shape a box-shadow to a clip; removing it needs the fill moved to a pseudo-element under an ancestor `filter: drop-shadow()`, which loses `box-shadow` spread.
-- Input's edge stays on the circle: an `<input>` has no pseudo-element to carry a ring.
+- Inputs, cards and tabs stay round in Safari. Focus rings and shadows follow the 0.54 R circle, so a shadow starts up to 1.6% of R (plus a quarter pixel) outside the squircle edge. On a shadow that hugs the box (Input's focus halo, Card's and the active tab's `--shadow-sm`) that showed as a hairline of page at the corner, visible at 4x. Safari cannot shape a box-shadow to a clip, and `filter: drop-shadow()` cannot stand in for it on the same element: filters run before `clip-path`, so the drop-shadow is cast by the circle and the seam stays. Round is what Safari draws today; a seam is not, so these three opt out. (`<input>` also has no pseudo-element to carry a ring.)
 - `--squircle-r` must be clamped by the component; a box with no known height needs a height token.
 - `--corner-shape: round` on the element itself is not seen (the style query reads the parent); on an ancestor it works.
 - Only the components listed in the theming docs opt in. A consumer's own rounded box stays round in Safari until it adds the three lines.

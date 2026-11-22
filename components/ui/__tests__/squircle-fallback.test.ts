@@ -41,6 +41,18 @@ FIXTURES.card = FIXTURES.card ?? {}
 FIXTURES.card.vi839 = { export: "Card", props: `(function () { ${h} return { style: { width: 280 }, children: [h(__mod.CardHeader, { key: "h" }, h(__mod.CardTitle, null, "Settle up")), h(__mod.CardContent, { key: "c" }, "Card body copy.")] }; })()` }
 FIXTURES.tabs.vi839 = { export: "Tabs", props: `(function () { ${h} return { defaultValue: "one", children: [h(__mod.TabsList, { key: "l" }, [h(__mod.TabsTrigger, { key: "1", value: "one" }, "Overview"), h(__mod.TabsTrigger, { key: "2", value: "two" }, "Activity")]), h(__mod.TabsContent, { key: "c", value: "one" }, "Overview content")] }; })()` }
 
+/**
+ * Boxes that stay round in Safari: their focus halo or shadow hugs the box, and
+ * Safari cannot shape a box-shadow (or a drop-shadow, which runs before the
+ * clip) to the squircle, so a squircle would show a seam between the two.
+ */
+const ROUND_IN_SAFARI: Array<[component: string, fixture: string, targets: string[]]> = [
+  ["input", "default", ["#root input"]],
+  ["input", "suffix", ["#root [data-slot=input-wrapper]"]],
+  ["card", "vi839", ["#root [data-slot=card]"]],
+  ["tabs", "vi839", ["#root [data-slot=tabs-list]", "#root [data-slot=tabs-list] [data-state=active]"]],
+]
+
 /** Every box that draws the fallback, per fixture. */
 const CASES: Array<[component: string, fixture: string, targets: string[]]> = [
   ["button", "default", ["#root button"]],
@@ -48,11 +60,7 @@ const CASES: Array<[component: string, fixture: string, targets: string[]]> = [
   ["button", "lg-outline", ["#root button"]],
   ["button", "dlg", ["#root button"]],
   ["button", "icon-outline", ["#root button"]],
-  ["input", "default", ["#root input"]],
-  ["input", "suffix", ["#root [data-slot=input-wrapper]"]],
-  ["card", "vi839", ["#root [data-slot=card]"]],
   ["segmented-control", "default", ["#root [data-variant=outline]", "#root [data-variant=outline] > [aria-hidden=true]", "#root [data-slot=toggle-group-item]"]],
-  ["tabs", "vi839", ["#root [data-slot=tabs-list]", "#root [data-slot=tabs-list] [data-state=active]"]],
   ["dialog", "default", ["[role=dialog]"]],
   ["meter", "default", ["#root [data-slot=meter-track]", "#root [data-slot=meter-fill]"]],
   ["badge", "default", ["#root [data-slot=badge]"]],
@@ -101,6 +109,8 @@ async function unchanged(component: string, fixture: string, t: Theme): Promise<
 }
 
 const results: Record<Engine, Record<string, { squircle: Box[]; round: Box[] }>> = { chromium: {}, webkit: {} }
+/** WebKit, squircle theme: the boxes that must stay round. */
+const keptRound: Box[] = []
 /** Pixels the fallback changes where it must change none: Chromium in both themes, WebKit in the round one. */
 const untouched: Array<{ key: string; n: number; max: number }> = []
 /** Control: WebKit in a squircle theme must change, or the comparison above proves nothing. */
@@ -135,6 +145,7 @@ async function collect(engine: Engine): Promise<void> {
     }
   }
   if (engine === "webkit") {
+    for (const [component, fixture, targets] of ROUND_IN_SAFARI) keptRound.push(...(await measure(component, fixture, targets, SQUIRCLE)))
     drawn = await unchanged("button", "default", SQUIRCLE)
     const edgeLayer = async (component: string, fixture: string, sel: string, pseudo: string) => {
       const page = await open(component, fixture, { theme: SQUIRCLE })
@@ -240,6 +251,15 @@ describe("VI-839 squircle fallback: Chromium and WebKit", () => {
         expect(results.chromium[key].round[i].clip, `${key} ${b.sel}`).toBe("none")
         expect(b.radius, `${key} ${b.sel}`).toBe(results.chromium[key].round[i].radius)
       })
+    }
+  })
+
+  it("WebKit leaves inputs, cards and tabs round: no clip, their own radius", (ctx) => {
+    if (!available.webkit) return ctx.skip()
+    expect(keptRound.length).toBe(5)
+    for (const b of keptRound) {
+      expect(b.clip, b.sel).toBe("none")
+      expect(b.radius, b.sel).toBeGreaterThan(0)
     }
   })
 
