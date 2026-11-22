@@ -82,6 +82,7 @@ npx visor add <component-name> --overwrite
 | `popover` | Floating content panel anchored to a trigger |
 | `progress` | Horizontal bar indicating completion |
 | `proportion-bar` | One total split into parts by value, with a legend |
+| `reach-rings` | Concentric rings lit from the centre out to show how far something reaches |
 | `skeleton` | Placeholder shimmer for loading states |
 | `toast` | Non-blocking notification that auto-dismisses |
 | `tooltip` | Small label shown on hover/focus |

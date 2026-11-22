@@ -667,6 +667,24 @@ export const ui: Registry = [
     ],
   },
   {
+    name: "reach-rings",
+    type: "registry:ui",
+    description:
+      "Concentric rings, the innermost a filled core holding an icon, lit from the centre out to show how far something reaches. Decorative (aria-hidden), in a 148px and a 112px (compact) size.",
+    dependencies: ["@loworbitstudio/visor-core"],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/reach-rings/reach-rings.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/reach-rings/reach-rings.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
     name: "segmented-progress",
     type: "registry:ui",
     description:

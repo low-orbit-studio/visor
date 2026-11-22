@@ -14,6 +14,10 @@ declare const styles: {
   readonly cardCheck: string
   readonly cardMarkDot: string
   readonly cardIndicatorDot: string
+  readonly rootStepped: string
+  readonly step: string
+  readonly stepIcon: string
+  readonly stepTitle: string
 }
 
 export default styles
