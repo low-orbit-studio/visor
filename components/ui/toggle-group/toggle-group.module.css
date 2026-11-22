@@ -9,10 +9,18 @@
   /* items have no outer border, rely on item bg */
 }
 
+/* Concentric corners (VI-837): the inner radius is the track radius minus the
+   track's padding and border, so item, indicator, hover fill and focus ring
+   always nest inside the track. Each size sets the track radius and padding;
+   a 999px track gives a pill in a pill. */
 .variantOutline {
   position: relative;
-  border: 1px solid var(--border-default, #e5e7eb);
+  --_track-border: 1px;
+  border: var(--_track-border) solid var(--border-default, #e5e7eb);
   gap: 0;
+  padding: var(--_track-padding);
+  border-radius: var(--_track-radius);
+  --_inner-radius: max(0px, calc(var(--_track-radius) - var(--_track-padding) - var(--_track-border)));
 }
 
 /* The track fill (VI-709). Zero specificity, so a consumer's own class still sets
@@ -37,19 +45,17 @@
     opacity var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
 }
 
-/* Match indicator radius to item radius per size */
-.sizeXs .indicator { border-radius: var(--toggle-group-xs-item-radius, var(--radius-sm, 0.25rem)); }
-.sizeSm .indicator { border-radius: var(--radius-md, 0.375rem); }
-.sizeMd .indicator { border-radius: var(--radius-md, 0.375rem); }
-.sizeLg .indicator { border-radius: var(--radius-lg, 0.5rem); }
+/* Indicator corners: concentric with the track; xs-item-radius is an override. */
+.variantOutline .indicator { border-radius: var(--_inner-radius); }
+.variantOutline.sizeXs .indicator { border-radius: var(--toggle-group-xs-item-radius, var(--_inner-radius)); }
 
 .sizeXs {
   /* inherited by items */
 }
 
 .variantOutline.sizeXs {
-  padding: calc(var(--spacing-1, 0.25rem) / 2);
-  border-radius: var(--toggle-group-xs-track-radius, var(--radius-md, 0.375rem));
+  --_track-padding: calc(var(--spacing-1, 0.25rem) / 2);
+  --_track-radius: var(--toggle-group-xs-track-radius, var(--radius-md, 0.375rem));
 }
 
 .sizeSm {
@@ -57,8 +63,8 @@
 }
 
 .variantOutline.sizeSm {
-  padding: var(--spacing-1, 0.25rem);
-  border-radius: var(--radius-lg, 0.5rem);
+  --_track-padding: var(--spacing-1, 0.25rem);
+  --_track-radius: var(--radius-lg, 0.5rem);
 }
 
 .sizeMd {
@@ -66,8 +72,8 @@
 }
 
 .variantOutline.sizeMd {
-  padding: var(--spacing-1, 0.25rem);
-  border-radius: var(--radius-lg, 0.5rem);
+  --_track-padding: var(--spacing-1, 0.25rem);
+  --_track-radius: var(--radius-lg, 0.5rem);
 }
 
 .sizeLg {
@@ -75,8 +81,8 @@
 }
 
 .variantOutline.sizeLg {
-  padding: var(--spacing-1, 0.25rem);
-  border-radius: var(--radius-xl, 0.75rem);
+  --_track-padding: var(--spacing-1, 0.25rem);
+  --_track-radius: var(--radius-xl, 0.75rem);
 }
 
 /* ToggleGroup item */
@@ -183,6 +189,16 @@
   border-radius: var(--radius-lg, 0.5rem);
   font-size: var(--font-size-base, 1rem);
   gap: var(--spacing-2, 0.5rem);
+}
+
+/* Outline items sit in the track: concentric corners (VI-837) for the hover fill,
+   the multiple-select fill and the focus ring. xs-item-radius stays an override. */
+.itemVariantOutline.item {
+  border-radius: var(--_inner-radius);
+}
+
+.itemVariantOutline.itemSizeXs {
+  border-radius: var(--toggle-group-xs-item-radius, var(--_inner-radius));
 }
 
 /* Label centring (VI-684, shared spec: the label-centering doc under docs/). The label is a

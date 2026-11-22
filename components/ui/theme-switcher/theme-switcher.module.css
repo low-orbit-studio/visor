@@ -43,9 +43,13 @@
   display: inline-flex;
   align-items: center;
   gap: calc(var(--spacing-1, 0.25rem) / 2);
-  padding: calc(var(--spacing-1, 0.25rem) / 2);
+  --_track-radius: var(--radius-full, 9999px);
+  --_track-padding: calc(var(--spacing-1, 0.25rem) / 2);
+  padding: var(--_track-padding);
   background: color-mix(in srgb, var(--text-tertiary, #9ca3af) 14%, transparent);
-  border-radius: var(--radius-full, 9999px);
+  border-radius: var(--_track-radius);
+  /* Concentric options (VI-837): the track radius minus its padding. */
+  --_inner-radius: max(0px, calc(var(--_track-radius) - var(--_track-padding)));
 }
 
 .option {
@@ -53,7 +57,7 @@
   background: transparent;
   border: 0;
   padding: calc(var(--spacing-1, 0.25rem) * 0.75) var(--spacing-2, 0.5rem);
-  border-radius: var(--radius-full, 9999px);
+  border-radius: var(--_inner-radius);
   font-size: var(--font-size-xs, 0.75rem);
   font-weight: var(--font-weight-medium, 500);
   color: var(--text-secondary, #4b5563);
