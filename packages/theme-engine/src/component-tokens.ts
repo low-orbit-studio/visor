@@ -147,6 +147,7 @@ const LAYER_CHART = "components/ui/layer-chart/layer-chart.module.css";
 const PROPORTION_BAR = "components/ui/proportion-bar/proportion-bar.module.css";
 const TOGGLE_GROUP = "components/ui/toggle-group/toggle-group.module.css";
 const RADIO_GROUP = "components/ui/radio-group/radio-group.module.css";
+const REACH_RINGS = "components/ui/reach-rings/reach-rings.module.css";
 const TOOLTIP = "components/ui/tooltip/tooltip.module.css";
 const ACTION_ROW = "components/ui/action-row/action-row.module.css";
 const DIALOG_FIELD = "blocks/dialog-field/dialog-field.module.css";
@@ -1649,6 +1650,36 @@ const radioCardFamily: ComponentTokenFamily = {
   ],
 };
 
+// VI-840: the stepped RadioGroup and ReachRings (Blacklight's Who Can See picker).
+const radioStepFamily: ComponentTokenFamily = {
+  family: "radio-step",
+  prefix: "radio-step",
+  description:
+    "RadioGroup `variant=\"stepped\"` \u2014 the key colour, the well and its radius, the resting ink, the icon size, and the chosen tile's fill and hairline.",
+  tokens: [
+    { key: "key", property: "background-color", description: "The key colour: the chosen tile's fill tint, hairline and icon, and the focus ring.", consumers: at(RADIO_GROUP, "var(--interactive-primary-bg, var(--primary, #111827))") },
+    { key: "well", property: "background-color", description: "The well the tiles sit in. Default is the page nudged 12% toward the ink; a dark app binds it darker than its plane (Blacklight: `rgb(0 0 0 / 0.65)`).", consumers: at(RADIO_GROUP, "color-mix(in srgb, var(--text-primary, #111827) 12%, var(--surface-page, #ffffff))") },
+    { key: "well-radius", property: "border-radius", description: "Well corner radius. The tiles take it minus the well padding, so the corners stay concentric.", consumers: at(RADIO_GROUP, "var(--radius-xl, 0.75rem)") },
+    { key: "ink", property: "color", description: "Icon and label ink on a tile that is not chosen.", consumers: at(RADIO_GROUP, "var(--text-tertiary, #9ca3af)") },
+    { key: "icon-size", property: "font-size", description: "Tile icon size.", consumers: at(RADIO_GROUP, "1.25rem") },
+    { key: "selected-bg", property: "background-color", description: "Chosen tile fill. Default is 12% key over `--surface-elev-2`.", consumers: at(RADIO_GROUP, "color-mix(in srgb, var(--_key) 12%, var(--surface-elev-2, #f3f4f6))") },
+    { key: "selected-border", property: "box-shadow", description: "Chosen tile hairline. Default is 35% key.", consumers: at(RADIO_GROUP, "color-mix(in srgb, var(--_key) 35%, transparent)") },
+  ],
+};
+
+const reachRingsFamily: ComponentTokenFamily = {
+  family: "reach-rings",
+  prefix: "reach-rings",
+  description:
+    "ReachRings \u2014 the key colour of lit rings and the core, the unlit ring stroke, and the core icon lit and unlit.",
+  tokens: [
+    { key: "key", property: "background-color", description: "The key colour: a lit ring's stroke, halo and wash, and the filled core.", consumers: at(REACH_RINGS, "var(--interactive-primary-bg, var(--primary, #111827))") },
+    { key: "ring", property: "box-shadow", description: "An unlit ring's stroke.", consumers: at(REACH_RINGS, "color-mix(in srgb, var(--text-primary, #111827) 12%, transparent)") },
+    { key: "glyph", property: "color", description: "The core icon while the core is unlit.", consumers: at(REACH_RINGS, "color-mix(in srgb, var(--text-primary, #111827) 50%, transparent)") },
+    { key: "core-ink", property: "color", description: "The core icon on the lit core.", consumers: at(REACH_RINGS, "var(--interactive-primary-text, #f9fafb)") },
+  ],
+};
+
 const adminUiFamily: ComponentTokenFamily = {
   family: "admin-ui",
   prefix: "admin-ui",
@@ -1797,6 +1828,8 @@ export const COMPONENT_TOKEN_FAMILIES: readonly ComponentTokenFamily[] = [
   segmentedControlFamily,
   toggleGroupFamily,
   radioCardFamily,
+  radioStepFamily,
+  reachRingsFamily,
   tooltipFamily,
   actionRowFamily,
   inputAffixFamily,

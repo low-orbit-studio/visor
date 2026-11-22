@@ -1060,6 +1060,45 @@ components:
     dot: "#2ce0e6"
 ```
 
+### `radio-step`
+
+RadioGroup `variant="stepped"` — the key colour, the well and its radius, the resting ink, the icon size, and the chosen tile's fill and hairline.
+
+| Token | Binds | Falls back to |
+|---|---|---|
+| `--radio-step-key` | The key colour: the chosen tile's fill tint, hairline and icon, and the focus ring. | `var(--interactive-primary-bg, var(--primary, #111827))` |
+| `--radio-step-well` | The well the tiles sit in. Default is the page nudged 12% toward the ink; a dark app binds it darker than its plane (Blacklight: `rgb(0 0 0 / 0.65)`). | `color-mix(in srgb, var(--text-primary, #111827) 12%, var(--surface-page, #ffffff))` |
+| `--radio-step-well-radius` | Well corner radius. The tiles take it minus the well padding, so the corners stay concentric. | `var(--radius-xl, 0.75rem)` |
+| `--radio-step-ink` | Icon and label ink on a tile that is not chosen. | `var(--text-tertiary, #9ca3af)` |
+| `--radio-step-icon-size` | Tile icon size. | `1.25rem` |
+| `--radio-step-selected-bg` | Chosen tile fill. Default is 12% key over `--surface-elev-2`. | `color-mix(in srgb, var(--_key) 12%, var(--surface-elev-2, #f3f4f6))` |
+| `--radio-step-selected-border` | Chosen tile hairline. Default is 35% key. | `color-mix(in srgb, var(--_key) 35%, transparent)` |
+
+```yaml
+components:
+  radio-step:
+    key: "#2ce0e6"
+    well: "rgb(0 0 0 / 0.65)"
+```
+
+### `reach-rings`
+
+ReachRings — the key colour of lit rings and the core, the unlit ring stroke, and the core icon lit and unlit.
+
+| Token | Binds | Falls back to |
+|---|---|---|
+| `--reach-rings-key` | The key colour: a lit ring's stroke, halo and wash, and the filled core. | `var(--interactive-primary-bg, var(--primary, #111827))` |
+| `--reach-rings-ring` | An unlit ring's stroke. | `color-mix(in srgb, var(--text-primary, #111827) 12%, transparent)` |
+| `--reach-rings-glyph` | The core icon while the core is unlit. | `color-mix(in srgb, var(--text-primary, #111827) 50%, transparent)` |
+| `--reach-rings-core-ink` | The core icon on the lit core. | `var(--interactive-primary-text, #f9fafb)` |
+
+```yaml
+components:
+  reach-rings:
+    key: "#2ce0e6"
+    core-ink: "#000000"
+```
+
 ### `tooltip`
 
 Tooltip ground and ink, so a dark theme can keep the label legible without retuning the shared inverse pair other components read.
