@@ -179,20 +179,22 @@ const BillingSlider = React.forwardRef<HTMLDivElement, BillingSliderProps>(
                 <i key={h} style={{ left: `${pct(h)}%` }} />
               ))}
             </span>
-            <span data-slot="billing-slider-fill" className={styles.fill} style={{ width: `${pct(fillTo)}%` }} />
-            {hatchAt !== undefined && value > hatchAt && (
-              <span data-slot="billing-slider-past" className={styles.past} style={at(hatchAt, value)} />
-            )}
-            {showGap && <span data-slot="billing-slider-gap" className={styles.gap} style={at(value, gapTo)} />}
-            {evidence && worked > min && (
-              <span data-slot="billing-slider-evidence" className={styles.evidence} style={{ width: `${pct(worked)}%` }} />
-            )}
-            {evidence?.agent && evEnd > min ? (
-              <span data-slot="billing-slider-agent" className={styles.agent} style={at(Math.max(worked, min), evEnd)} />
-            ) : null}
-            {evidence?.proposed && proposedEnd > min ? (
-              <span data-slot="billing-slider-proposed" className={styles.proposed} style={at(Math.max(evEnd, min), proposedEnd)} />
-            ) : null}
+            <span className={styles.paint} aria-hidden>
+              <span data-slot="billing-slider-fill" className={styles.fill} style={{ width: `${pct(fillTo)}%` }} />
+              {hatchAt !== undefined && value > hatchAt && (
+                <span data-slot="billing-slider-past" className={styles.past} style={at(hatchAt, value)} />
+              )}
+              {showGap && <span data-slot="billing-slider-gap" className={styles.gap} style={at(value, gapTo)} />}
+              {evidence && worked > min && (
+                <span data-slot="billing-slider-evidence" className={styles.evidence} style={{ width: `${pct(worked)}%` }} />
+              )}
+              {evidence?.agent && evEnd > min ? (
+                <span data-slot="billing-slider-agent" className={styles.agent} style={at(Math.max(worked, min), evEnd)} />
+              ) : null}
+              {evidence?.proposed && proposedEnd > min ? (
+                <span data-slot="billing-slider-proposed" className={styles.proposed} style={at(Math.max(evEnd, min), proposedEnd)} />
+              ) : null}
+            </span>
             {marks.map((m, i) => (
               <span key={i} data-slot="billing-slider-mark" className={styles.mark} style={{ left: `${pct(m.value)}%` }} />
             ))}

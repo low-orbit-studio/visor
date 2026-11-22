@@ -71,11 +71,13 @@
   min-width: var(--radix-popover-trigger-width, 12rem);
   max-height: 18rem;
   overflow: hidden auto;
-  border-radius: var(--radius-lg, 0.5rem);
+  --_menu-radius: var(--radius-lg, 0.5rem);
+  border-radius: var(--_menu-radius);
   background-color: var(--field-menu-bg, var(--surface-popover, var(--surface-card, #ffffff)));
   color: var(--text-primary, #111827);
   box-shadow: var(--shadow-lg);
-  padding: var(--spacing-1, 0.25rem);
+  --_menu-padding: var(--spacing-1, 0.25rem);
+  padding: var(--_menu-padding);
 }
 
 /* Listbox */
@@ -92,7 +94,8 @@
   align-items: center;
   gap: var(--spacing-2, 0.5rem);
   padding: var(--spacing-2, 0.5rem) var(--spacing-3, 0.75rem);
-  border-radius: var(--radius-sm, 0.25rem);
+  /* Concentric with the menu (VI-838): its radius minus its padding. */
+  border-radius: max(0px, calc(var(--_menu-radius) - var(--_menu-padding)));
   font-size: var(--font-size-sm, 0.875rem);
   cursor: default;
   outline: none;

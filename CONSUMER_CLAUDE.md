@@ -410,6 +410,16 @@ The `missing-visor-base-layer` warning fires when a project renders Visor form c
 - **CSS custom properties** — Always use tokens, never hard-coded values.
 - **CVA** — Variants use `class-variance-authority` with CSS Module class references.
 - **`cn()`** — Import from `@/lib/utils` to merge class names.
+- **Nested corners are concentric** — a rounded box inside a rounded box takes inner radius = outer radius − the gap between them, with the same gap on both axes. Derive it in CSS (`calc(var(--_outer-radius) - var(--_padding))`), never type the second radius. Check a page with the scan from `@loworbitstudio/visor-core/test-utils`:
+
+  ```ts
+  import { scanConcentric } from "@loworbitstudio/visor-core/test-utils"
+
+  const pairs = await page.evaluate(scanConcentric, { root: "main" }) // run it per frame for iframes
+  expect(pairs.filter((p) => !p.ok)).toEqual([])
+  ```
+
+  It walks open shadow roots, so hand-built web components are covered. Pass `{ mark: true }` to tag failing boxes with `data-concentric-outer` / `data-concentric-inner` for a screenshot.
 
 ---
 

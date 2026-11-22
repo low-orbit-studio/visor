@@ -3,10 +3,12 @@
   z-index: 50;
   min-width: 12rem;
   overflow: hidden;
-  border-radius: var(--radius-lg, 0.5rem);
+  --_menu-radius: var(--radius-lg, 0.5rem);
+  border-radius: var(--_menu-radius);
   background-color: var(--surface-popover, var(--surface-card, #ffffff));
   color: var(--text-primary, #111827);
-  padding: var(--spacing-1, 0.25rem);
+  --_menu-padding: var(--spacing-1, 0.25rem);
+  padding: var(--_menu-padding);
   box-shadow: var(--shadow-lg);
 }
 
@@ -23,10 +25,12 @@
   z-index: 50;
   min-width: 9rem;
   overflow: hidden;
-  border-radius: var(--radius-lg, 0.5rem);
+  --_menu-radius: var(--radius-lg, 0.5rem);
+  border-radius: var(--_menu-radius);
   background-color: var(--surface-popover, var(--surface-card, #ffffff));
   color: var(--text-primary, #111827);
-  padding: var(--spacing-1, 0.25rem);
+  --_menu-padding: var(--spacing-1, 0.25rem);
+  padding: var(--_menu-padding);
   box-shadow: var(--shadow-lg);
 }
 
@@ -46,7 +50,8 @@
   user-select: none;
   align-items: center;
   gap: calc(var(--spacing-2, 0.5rem) + var(--spacing-1, 0.25rem) / 2);
-  border-radius: var(--radius-md, 0.375rem);
+  /* Concentric with the menu (VI-838): its radius minus its padding. */
+  border-radius: max(0px, calc(var(--_menu-radius) - var(--_menu-padding)));
   padding: var(--spacing-2, 0.5rem) var(--spacing-3, 0.75rem);
   font-size: var(--font-size-sm, 0.875rem);
   outline: none;
@@ -87,7 +92,8 @@
   user-select: none;
   align-items: center;
   gap: calc(var(--spacing-2, 0.5rem) + var(--spacing-1, 0.25rem) / 2);
-  border-radius: var(--radius-md, 0.375rem);
+  /* Concentric with the menu (VI-838): its radius minus its padding. */
+  border-radius: max(0px, calc(var(--_menu-radius) - var(--_menu-padding)));
   padding: var(--spacing-2, 0.5rem) var(--spacing-3, 0.75rem);
   padding-right: var(--spacing-8, 2rem);
   font-size: var(--font-size-sm, 0.875rem);
@@ -150,7 +156,8 @@
   user-select: none;
   align-items: center;
   gap: var(--spacing-2, 0.5rem);
-  border-radius: var(--radius-md, 0.375rem);
+  /* Concentric with the menu (VI-838): its radius minus its padding. */
+  border-radius: max(0px, calc(var(--_menu-radius) - var(--_menu-padding)));
   padding: var(--spacing-2, 0.5rem) var(--spacing-3, 0.75rem);
   font-size: var(--font-size-sm, 0.875rem);
   outline: none;

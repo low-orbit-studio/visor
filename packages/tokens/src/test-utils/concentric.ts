@@ -48,3 +48,7 @@ export function expectConcentric(outer: ConcentricBox, inner: ConcentricBox, tol
   }
   return r
 }
+
+// The page-wide scan (VI-838): every nested rounded pair on a page, for Playwright.
+export { scanConcentric } from "./concentric-scan"
+export type { ConcentricPair, ConcentricScanOptions, Corner } from "./concentric-scan"

@@ -8,7 +8,8 @@
   align-items: center;
   gap: var(--spacing-2, 0.5rem);
 
-  padding: var(--spacing-1, 0.25rem) var(--spacing-2, 0.5rem);
+  /* The end segment sits as far from the edge as from the top, so it nests concentric (VI-838). */
+  padding: var(--spacing-1, 0.25rem) var(--spacing-1, 0.25rem) var(--spacing-1, 0.25rem) var(--spacing-2, 0.5rem);
   border-radius: var(--radius-full, 9999px);
   background: var(--surface-popover, var(--surface-card, #111827));
   color: var(--text-secondary, #4b5563);
