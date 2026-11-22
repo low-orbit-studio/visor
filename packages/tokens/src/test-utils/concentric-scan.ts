@@ -19,7 +19,9 @@
  * and both corners carry the same `corner-shape` where the browser has it.
  * Radii are the drawn ones (clamped to half the box), so pill in pill reads
  * right. A corner flush with the padding edge of a rounded ancestor that
- * clips is skipped: the clip draws it.
+ * clips is skipped: the clip draws it. Where the browser has no
+ * `corner-shape`, a box drawing the squircle fallback (VI-839) counts as its
+ * squircle: its `--squircle-r` radius and a squircle corner.
  */
 
 export type Corner = "top-left" | "top-right" | "bottom-right" | "bottom-left"
@@ -93,13 +95,19 @@ export function scanConcentric(options: ConcentricScanOptions = {}): ConcentricP
         s.getPropertyValue(`border-${side.toLowerCase()}-style`) !== "none" &&
         alpha(s.getPropertyValue(`border-${side.toLowerCase()}-color`)) > 0,
     )
+  // Where the browser has no corner-shape, a box drawing the squircle fallback (VI-839)
+  // carries its squircle's radius in --squircle-r and draws a smaller circle under the clip.
+  const fallback = (s: CSSStyleDeclaration): number =>
+    s.clipPath.startsWith("shape(") ? parseFloat(s.getPropertyValue("--squircle-r")) || 0 : 0
   const radius = (s: CSSStyleDeclaration, c: Corner, r: DOMRect): number => {
+    const squircle = fallback(s)
+    if (squircle > 0) return Math.min(squircle, r.width / 2, r.height / 2)
     const raw = s.getPropertyValue(`border-${c}-radius`).split(" ")[0] ?? "0"
     const v = raw.endsWith("%") ? (parseFloat(raw) / 100) * r.width : parseFloat(raw) || 0
     return Math.min(v, r.width / 2, r.height / 2)
   }
   const shape = (s: CSSStyleDeclaration, c: Corner): string =>
-    s.getPropertyValue(`corner-${c}-shape`) || "round"
+    s.getPropertyValue(`corner-${c}-shape`) || (fallback(s) > 0 ? "squircle" : "round")
   const visible = (s: CSSStyleDeclaration, r: DOMRect): boolean =>
     r.width > 0 && r.height > 0 && s.visibility !== "hidden" && s.display !== "none" && parseFloat(s.opacity) > 0
   const clips = (s: CSSStyleDeclaration): boolean => s.overflow !== "visible" || s.clipPath !== "none"

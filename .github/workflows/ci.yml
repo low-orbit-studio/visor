@@ -241,11 +241,18 @@ jobs:
       - name: Build docs site
         run: npm run docs:build
 
-      - name: Install Playwright browsers (chromium only)
-        run: npx playwright install --with-deps chromium
+      # WebKit stands in for Safari, which has no corner-shape (VI-839).
+      - name: Install Playwright browsers (chromium and webkit)
+        run: npx playwright install --with-deps chromium webkit
 
       - name: Concentric corner scan (production build)
         run: npm run test:concentric -w packages/docs
+
+      # VI-839: the squircle fallback, read in real Chromium and WebKit (Build & Test shards have no browsers).
+      - name: Squircle fallback (Chromium and WebKit)
+        run: npx vitest run components/ui/__tests__/squircle-fallback.test.ts
+        env:
+          VISOR_REQUIRE_BROWSER: "1"
 
       - name: Upload scan report on failure
         if: failure()

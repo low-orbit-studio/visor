@@ -7,16 +7,29 @@ import { scanConcentric, type ConcentricPair } from "../../tokens/src/test-utils
 // page must be concentric (inner = outer - gap, the same inset on both axes).
 // The audit behind the allowlist is docs/audits/concentric-corners.md.
 
-/** Pairs that are not concentric on purpose: `<page> <outer > inner>` → the reason. */
-const ALLOWLIST: Record<string, string> = {
-  "/docs/components/navigation/doc-nav div[data-slot=doc-nav-group] > a[data-slot=doc-nav-pill]":
-    "Pill links in a ~12px cluster (BO-67 design). Deriving gives 3px pills; deriving the cluster gives the ballooned radius BO-67 removed.",
-  "/docs/components/navigation/doc-frame div[data-slot=doc-nav-group] > a[data-slot=doc-nav-pill]":
-    "The same doc-nav pills, inside DocFrame.",
-  "/docs/components/data-display/fidelity-mirror div > span":
-    "The specimen mirrors the doc-nav pills above, so it carries their allowlisted shape.",
-  "/docs/components/data-display/layer-chart button[data-slot=layer-chart-block] > span.layer-chart.text":
-    "A backing chip that hugs the label over the pattern; its size follows the text, not the block.",
+type Engine = "chromium" | "webkit";
+
+/**
+ * Pairs that are not concentric on purpose: `<page> <outer > inner>` → the reason. `engines`
+ * names where the pair must still fail (the stale check), default both. A text-sized box can
+ * pass in one engine's font metrics and fail in another's, so the allowance itself holds in
+ * every engine.
+ */
+const ALLOWLIST: Record<string, { reason: string; engines?: Engine[] }> = {
+  "/docs/components/navigation/doc-nav div[data-slot=doc-nav-group] > a[data-slot=doc-nav-pill]": {
+    reason: "Pill links in a ~12px cluster (BO-67 design). Deriving gives 3px pills; deriving the cluster gives the ballooned radius BO-67 removed.",
+  },
+  "/docs/components/navigation/doc-frame div[data-slot=doc-nav-group] > a[data-slot=doc-nav-pill]": {
+    reason: "The same doc-nav pills, inside DocFrame.",
+  },
+  "/docs/components/data-display/fidelity-mirror div > span": {
+    reason: "The specimen mirrors the doc-nav pills above, so it carries their allowlisted shape.",
+  },
+  "/docs/components/data-display/layer-chart button[data-slot=layer-chart-block] > span.layer-chart.text": {
+    reason: "A backing chip that hugs the label over the pattern; its size follows the text, not the block.",
+    // Its size follows the font: Linux WebKit's metrics put it clear of the block's corner (VI-839).
+    engines: ["chromium"],
+  },
 };
 
 // The allowlist cannot quietly absorb failures: growing it past this means raising the cap in review.
@@ -107,7 +120,7 @@ test("the scan fails a 12px card around an 8px child inset 8px", async ({ page }
   expect(good.every((p) => p.ok)).toBe(true);
 });
 
-test("component pages have no unlisted non-concentric corners", async ({ browser }, info) => {
+test("component pages have no unlisted non-concentric corners", async ({ browser, browserName }, info) => {
   test.setTimeout(300_000);
   expect(Object.keys(ALLOWLIST).length).toBeLessThanOrEqual(ALLOWLIST_CAP);
 
@@ -126,7 +139,10 @@ test("component pages have no unlisted non-concentric corners", async ({ browser
   if (process.env.CONCENTRIC_AUDIT) writeFileSync(process.env.CONCENTRIC_AUDIT, JSON.stringify(found, null, 2));
 
   // Every allowlist entry must still match a pair, so a fixed pair leaves the list.
-  const stale = Object.keys(ALLOWLIST).filter((k) => !found.some((p) => !p.ok && `${p.page} ${p.key}` === k));
+  const stale = Object.entries(ALLOWLIST)
+    .filter(([, e]) => (e.engines ?? ["chromium", "webkit"]).includes(browserName as Engine))
+    .map(([k]) => k)
+    .filter((k) => !found.some((p) => !p.ok && `${p.page} ${p.key}` === k));
   expect(stale, "Allowlist entries that no longer match a pair").toEqual([]);
 
   const report = [

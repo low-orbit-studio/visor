@@ -324,3 +324,64 @@
 .itemVariantOption[data-state="on"] .optionCheck svg {
   opacity: 1;
 }
+
+/* Squircle fallback (VI-839). Where the browser has no corner-shape (Safari)
+   and the theme draws squircles, the outline track, the sliding indicator and
+   the items draw the theme's squircle from --squircle-radius and
+   --squircle-clip. Each sets --squircle-r, its radius clamped to half its
+   height; the track's height is its items' plus padding and border, and the
+   indicator's is that less the gap on both sides. Chromium and round themes
+   skip this. */
+@supports not (corner-shape: squircle) {
+  @container style(--corner-shape: squircle) {
+    .variantOutline.sizeXs { --_sq-track-h: calc(1.5rem + 2 * var(--_track-padding) + 2 * var(--_track-border)); }
+    .variantOutline.sizeSm { --_sq-track-h: calc(1.75rem + 2 * var(--_track-padding) + 2 * var(--_track-border)); }
+    .variantOutline.sizeMd { --_sq-track-h: calc(2.25rem + 2 * var(--_track-padding) + 2 * var(--_track-border)); }
+    .variantOutline.sizeLg { --_sq-track-h: calc(2.75rem + 2 * var(--_track-padding) + 2 * var(--_track-border)); }
+
+    .variantOutline {
+      --squircle-r: min(var(--_track-radius), calc(var(--_sq-track-h) / 2));
+      --squircle-edge: var(--_track-border);
+      border-radius: var(--squircle-radius, var(--squircle-r));
+      clip-path: var(--squircle-clip, none);
+    }
+
+    .variantOutline .indicator {
+      --squircle-r: min(var(--_inner-radius), calc(var(--_sq-track-h) / 2 - var(--_track-padding) - var(--_track-border)));
+    }
+
+    .variantOutline.sizeXs .indicator {
+      --squircle-r: min(var(--toggle-group-xs-item-radius, var(--_inner-radius)), calc(var(--_sq-track-h) / 2 - var(--_track-padding) - var(--_track-border)));
+    }
+
+    .itemVariantOutline.item {
+      --squircle-r: min(var(--_inner-radius), calc(var(--label-box-height) / 2));
+    }
+
+    .itemVariantOutline.itemSizeXs {
+      --squircle-r: min(var(--toggle-group-xs-item-radius, var(--_inner-radius)), calc(var(--label-box-height) / 2));
+    }
+
+    .variantOutline.variantOutline .indicator,
+    .itemVariantOutline.itemVariantOutline.item {
+      border-radius: var(--squircle-radius, var(--squircle-r));
+      clip-path: var(--squircle-clip, none);
+    }
+
+    /* The track's border is redrawn on ::before as the squircle ring. */
+    .variantOutline {
+      border-color: var(--squircle-edge-off, var(--border-default, #e5e7eb));
+    }
+
+    .variantOutline::before {
+      content: "";
+      position: absolute;
+      inset: calc(-1 * var(--_track-border));
+      --squircle-r: inherit;
+      --squircle-edge: inherit;
+      background-color: var(--border-default, #e5e7eb);
+      clip-path: var(--squircle-ring, inset(50%));
+      pointer-events: none;
+    }
+  }
+}

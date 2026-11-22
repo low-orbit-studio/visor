@@ -14,7 +14,11 @@ export default defineConfig({
   workers: 1,
   reporter: process.env.CI ? [["list"], ["html", { open: "never" }], ["github"]] : "list",
   use: { baseURL: `http://localhost:${PORT}` },
-  projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
+  // WebKit has no corner-shape: it stands in for Safari, where squircle themes draw the fallback (VI-839).
+  projects: [
+    { name: "chromium", use: { ...devices["Desktop Chrome"] } },
+    { name: "webkit", use: { ...devices["Desktop Safari"] } },
+  ],
   webServer: {
     command: `npm run start -w packages/docs -- -p ${PORT}`,
     cwd: "../../",
