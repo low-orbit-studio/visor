@@ -1,6 +1,6 @@
 # Concentric Corners Audit
 
-VI-838. Every place in the Visor docs examples where a rounded box is drawn inside another rounded box, and what was done about it. The gate that keeps it this way is `packages/docs/e2e/concentric-scan.spec.ts`, which runs in CI's visual-regression job.
+VI-838. Every place in the Visor docs examples where a rounded box is drawn inside another rounded box, and what was done about it. The gate that keeps it this way is `packages/docs/e2e/concentric-scan.spec.ts`. It runs in CI's own **Concentric corners** job against the production docs build (`npm run test:concentric -w packages/docs` after `npm run docs:build`).
 
 ## The Rule
 
@@ -25,7 +25,7 @@ The spec scans every component page's examples, every iframe on the page (the lo
 | Tabs list > trigger | navigation/tabs | outer 18, inset 3 × 4, inner 14 | **Fixed.** The list's inline padding gets the same extra 1px the trigger's `calc(100% - 2px)` height leaves above and below. Now inset 4 × 4. |
 | ThemeSwitcher root > segment | general/theme-switcher | outer 23, inset 8 × 4, inner 19 | **Fixed.** The end padding matches the top (4px); the start keeps 8px for the label. |
 | SegmentedControl / ToggleGroup track > indicator | form/segmented-control, form/toggle-group | inset up to 4.13 × 5 at the right end | **Fixed.** The indicator was positioned from `offset*`, which round to whole pixels, and never re-measured after web fonts landed. It now measures fractional rects and follows item resizes. |
-| Meter (contract) track > fill | data-display/meter | outer 10, inset 6 × 9, inner 6 (pill) | **Fixed.** One 9px inset on both axes; the fill radius is the track radius minus the inset (1px). The compact meter stays pill in pill (inset 2 × 2). |
+| Meter (contract) track > fill | data-display/meter | outer 10, inset 6 × 9, inner 6 (pill) | **Fixed (Justin's call: pill track).** The 30px track is a pill and the bar is inset 9px on both axes, so it is a pill too: drawn radius 6 = 15 − 9. The compact meter was already pill in pill (inset 2 × 2). |
 | BillingSlider track > fill, past, gap, evidence, proposed layers | form/billing-slider | square corners flush with a 13 or 16px rail that does not clip | **Fixed.** The colour layers sit in one span that clips to the rail, like the ruler already did; marks and ticks stay outside the clip. |
 | Select content > highlighted item | form/select, admin/filter-bar | outer 8, inset 4 × 4, inner 2 | **Fixed.** Item radius = menu radius − menu padding (4px). |
 | TimePicker list > highlighted option | form/time-picker | outer 8, inset 4 × 4, inner 2 | **Fixed** the same way. |

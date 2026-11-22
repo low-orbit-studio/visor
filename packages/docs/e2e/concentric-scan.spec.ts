@@ -71,6 +71,8 @@ async function scanFrame(frame: Frame, path: string, root: string | undefined, i
 async function scanPage(page: Page, path: string, info: TestInfo): Promise<Found[]> {
   await page.goto(path, { waitUntil: "load" });
   await page.evaluate(() => document.fonts.ready.then(() => true));
+  // The look frames reload on the docs theme after hydration; scan once they are done.
+  await page.waitForLoadState("networkidle", { timeout: 5_000 }).catch(() => null);
   const out: Found[] = [];
   for (const frame of page.frames()) {
     out.push(...(await scanFrame(frame, path, frame === page.mainFrame() ? ".preview-render" : undefined, info)));

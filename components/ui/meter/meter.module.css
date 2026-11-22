@@ -22,10 +22,11 @@
   min-width: 0;
 }
 
-/* Contract geometry from the LO-345 frame: a 30px track, a thinner used bar, ticks 6px proud. */
+/* Contract geometry from the LO-345 frame: a 30px track, a thinner used bar, ticks 6px proud.
+   The track is a pill so the bar, inset 9px all round, nests in it as a pill (VI-838). */
 .root[data-size="contract"] {
   --_track-h: 30px;
-  --_track-radius: 10px;
+  --_track-radius: var(--radius-full, 9999px);
   --_inset-x: 9px;
   --_inset-y: 9px;
   --_tick-out: 6px;
