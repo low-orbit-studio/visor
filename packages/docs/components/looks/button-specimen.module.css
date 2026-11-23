@@ -43,12 +43,6 @@
   justify-content: center;
 }
 
-/* Only a squircle theme emits the `corner-shape: var(--corner-shape)` binding,
-   so a stock theme needs it here for the pills to draw squircles. */
-.pills > * {
-  corner-shape: var(--corner-shape);
-}
-
 /* Over a photo the outline keeps the glass fill on hover too, so its label
    never drops to a thin wash; the grow is the hover cue. The back arrow sits on
    the same frosted glass fill, so the two secondary controls match (BO-77). */

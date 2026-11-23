@@ -99,9 +99,13 @@ test("Form panel: the plain looks draw no panel, so they are unchanged", async (
 });
 
 // The Button specimen binds the kit's pill hooks on every stock theme, as on main: Dark and Light
-// draw the ink-on-paper pill, Today the theme's key colour, all squircle-cornered pills. Only the
-// Honcho themes, which bind the hooks themselves, take their own values (covered below).
+// draw the ink-on-paper pill, Today the theme's key colour. Only the Honcho themes, which bind the
+// hooks themselves, take their own values (covered below). The corners are as on main too: a stock
+// theme binds no corner-shape, so the pills draw round unless a squircle theme's stylesheet is on
+// the page. Honcho's does that wherever the private themes are installed: it binds corner-shape on
+// every element, so locally the pills draw squircles; in public CI they draw round.
 test("Button specimen: a stock theme's Today, Dark and Light draw the kit's pills", async ({ page }) => {
+  const corners = (await privateThemesInstalled(page)) ? "squircle" : "round";
   for (const look of ["today", "dark", "light"]) {
     await page.goto(`/looks/panel?theme=neutral&look=${look}&specimen=button`);
     await expect(page.locator("body.neutral-theme")).toHaveCount(1);
@@ -128,7 +132,7 @@ test("Button specimen: a stock theme's Today, Dark and Light draw the kit's pill
     expect(read.buttons).toHaveLength(3);
     for (const b of read.buttons) {
       expect(b.radius, `${look} radius`).toBe("999px");
-      expect(b.cornerShape, `${look} corner-shape`).toBe("squircle");
+      expect(b.cornerShape, `${look} corner-shape`).toBe(corners);
     }
     const primary = read.buttons.find((b) => b.primary)!;
     expect(primary.height, `${look} lg height`).toBe("54px");
@@ -399,9 +403,12 @@ for (const width of [1440, 390]) {
     }
     await testInfo.attach("button-measurements", { body: JSON.stringify(rows, null, 2), contentType: "application/json" });
     if (process.env.LOOKS_AUDIT_OUT) (await import("node:fs")).writeFileSync(`${process.env.LOOKS_AUDIT_OUT}-${width}.json`, JSON.stringify(rows, null, 2));
-    // Honcho's white label on its key pink measures 3.5:1, accepted in the theme itself (BO-80,
-    // visor-themes-private themes/honcho): still measured and listed, held to that 3.5:1.
-    const accepted = (r: Record<string, unknown>) => r.theme === "honcho" && r.background === "rgb(255, 45, 138)";
+    // One operator-recorded exception: white ink on Honcho's key pink #ff2d8a measures 3.5:1. BO-80
+    // (Justin) records it: "Backstage uses `#ff2d8a` (`themes/honcho-backstage`, white text, 3.5:1
+    // accepted)", and moved honcho's key to that pink and white ink. Only that pair on honcho is held
+    // to 3.5:1; every other text button stays at 4.5:1 and every icon at 3:1.
+    const accepted = (r: Record<string, unknown>) =>
+      r.theme === "honcho" && r.background === "rgb(255, 45, 138)" && r.ink === "rgba(255,255,255,255)";
     for (const r of rows.filter(accepted)) expect(r.min as number, `${r.specimen} "${r.name}"`).toBeGreaterThanOrEqual(3.49);
     const short = rows.filter((r) => !accepted(r) && (r.min as number) < (r.floor as number));
     expect(short, "buttons under their contrast floor").toEqual([]);
