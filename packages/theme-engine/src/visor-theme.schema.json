@@ -632,7 +632,7 @@
         },
         "glass": {
           "type": "object",
-          "description": "The glass layer over a photo: surface fill, blur, edge, lift, shadow and on-photo ink, plus the glass values controls read. Draws only inside `data-glass=\"on\"`; elsewhere components keep their solid surface and border. Keys: fill, blur, edge, lift, shadow, ink, control-fill, control-hover-fill, control-ring, control-ink, control-blur.",
+          "description": "The glass layer over a photo: surface fill, blur, edge, lift, shadow, on-photo ink, the scrim under white labels with its ink and shadow, plus the glass values controls read. Draws only inside `data-glass=\"on\"`; elsewhere components keep their solid surface and border. Keys: fill, blur, edge, lift, shadow, ink, scrim, scrim-ink, ink-shadow, control-fill, control-hover-fill, control-ring, control-ink, control-blur.",
           "additionalProperties": {
             "$ref": "#/$defs/componentTokenBinding"
           }
@@ -654,6 +654,13 @@
         "spinner": {
           "type": "object",
           "description": "Inline loading ring — track, leading edge, per-size geometry, cycle length, the delayed fade-in and the visible words. Keys: track-color, edge-color, primary-edge-color, radius, duration, xs-size, xs-border-width, sm-size, sm-border-width, md-size, md-border-width, appear-duration, label-gap, label-font-size, label-font-weight, label-color.",
+          "additionalProperties": {
+            "$ref": "#/$defs/componentTokenBinding"
+          }
+        },
+        "stepper": {
+          "type": "object",
+          "description": "Stepper's `rail` variant — row gap and inset, the space between mark and label, label size, weight and tracking, and the dot mark's size and current width. Keys: rail-gap, rail-padding, rail-mark-gap, rail-font-size, rail-font-weight, rail-letter-spacing, rail-mark-size, rail-mark-active-width.",
           "additionalProperties": {
             "$ref": "#/$defs/componentTokenBinding"
           }

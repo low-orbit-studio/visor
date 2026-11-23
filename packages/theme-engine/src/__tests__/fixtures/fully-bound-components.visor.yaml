@@ -231,6 +231,9 @@ components:
       dark: "transparent"
     shadow: "0 48px 120px -48px #000"
     ink: "#ffffff"
+    scrim: "#0000009e"
+    scrim-ink: "#fffff0"
+    ink-shadow: "0 0 10px #0000008c"
     control-fill:
       light: "#ffffff24"
       dark: "#ffffff3d"
@@ -293,6 +296,15 @@ components:
     label-font-size: "37px"
     label-font-weight: "900"
     label-color: "#ff00aa"
+  stepper:
+    rail-gap: "3px"
+    rail-padding: "7px 4px"
+    rail-mark-gap: "37px"
+    rail-font-size: "37px"
+    rail-font-weight: "900"
+    rail-letter-spacing: "0.3em"
+    rail-mark-size: "37px"
+    rail-mark-active-width: "73px"
   checkbox:
     size: "37px"
     radius: "3px"

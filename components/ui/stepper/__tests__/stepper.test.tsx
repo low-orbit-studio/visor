@@ -397,3 +397,96 @@ describe("accessibility", () => {
     await checkA11y(container)
   })
 })
+
+describe("rail variant (VI-810)", () => {
+  const SECTIONS = [
+    { label: "Welcome", status: "complete" },
+    { label: "About You", status: "active" },
+    { label: "Travel", status: "upcoming" },
+    { label: "Pay", status: "locked" },
+  ] as const
+
+  function renderRail(onClick = vi.fn()) {
+    const utils = render(
+      <Stepper orientation="vertical" variant="rail" aria-label="Sections">
+        {SECTIONS.map((s, i) => (
+          <StepperItem key={s.label} step={i} status={s.status}>
+            <StepperTrigger step={i} status={s.status} onClick={() => onClick(s.label)}>
+              {s.label}
+            </StepperTrigger>
+          </StepperItem>
+        ))}
+      </Stepper>
+    )
+    return { ...utils, onClick }
+  }
+
+  const trigger = (name: string) => screen.getByRole("button", { name: new RegExp(name) })
+
+  it("draws one button per section holding the mark and the label", () => {
+    const { container } = renderRail()
+    expect(screen.getAllByRole("button")).toHaveLength(SECTIONS.length)
+    for (const s of SECTIONS) {
+      const button = trigger(s.label)
+      expect(button.querySelector("[aria-hidden='true']")).not.toBeNull()
+      expect(button).toHaveTextContent(s.label)
+    }
+    expect(container.querySelector("[data-slot='stepper']")).toHaveAttribute("data-variant", "rail")
+  })
+
+  it("puts the status on the DOM, and aria-current only on the active trigger", () => {
+    const { container } = renderRail()
+    for (const s of SECTIONS) {
+      expect(trigger(s.label)).toHaveAttribute("data-status", s.status)
+    }
+    const current = container.querySelectorAll("[aria-current]")
+    expect(current).toHaveLength(1)
+    expect(current[0]).toBe(trigger("About You"))
+    expect(current[0]).toHaveAttribute("aria-current", "step")
+  })
+
+  it("draws no circle content: no glyph and no step number", () => {
+    renderRail()
+    const srText = { complete: "Completed", active: "Step 2", upcoming: "Step 3", locked: "Step 4, locked" }
+    for (const s of SECTIONS) {
+      const button = trigger(s.label)
+      expect(button.querySelector("svg")).toBeNull()
+      expect(button.textContent).toBe(`${s.label}${srText[s.status]}`)
+    }
+  })
+
+  it("makes a locked section unusable", async () => {
+    const user = userEvent.setup()
+    const { onClick } = renderRail()
+    const locked = trigger("Pay")
+    expect(locked).toHaveAttribute("aria-disabled", "true")
+    expect(locked).toHaveAttribute("tabIndex", "-1")
+    await user.click(locked)
+    expect(onClick).not.toHaveBeenCalled()
+  })
+
+  it("tabs complete → active → upcoming and skips locked; Enter and Space fire once each", async () => {
+    const user = userEvent.setup()
+    const { onClick } = renderRail()
+    await user.tab()
+    expect(trigger("Welcome")).toHaveFocus()
+    await user.tab()
+    expect(trigger("About You")).toHaveFocus()
+    await user.tab()
+    expect(trigger("Travel")).toHaveFocus()
+    await user.tab()
+    expect(trigger("Pay")).not.toHaveFocus()
+
+    trigger("Welcome").focus()
+    await user.keyboard("{Enter}")
+    expect(onClick).toHaveBeenCalledTimes(1)
+    await user.keyboard(" ")
+    expect(onClick).toHaveBeenCalledTimes(2)
+    expect(onClick).toHaveBeenNthCalledWith(2, "Welcome")
+  })
+
+  it("has no axe violations", async () => {
+    const { container } = renderRail()
+    await checkA11y(container)
+  })
+})
