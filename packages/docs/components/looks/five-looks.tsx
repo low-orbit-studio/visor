@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { PRIVATE_THEMES } from '@/lib/private-themes';
 import { useActiveTheme } from '@/components/playgrounds/sections/use-active-theme';
-import { LOOKS, type LookMode } from './looks';
+import { LOOKS, TODAY_THEMES, type LookMode } from './looks';
 import styles from './five-looks.module.css';
 
 const PRIVATE_SLUGS = PRIVATE_THEMES.map((t) => t.slug);
@@ -22,7 +22,7 @@ export interface FiveLooksProps {
   height?: number;
   /** Draw every look on this theme instead of the one picked in the docs. */
   theme?: string;
-  /** Draw Today on this theme (Honcho's Today look is its own theme). Defaults to `theme`. */
+  /** Draw Today on this theme. Defaults to the theme's Today theme in `TODAY_THEMES`, else `theme`. */
   todayTheme?: string;
 }
 
@@ -30,8 +30,9 @@ export interface FiveLooksProps {
  * One specimen in all five looks (Today, Dark, Dark + Photo, Light, Light + Photo),
  * on the theme picked in the docs. Each look is its own frame, because a page can
  * only hold one light/dark mode per theme. Today follows the docs site's mode.
- * A `?photo=/path.jpg` on the page swaps the stand-in photo for a real one; `?photo-dark=` and
- * `?photo-light=` set one per tone (a night photo behind Dark + Photo, a day photo behind Light + Photo).
+ * The photo looks use a private theme's real photos (VI-829); a `?photo=/path.jpg` on the page
+ * swaps in another one, and `?photo-dark=` / `?photo-light=` set one per tone (a night photo behind
+ * Dark + Photo, a day photo behind Light + Photo).
  */
 export function FiveLooks({ specimen, height = 340, theme: themeProp, todayTheme }: FiveLooksProps) {
   const theme = useActiveTheme(themeProp, PRIVATE_SLUGS);
@@ -52,7 +53,7 @@ export function FiveLooks({ specimen, height = 340, theme: themeProp, todayTheme
   return (
     <div className={styles.grid} data-slot="five-looks">
       {LOOKS.map((look) => {
-        const lookTheme = look.id === 'today' ? (todayTheme ?? theme) : theme;
+        const lookTheme = look.id === 'today' ? (todayTheme ?? TODAY_THEMES[theme] ?? theme) : theme;
         const query = new URLSearchParams({ theme: lookTheme, look: look.id, mode, specimen });
         const photo = look.mode ? photos[look.mode] : '';
         if (photo) query.set('photo', photo);
