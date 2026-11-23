@@ -169,7 +169,42 @@ for (const which of ["toggle", "picker"] as const) {
 }
 
 // The keyboard walk and reduced motion, in every look on the stock theme.
-test("keyboard: Enter flips the toggle, the focus ring shows, and reduced motion keeps the icons still", async ({ page }) => {
+
+/** From the frame's top-left corner, press Tab until `target` holds focus, as a keyboard user reaches it. */
+async function tabTo(page: Page, frame: Frame, target: Locator) {
+  await frame.locator("body").click({ position: { x: 1, y: 1 } });
+  expect(await frame.evaluate(() => document.activeElement === document.body)).toBe(true);
+  for (let i = 0; i < 12 && !(await target.evaluate((el) => el === document.activeElement)); i++) await page.keyboard.press("Tab");
+  await expect(target).toBeFocused({ timeout: 1_000 });
+}
+
+const THUMBS = '[data-slot="photo-picker"] button';
+
+/**
+ * Changes PhotoPicker's `play` (the specimen's `?play=`) and waits until the change has re-triggered
+ * the wave: every thumbnail's draw class, stripped first, is back.
+ */
+async function replayWave(frame: Frame) {
+  await frame.evaluate((sel) => {
+    for (const b of document.querySelectorAll(sel)) b.className = b.classList[0]!;
+    const url = new URL(location.href);
+    url.searchParams.set("play", String(Number(url.searchParams.get("play") ?? 0) + 1));
+    history.replaceState(null, "", url);
+  }, THUMBS);
+}
+
+/** Running CSS animations on each thumbnail (not the chosen ring's transition or the images' fade). */
+function runningWave(frame: Frame) {
+  return frame.evaluate(
+    (sel) =>
+      [...document.querySelectorAll(sel)].map(
+        (b) => b.getAnimations().filter((a) => a instanceof CSSAnimation).length + (getComputedStyle(b).animationName !== "none" ? 1 : 0),
+      ),
+    THUMBS,
+  );
+}
+
+test("keyboard: Tab reaches the toggle, Enter flips it, the focus ring shows, and reduced motion keeps the icons still", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   await openDocs(page, PAGES.toggle.path, "light");
   const grid = page.locator('[data-slot="five-looks"]').first();
@@ -179,9 +214,7 @@ test("keyboard: Enter flips the toggle, the focus ring shows, and reduced motion
       const button = frame.locator('[data-slot="theme-toggle"]');
       const start = (await button.getAttribute("data-tone"))!;
       const other = start === "dark" ? "light" : "dark";
-      await frame.locator("body").focus();
-      await button.focus();
-      await expect(button).toBeFocused({ timeout: 1_000 });
+      await tabTo(page, frame, button);
       expect(await button.evaluate((el) => getComputedStyle(el).outlineStyle)).not.toBe("none");
       await page.keyboard.press("Enter");
       await expect(button).toHaveAttribute("data-tone", other, { timeout: 1_000 });
@@ -193,26 +226,45 @@ test("keyboard: Enter flips the toggle, the focus ring shows, and reduced motion
   }
 });
 
-test("keyboard: Space on a thumbnail chooses it, and reduced motion runs no wave", async ({ page }) => {
+test("keyboard: Tab into the picker, Space chooses a thumbnail, and under reduced motion a `play` change runs no wave", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   await openDocs(page, PAGES.picker.path, "light");
   const grid = page.locator('[data-slot="five-looks"]').first();
   for (const look of LOOKS) {
     await expect(async () => {
       const frame = await lookFrame(grid, look.id, "neutral", PAGES.picker.specimen);
-      const thumbs = frame.locator('[data-slot="photo-picker"] button');
+      const thumbs = frame.locator(THUMBS);
       const old = frame.locator('[data-slot="photo-picker"] [aria-pressed="true"]');
       const oldIndex = await old.evaluate((el) => [...el.parentElement!.children].indexOf(el));
       const target = thumbs.nth(oldIndex === 0 ? 1 : 0);
-      await target.focus();
-      await expect(target).toBeFocused({ timeout: 1_000 });
+      await tabTo(page, frame, target);
+      expect(await target.evaluate((el) => getComputedStyle(el).outlineStyle)).not.toBe("none");
       await page.keyboard.press("Space");
       await expect(target).toHaveAttribute("aria-pressed", "true", { timeout: 1_000 });
       await expect(thumbs.nth(oldIndex)).toHaveAttribute("aria-pressed", "false");
-      const running = await frame.evaluate(() =>
-        [...document.querySelectorAll('[data-slot="photo-picker"] button')].some((b) => getComputedStyle(b).animationName !== "none"),
-      );
-      expect(running).toBe(false);
+    }).toPass({ timeout: 20_000 });
+    const frame = await lookFrame(grid, look.id, "neutral", PAGES.picker.specimen);
+    const thumbs = frame.locator(THUMBS);
+    await replayWave(frame);
+    // Wait until the change has reached the thumbnails (draw class back, or a wave already running).
+    await expect
+      .poll(async () => (await thumbs.evaluateAll((bs) => bs.every((b) => b.classList.length > 1))) || (await runningWave(frame)).some((n) => n > 0))
+      .toBe(true);
+    expect(await runningWave(frame), `${look.id}: no thumbnail animates`).toEqual(Array(await thumbs.count()).fill(0));
+  }
+});
+
+// The counter-check, so the one above can fail: without reduced motion the same `play` change runs the wave.
+test("motion: a `play` change runs the draw wave when motion is allowed", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  await openDocs(page, PAGES.picker.path, "light");
+  const grid = page.locator('[data-slot="five-looks"]').first();
+  for (const look of LOOKS) {
+    await expect(async () => {
+      const frame = await lookFrame(grid, look.id, "neutral", PAGES.picker.specimen);
+      await expect.poll(async () => (await runningWave(frame)).every((n) => n === 0), { timeout: 5_000 }).toBe(true);
+      await replayWave(frame);
+      await expect.poll(async () => (await runningWave(frame)).some((n) => n > 0), { timeout: 2_000 }).toBe(true);
     }).toPass({ timeout: 20_000 });
   }
 });

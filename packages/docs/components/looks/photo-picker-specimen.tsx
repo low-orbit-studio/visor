@@ -21,9 +21,11 @@ function thumbs(param: string | null): PhotoPickerPhoto[] {
  * PhotoPicker as the theme skins it (VI-816): no ring or colour hooks, so the resting ring is
  * the theme's border and the chosen ring its key colour. Over a photo the grid sits on a glass
  * panel, as Backstage's Photo menu sits in its glass popover; elsewhere the panel draws nothing.
+ * `?play=N` replays the draw wave whenever N changes (the e2e's reduced-motion check flips it).
  */
 export function PhotoPickerSpecimen() {
-  const photos = thumbs(useSearchParams().get('thumbs'));
+  const params = useSearchParams();
+  const photos = thumbs(params.get('thumbs'));
   const [value, setValue] = useState(photos[1]?.key ?? null);
   return (
     <div className={styles.panel} data-slot="photo-picker-panel">
@@ -35,6 +37,7 @@ export function PhotoPickerSpecimen() {
         photos={photos.slice(0, 6)}
         value={value}
         onValueChange={setValue}
+        play={Number(params.get('play') ?? 0)}
       />
     </div>
   );
