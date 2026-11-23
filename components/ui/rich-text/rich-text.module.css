@@ -1,0 +1,62 @@
+/* RichText: paragraphs and lists as block spans, and links. It draws no surface and
+ * no glass: text and link ink inherit from the host, so it reads right in every look.
+ * The gaps and the bullet are in em so they scale with the host's text; calc() marks
+ * them as intentional (not on the 4px grid). */
+
+.para {
+  display: block;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: calc(0.4em);
+}
+
+:is(.para, .list) + :is(.para, .list) {
+  margin-top: calc(0.75em);
+}
+
+.item {
+  position: relative;
+  display: block;
+  padding-left: calc(1.1em);
+}
+
+.item::before {
+  content: "";
+  position: absolute;
+  left: 0.15em;
+  top: 0.68em;
+  width: 0.34em;
+  height: 0.34em;
+  border-radius: var(--radius-full, 9999px);
+  /* A bullet stays a circle when a theme draws squircle corners (VI-796). */
+  --corner-shape: round;
+  background: currentColor;
+  opacity: var(--opacity-60, 0.6);
+}
+
+/* Link text is the host's ink; the underline is a theme value (the rich-text family's
+ * link-underline key), by default the host's ink at 40%. */
+.link {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: var(--rich-text-link-underline, color-mix(in srgb, currentColor 40%, transparent));
+  text-underline-offset: 0.2em;
+  transition: text-decoration-color var(--motion-duration-300, 300ms) var(--motion-easing-ease-out, cubic-bezier(0, 0, 0.2, 1));
+}
+
+@media (hover: hover) {
+  .link:hover {
+    text-decoration-color: currentColor;
+  }
+}
+
+/* An en dash at en-dash width (see the dashes helper). */
+.nd {
+  display: inline-flex;
+  justify-content: center;
+  width: 0.5em;
+  transform: scaleX(0.6);
+}

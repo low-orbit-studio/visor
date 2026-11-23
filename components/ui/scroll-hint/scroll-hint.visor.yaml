@@ -1,0 +1,83 @@
+name: ScrollHint
+description: A "More Below" pill pinned to a scroll box's bottom edge while there is more to scroll, with a useKeepGoing hook that scrolls to the next unanswered field and focuses it.
+extends: HTMLDivElement
+category: form
+
+when_to_use:
+  - A long form in a fixed-height box (a slide, a sheet, a dialog) where the next field can sit below the fold
+  - A "Keep Going" button that should jump to the next field still to fill or fix, not submit
+  - Any scroll box whose bottom edge hides content a person might not know is there
+
+when_not_to_use:
+  - A page that scrolls as a whole; the browser's own scroll already tells people there is more
+  - A list that loads more on scroll (use the list's own loading state)
+  - A box short enough to never scroll
+
+why: >
+  FormDeck's slide and the edit sheet both needed a hint that a long form goes
+  on below, and a way to jump to the next field still to answer. ScrollHint is
+  that hint and useKeepGoing is that jump, lifted from the Honcho kit unchanged.
+  Render the hint as the scroll box's last child: it is a zero-height sticky row,
+  so it pins to the box's bottom edge and takes no room. It is an overlay, not a
+  fade, because a mask on the scroll box would make the box a backdrop root and
+  glass fields inside would stop blurring the photo behind it. The pill shows and
+  hides in CSS (opacity and a 6px rise), with no animation dependency. It is a
+  solid chip unless the glass layer's `data-glass="on"` switch says a photo sits
+  behind, where it turns to the page colour at 70% with the glass control blur.
+  The pill is hidden from assistive tech and out of the tab order: keyboard users
+  reach the next field through the form's own Keep Going button.
+
+theme_hooks:
+  - name: --scroll-hint-bg
+    description: The chip's fill, glass off (--surface-card).
+  - name: --scroll-hint-border
+    description: The chip's edge, glass off, drawn as an inset ring (--border-default). Over a photo the pill has no edge.
+  - name: --scroll-hint-color
+    description: The pill's words and caret (--text-secondary).
+  - name: --scroll-hint-glass-bg
+    description: The pill's fill inside data-glass="on" (the page colour at 70%), blurred with the glass layer's control blur.
+  - name: --scroll-hint-gap
+    description: The scroll box's row gap (0px). The hint row's negative top margin undoes it, so the hint adds no space; set it to the box's gap.
+
+props:
+  - name: boxRef
+    type: "RefObject<HTMLElement | null>"
+    required: true
+    description: The scroll box the hint sits in.
+  - name: keepGoing
+    type: KeepGoing
+    required: true
+    description: What useKeepGoing returns for the same box. `more` shows the pill; a click calls `go()`, or pages the box down by 0.8 of its height when no field is pending.
+  - name: label
+    type: ReactNode
+    default: '"More Below"'
+    description: The pill's words.
+
+dependencies:
+  - "@phosphor-icons/react"
+
+hooks:
+  - name: useKeepGoing
+    description: >
+      useKeepGoing(boxRef, pending, attr = "data-field", watch?). `pending` lists the
+      fields still to fill or fix, in order, by their `attr` value. `watch` re-attaches
+      when it changes, for a box that mounts or swaps its fields later. Returns
+      `{ more, below, go }`: `more` while there is more below the box's bottom edge,
+      `below` while a pending field sits below the fold, and `go()`, which scrolls that
+      field a fifth of the way down the box and focuses its first control on a fine
+      pointer (never on touch, where focus throws up the keyboard). `go()` returns
+      false when nothing is pending below.
+
+preview_url: "https://visor.loworbit.studio/docs/components/form/scroll-hint"
+
+example: |
+  const box = useRef<HTMLDivElement>(null)
+  const keepGoing = useKeepGoing(box, unanswered)
+
+  <div ref={box} className="form-box" style={{ "--scroll-hint-gap": "40px" }}>
+    {fields}
+    <ScrollHint boxRef={box} keepGoing={keepGoing} />
+  </div>
+  <Button onClick={() => keepGoing.go() || submit()}>
+    {keepGoing.below ? "Keep Going" : "Continue"}
+  </Button>

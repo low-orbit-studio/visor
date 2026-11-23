@@ -502,6 +502,12 @@ export const propsData: Record<string, PropDef[]> = {
     },
   ],
 
+  'scroll-hint': [
+    { name: 'boxRef', type: 'RefObject<HTMLElement | null>', required: true, description: 'The scroll box the hint sits in. Render the hint as its last child.' },
+    { name: 'keepGoing', type: 'KeepGoing', required: true, description: 'What useKeepGoing returns for the same box. `more` shows the pill; a click calls `go()`, or pages the box down by 0.8 of its height.' },
+    { name: 'label', type: 'ReactNode', default: '"More Below"', description: "The pill's words." },
+  ],
+
   'segmented-control': [
     {
       name: 'options',
@@ -1308,9 +1314,9 @@ export const propsData: Record<string, PropDef[]> = {
     },
     {
       name: 'variant',
-      type: "'default' | 'prominent'",
+      type: "'default' | 'prominent' | 'rail'",
       default: "'default'",
-      description: 'Visual treatment. "default" is the standard step indicator for multi-step forms. "prominent" adds a primary-soft active-row tint, a concentric halo, a filled pulse dot in the active bullet, and a primary-tinted complete rail — use it vertically as a primary derivation spine or navigation surface.',
+      description: 'Visual treatment. "default" is the standard step indicator for multi-step forms. "prominent" adds a primary-soft active-row tint, a concentric halo, a filled pulse dot in the active bullet, and a primary-tinted complete rail — use it vertically as a primary derivation spine or navigation surface. "rail" is a side list of form sections: each trigger is a row-wide button with a dot mark and its label (the children), the current mark stretches to a pill, and over a photo (data-glass="on") the ink is the glass ink in light, and the glass scrim ink (white) with its shadow in dark.',
     },
     {
       name: 'step',
@@ -1333,6 +1339,27 @@ export const propsData: Record<string, PropDef[]> = {
       name: 'className',
       type: 'string',
       description: 'Additional CSS class names to merge onto the element.',
+    },
+  ],
+
+  'rich-text': [
+    {
+      name: 'text',
+      type: 'string',
+      required: true,
+      description: 'The markup: `*bold*`, `_italic_`, `[label](https://…)`, a blank line between paragraphs, a single newline for a line break, and `- ` at the start of a line for a list item. Everything else, HTML included, is plain text.',
+    },
+    {
+      name: 'elements',
+      type: 'boolean',
+      default: 'false',
+      description: 'Render bare `p`, `ul`, `li`, `a`, `b` and `i` with no classes, for a host that styles them. Off, paragraphs and lists are block spans (`role="list"`/`"listitem"`) and bold and italic are `strong` and `em`.',
+    },
+    {
+      name: 'dashes',
+      type: 'boolean',
+      default: 'false',
+      description: "Draw every en dash at en-dash width (Satoshi's runs as long as an em dash). Also exported as the `dashes(text)` function.",
     },
   ],
 

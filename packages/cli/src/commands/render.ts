@@ -50,6 +50,12 @@ interface Fixture {
    * action row renders a real Button rather than a bare `<button>`.
    */
   with?: string[]
+  /**
+   * JS source that evaluates to the element to render, in place of the export
+   * with `props`. For parts a hook drives (`ScrollHint` and `useKeepGoing`), so the
+   * fixture can mount the hook and its scroll box. `__mod` and `React` are in scope.
+   */
+  element?: string
 }
 
 /** A 1em Phosphor "X" glyph, inline so icon fixtures need no icon package. */
@@ -455,6 +461,23 @@ export const FIXTURES: Record<string, Record<string, Fixture>> = {
       props: `{ "aria-label": "Hours Website embeds bills", value: 12.5, savedValue: 8, min: 8, max: 16.75, hue: 339, size: "lg", marks: [{ value: 10, label: "High", hatchPast: true }], evidence: { value: 10.5, agent: 3, proposed: 1.25 }, minLabel: "Low", maxLabel: "Ceiling allows", formatValue: (h) => h + " h", onValueChange: () => {}, style: { width: 640 } }`,
     },
   },
+  // VI-814: a 320px scroll box of twelve fields, the hint as its last child, f7 still to fill.
+  // The hook's result is left on window.__keepGoing so a browser test can call go().
+  "scroll-hint": {
+    default: {
+      export: "ScrollHint",
+      props: `{}`,
+      element: `React.createElement(function KeepGoingBox() {
+        var box = React.useRef(null);
+        var kg = __mod.useKeepGoing(box, ["f7"]);
+        window.__keepGoing = kg;
+        var fields = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map(function (n) {
+          return React.createElement("label", { key: n, "data-field": "f" + n, style: { display: "grid", gap: 4 } }, "Field " + n, React.createElement("input", { "aria-label": "Field " + n, style: { height: 40, padding: "0 12px", border: "1px solid var(--border-default)", borderRadius: 8, background: "var(--surface-card)", color: "var(--text-primary)", font: "inherit" } }));
+        });
+        return React.createElement("div", { ref: box, "data-slot": "scroll-box", style: { width: 320, height: 320, overflowY: "auto", display: "grid", gap: 16, padding: 16, boxSizing: "border-box", "--scroll-hint-gap": "16px", background: "var(--surface-page)", color: "var(--text-primary)", border: "1px solid var(--border-default)", borderRadius: 12 } }, fields, React.createElement(__mod.ScrollHint, { boxRef: box, keepGoing: kg }));
+      })`,
+    },
+  },
   // VI-778: an editor and a preview pane, the editor at 280px.
   "resizable-split": {
     default: {
@@ -489,6 +512,17 @@ export const FIXTURES: Record<string, Record<string, Fixture>> = {
     contract: {
       export: "Meter",
       props: `{ value: 118, max: 200, hue: 219, size: "contract", style: { width: 560 }, zones: [{ to: 190, variant: "hatched" }, { to: 166 }], marks: [{ value: 160, label: "160 h", caption: "heads-up", align: "end", threshold: true }, { value: 166, label: "166 h", caption: "the low", align: "start" }, { value: 200, label: "200 h", caption: "ceiling", align: "end", variant: "limit" }], children: [React.createElement("strong", { key: "s" }, "118 h"), " used of 200 h"] }`,
+    },
+  },
+  // VI-813: a paragraph with bold, italic, a link and en dashes, then a list with a mailto link.
+  "rich-text": {
+    default: {
+      export: "RichText",
+      props: `{ dashes: true, text: "Doors open at *6 PM* \u2013 bring _your_ ticket and read the [guide](https://example.com).\\nGates close at 11 PM.\\n\\n- Parking opens Fri \u2013 Sun\\n- Questions? Write to [the crew](mailto:help@example.com)" }`,
+    },
+    elements: {
+      export: "RichText",
+      props: `{ elements: true, text: "Plain elements for a host that styles them: *bold*, _italic_ and a [link](https://example.com).\\n\\n- one\\n- two" }`,
     },
   },
   // VI-713: labelled steps, one in every state, at both sizes.
@@ -1264,7 +1298,7 @@ function __resolveComponent(mod, preferred) {
 var __Component = __resolveComponent(__mod, ${JSON.stringify(exportName)});
 var __props = ${fixture.props};
 createRoot(document.getElementById("root")).render(
-  React.createElement(__Component, __props)
+  ${fixture.element ?? "React.createElement(__Component, __props)"}
 );`
 }
 

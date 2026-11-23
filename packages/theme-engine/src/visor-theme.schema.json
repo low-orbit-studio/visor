@@ -623,6 +623,13 @@
             "$ref": "#/$defs/componentTokenBinding"
           }
         },
+        "scroll-hint": {
+          "type": "object",
+          "description": "ScrollHint — the \"More Below\" pill pinned to a scroll box's bottom edge: the solid chip's fill, edge and ink, the fill it takes over a photo, and the gap it undoes. Keys: bg, border, color, glass-bg, gap.",
+          "additionalProperties": {
+            "$ref": "#/$defs/componentTokenBinding"
+          }
+        },
         "dialog": {
           "type": "object",
           "description": "Dialog's panel and page scrim — width, corners, fill, inset, shadow, a backdrop filter for glass, and the scrim's colour and blur. ConfirmDialog shares them. Keys: max-width, radius, bg, padding, shadow, backdrop-filter, overlay-bg, overlay-blur.",
@@ -632,7 +639,7 @@
         },
         "glass": {
           "type": "object",
-          "description": "The glass layer over a photo: surface fill, blur, edge, lift, shadow and on-photo ink, plus the glass values controls read. Draws only inside `data-glass=\"on\"`; elsewhere components keep their solid surface and border. Keys: fill, blur, edge, lift, shadow, ink, control-fill, control-hover-fill, control-ring, control-ink, control-blur.",
+          "description": "The glass layer over a photo: surface fill, blur, edge, lift, shadow, on-photo ink, the scrim under white labels with its ink and shadow, plus the glass values controls read. Draws only inside `data-glass=\"on\"`; elsewhere components keep their solid surface and border. Keys: fill, blur, edge, lift, shadow, ink, scrim, scrim-ink, ink-shadow, control-fill, control-hover-fill, control-ring, control-ink, control-blur.",
           "additionalProperties": {
             "$ref": "#/$defs/componentTokenBinding"
           }
@@ -654,6 +661,13 @@
         "spinner": {
           "type": "object",
           "description": "Inline loading ring — track, leading edge, per-size geometry, cycle length, the delayed fade-in and the visible words. Keys: track-color, edge-color, primary-edge-color, radius, duration, xs-size, xs-border-width, sm-size, sm-border-width, md-size, md-border-width, appear-duration, label-gap, label-font-size, label-font-weight, label-color.",
+          "additionalProperties": {
+            "$ref": "#/$defs/componentTokenBinding"
+          }
+        },
+        "stepper": {
+          "type": "object",
+          "description": "Stepper's `rail` variant — row gap and inset, the space between mark and label, label size, weight and tracking, and the dot mark's size and current width. Keys: rail-gap, rail-padding, rail-mark-gap, rail-font-size, rail-font-weight, rail-letter-spacing, rail-mark-size, rail-mark-active-width.",
           "additionalProperties": {
             "$ref": "#/$defs/componentTokenBinding"
           }
@@ -689,6 +703,13 @@
         "key-value-list": {
           "type": "object",
           "description": "KeyValueList \u2014 label and value type and ink, the horizontal columns, item gap and alignment, row spacing, padding and divider, and the `surface=\"panel\"` fill, edge colour, corners and inset. Under `data-glass=\"on\"` the panel reads the glass layer instead. Keys: label-font-size, label-font-weight, label-line-height, label-letter-spacing, label-text-transform, label-color, label-padding-top, value-font-size, value-font-weight, value-line-height, value-color, value-text-wrap, value-overflow-wrap, value-font-variant-numeric, columns, item-gap, item-align, item-padding, row-gap, divider, panel-bg, panel-border-color, panel-radius, panel-padding.",
+          "additionalProperties": {
+            "$ref": "#/$defs/componentTokenBinding"
+          }
+        },
+        "rich-text": {
+          "type": "object",
+          "description": "RichText link underline colour. Link text inherits the surrounding ink. Keys: link-underline.",
           "additionalProperties": {
             "$ref": "#/$defs/componentTokenBinding"
           }
