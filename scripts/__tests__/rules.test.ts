@@ -392,7 +392,8 @@ describe('rule type compliance', () => {
       const results = await rule.run();
       expect(results.length).toBeGreaterThan(0);
     }
-  });
+    // Runs every rule over the whole repo: past the 5s default when the suite runs in parallel.
+  }, 30_000);
 });
 
 describe('element-defaults-owned-by-base', () => {
