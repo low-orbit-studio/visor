@@ -106,8 +106,9 @@ export function scanConcentric(options: ConcentricScanOptions = {}): ConcentricP
     const v = raw.endsWith("%") ? (parseFloat(raw) / 100) * r.width : parseFloat(raw) || 0
     return Math.min(v, r.width / 2, r.height / 2)
   }
+  // Fallback first: a forced fallback (VI-841) also reports the native corner it turned off.
   const shape = (s: CSSStyleDeclaration, c: Corner): string =>
-    s.getPropertyValue(`corner-${c}-shape`) || (fallback(s) > 0 ? "squircle" : "round")
+    fallback(s) > 0 ? "squircle" : s.getPropertyValue(`corner-${c}-shape`) || "round"
   const visible = (s: CSSStyleDeclaration, r: DOMRect): boolean =>
     r.width > 0 && r.height > 0 && s.visibility !== "hidden" && s.display !== "none" && parseFloat(s.opacity) > 0
   const clips = (s: CSSStyleDeclaration): boolean => s.overflow !== "visible" || s.clipPath !== "none"

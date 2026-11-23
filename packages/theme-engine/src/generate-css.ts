@@ -187,6 +187,20 @@ export const SQUIRCLE_FALLBACK = [
   "}",
 ].join("\n");
 
+/**
+ * VI-841: test-only. `css` with the squircle fallback forced on, so a test can
+ * draw it in an engine that has `corner-shape` (Chromium, newer Playwright
+ * WebKit builds). Every `@supports not (corner-shape: squircle)` gate, the
+ * theme's and each component's, becomes `@media all`, and a trailing rule turns
+ * native `corner-shape` off. The `--corner-shape` style-query gate stays, so
+ * round themes and round subtrees are still untouched. Nothing calls it on
+ * production output: a test passes each stylesheet through it.
+ */
+export function forceSquircleFallback(css: string): string {
+  const gate = /@supports\s+not\s*\(\s*corner-shape\s*:\s*squircle\s*\)/g;
+  return `${css.replace(gate, "@media all")}\n*, *::before, *::after { corner-shape: round !important; }\n`;
+}
+
 /** A closed squircle of radius `r`, inset `i` from the box on every side. */
 function squirclePath(r: string, i: string): string {
   const h = `${r} * 0.082`;

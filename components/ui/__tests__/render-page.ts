@@ -18,6 +18,7 @@ import {
   resolveResetCssFile,
   resolveTokensCssFile,
 } from "../../../packages/cli/src/commands/render"
+import { forceSquircleFallback } from "../../../packages/theme-engine/src/generate-css"
 
 const REPO_ROOT = process.cwd()
 export const THEME = "neutral"
@@ -104,7 +105,8 @@ export async function bundle(component: string, fixture: string): Promise<Bundle
  * the bundle's CSS; `extraCss` is appended after it. `theme` swaps the default
  * neutral light theme for other theme CSS, its scope class and mode. `motion`
  * keeps animations on under that reduced-motion preference. `scale` sets the
- * device pixel ratio.
+ * device pixel ratio. `forceSquircle` draws the squircle fallback in any
+ * engine (VI-841, `forceSquircleFallback`).
  */
 export async function open(
   component: string,
@@ -117,16 +119,18 @@ export async function open(
     motion?: "reduce" | "no-preference"
     /** Device pixels per CSS pixel. Default 1. */
     scale?: number
+    forceSquircle?: boolean
   } = {},
 ): Promise<PageLike> {
   const b = await bundle(component, fixture)
   const page = await browser!.newPage({ viewport: { width: 720, height: 480 }, deviceScaleFactor: opts.scale ?? 1 })
   if (opts.motion) await page.emulateMedia({ reducedMotion: opts.motion })
+  const force = opts.forceSquircle ? forceSquircleFallback : (css: string) => css
   const html = buildHtml({
     resetCss: resetCss(),
     tokensCss: tokensCss(),
-    themeCss: opts.theme?.css ?? themeCss(),
-    componentCss: (opts.componentCss ?? b.css) + `\n#theme-scope { ${opts.scopeCss ?? ""} }\n${opts.extraCss ?? ""}`,
+    themeCss: force(opts.theme?.css ?? themeCss()),
+    componentCss: force(opts.componentCss ?? b.css) + `\n#theme-scope { ${opts.scopeCss ?? ""} }\n${opts.extraCss ?? ""}`,
     bundleJs: b.js,
     themeClass: opts.theme?.className ?? `${THEME}-theme`,
     mode: opts.theme?.mode ?? "light",
@@ -137,6 +141,18 @@ export async function open(
   await page.evaluate("document.fonts.ready.then(function () { return true })")
   if (!opts.motion) await page.addStyleTag({ content: "*, *::before, *::after { transition: none !important; animation: none !important; caret-color: transparent !important; }" })
   return page
+}
+
+/**
+ * VI-841: call first in any test of the unforced squircle fallback (the real
+ * `@supports not (corner-shape: squircle)` gate). An engine that draws
+ * `corner-shape` natively never takes that path, so the test would pass while
+ * testing nothing.
+ */
+export async function requireNoCornerShape(page: Pick<PageLike, "evaluate">): Promise<void> {
+  if ((await page.evaluate(`CSS.supports("corner-shape", "squircle")`)) !== false) {
+    throw new Error("this WebKit draws corner-shape natively; the fallback is not being tested")
+  }
 }
 
 /**
