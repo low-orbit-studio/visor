@@ -33,11 +33,13 @@ export interface FiveLooksProps {
  * The photo looks use a private theme's real photos (VI-829); a `?photo=/path.jpg` on the page
  * swaps in another one, and `?photo-dark=` / `?photo-light=` set one per tone (a night photo behind
  * Dark + Photo, a day photo behind Light + Photo).
+ * A `?thumbs=/a.webp,/b.webp` passes real photos to a specimen that shows thumbnails (PhotoPicker).
  */
 export function FiveLooks({ specimen, height = 340, theme: themeProp, todayTheme }: FiveLooksProps) {
   const theme = useActiveTheme(themeProp, PRIVATE_SLUGS);
   const [mode, setMode] = useState<LookMode>('light');
   const [photos, setPhotos] = useState<Record<LookMode, string>>({ dark: '', light: '' });
+  const [thumbs, setThumbs] = useState('');
 
   useEffect(() => {
     const read = () => setMode(readDocsMode());
@@ -47,6 +49,7 @@ export function FiveLooks({ specimen, height = 340, theme: themeProp, todayTheme
     const params = new URLSearchParams(window.location.search);
     const photo = params.get('photo') ?? '';
     setPhotos({ dark: params.get('photo-dark') ?? photo, light: params.get('photo-light') ?? photo });
+    setThumbs(params.get('thumbs') ?? '');
     return () => observer.disconnect();
   }, []);
 
@@ -57,6 +60,7 @@ export function FiveLooks({ specimen, height = 340, theme: themeProp, todayTheme
         const query = new URLSearchParams({ theme: lookTheme, look: look.id, mode, specimen });
         const photo = look.mode ? photos[look.mode] : '';
         if (photo) query.set('photo', photo);
+        if (thumbs) query.set('thumbs', thumbs);
         return (
           <figure key={look.id} className={styles.look} data-look={look.id}>
             <figcaption className={styles.label}>{look.label}</figcaption>

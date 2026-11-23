@@ -58,6 +58,18 @@ interface Fixture {
   element?: string
 }
 
+/**
+ * VI-816: JS source that turns the glass switch on over a busy synthetic photograph
+ * (turbulence, one light half and one dark half), for a component's `glass` fixture.
+ * It runs as the fixture's props are read, so the component mounts under `data-glass="on"`.
+ */
+const GLASS_SCOPE = `(function () {
+  var svg = "<svg xmlns='http://www.w3.org/2000/svg' width='480' height='300'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.06' numOctaves='4' seed='7'/><feColorMatrix values='1.4 0 0 0 0.05 0 1.2 0 0 0.05 0 0 1.1 0 0.05 0 0 0 1 0'/></filter><rect width='480' height='300' fill='#d9c8a6'/><rect width='480' height='300' filter='url(#n)'/><rect x='0' y='0' width='240' height='300' fill='#f4efe4' opacity='0.55'/><rect x='240' y='0' width='240' height='300' fill='#0b0b14' opacity='0.6'/></svg>";
+  var scope = document.getElementById("theme-scope");
+  scope.setAttribute("data-glass", "on");
+  scope.style.background = "url('data:image/svg+xml;utf8," + encodeURIComponent(svg).replace(/'/g, "%27") + "') center / cover";
+})()`
+
 /** A 1em Phosphor "X" glyph, inline so icon fixtures need no icon package. */
 const ICON_X = `React.createElement("svg", { viewBox: "0 0 256 256", width: "1em", height: "1em", fill: "currentColor", "aria-hidden": true }, React.createElement("path", { d: "M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z" }))`
 
@@ -598,6 +610,9 @@ export const FIXTURES: Record<string, Record<string, Fixture>> = {
         };
       })()`,
     },
+    // VI-816: the same grid under the glass switch, over a photograph. The grid draws no
+    // surface of its own, so only the rings show against the photo.
+    glass: { export: "PhotoPicker", interactiveTarget: "button", props: `(${GLASS_SCOPE}, { "aria-label": "Pick Your Background", value: "p1", play: false, style: { width: 600 }, photos: [0, 1, 2, 3, 4].map(function (i) { return { key: "p" + i, thumb: "data:image/svg+xml;utf8," + encodeURIComponent("<svg xmlns='http://www.w3.org/2000/svg' width='480' height='360'><rect width='480' height='360' fill='#" + ["7c2d12", "1e3a8a", "14532d", "4c1d95", "4b5563"][i] + "'/></svg>") }; }) })` },
   },
   // VI-672: `default` is the grid on its own ground; `on-image` draws it over a busy
   // synthetic photograph (turbulence, one light half and one dark half) so each
@@ -624,6 +639,8 @@ export const FIXTURES: Record<string, Record<string, Fixture>> = {
   "theme-toggle": {
     default: { export: "ThemeToggle", interactiveTarget: "button", props: `{ value: "light" }` },
     dark: { export: "ThemeToggle", interactiveTarget: "button", props: `{ value: "dark" }` },
+    // VI-816: under the glass switch over a photograph, the toggle takes the glass layer's control values.
+    glass: { export: "ThemeToggle", interactiveTarget: "button", props: `(${GLASS_SCOPE}, { value: "dark" })` },
   },
   // VI-624: `default` is the closed field; the popover fixtures render open so the
   // two-column (24-hour) and three-column (12-hour) anatomy can be inspected.

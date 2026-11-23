@@ -17,9 +17,11 @@ why: >
   shares one button and one motion. It is controlled: the host owns the tone
   and where it is stored (a class on html, a data attribute, localStorage),
   and the toggle only asks for the other one. Because it keys off its own
-  data-tone rather than an attribute on html, it works on any page. The look
-  is CSS variables over Visor tokens, so a glass button on a photo is a
-  className and a few overrides, not a fork.
+  data-tone rather than an attribute on html, it works on any page. It is
+  solid by default and turns to glass only under the glass switch
+  (data-glass="on"), where it reads the glass layer's shared control values,
+  the same set Button's glass variant reads, so the theme, not the app, sets
+  the glass button on a photo.
 
 props:
   - name: value
