@@ -1,6 +1,9 @@
 declare const styles: {
   readonly stepper: string
   readonly stepperVertical: string
+  readonly stepperRail: string
+  readonly railTrigger: string
+  readonly railMark: string
   readonly item: string
   readonly itemVertical: string
   readonly itemProminent: string

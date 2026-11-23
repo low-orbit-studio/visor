@@ -127,6 +127,7 @@ const SIDEBAR = "components/ui/sidebar/sidebar.module.css";
 const TABS = "components/ui/tabs/tabs.module.css";
 const SKELETON = "components/ui/skeleton/skeleton.module.css";
 const SPINNER = "components/ui/spinner/spinner.module.css";
+const STEPPER = "components/ui/stepper/stepper.module.css";
 const CHECKBOX = "components/ui/checkbox/checkbox.module.css";
 const INPUT = "components/ui/input/input.module.css";
 const SEPARATOR = "components/ui/separator/separator.module.css";
@@ -631,7 +632,7 @@ const glassFamily: ComponentTokenFamily = {
   family: "glass",
   prefix: "glass",
   description:
-    "The glass layer over a photo: surface fill, blur, edge, lift, shadow and on-photo ink, plus the glass values controls read. Draws only inside `data-glass=\"on\"`; elsewhere components keep their solid surface and border.",
+    "The glass layer over a photo: surface fill, blur, edge, lift, shadow, on-photo ink, the scrim under white labels with its ink and shadow, plus the glass values controls read. Draws only inside `data-glass=\"on\"`; elsewhere components keep their solid surface and border.",
   tokens: [
     { key: "fill", property: "background", description: "Glass surface fill, see-through.", consumers: [], recommended: "color-mix(in srgb, var(--text-primary) 5%, transparent)" },
     { key: "blur", property: "backdrop-filter", description: "Filter on the photo behind a glass surface.", consumers: [], recommended: "blur(32px) saturate(110%)" },
@@ -639,6 +640,11 @@ const glassFamily: ComponentTokenFamily = {
     { key: "lift", property: "background", description: "White lift laid over the fill, e.g. `rgb(255 255 255 / 0.45)` in light.", consumers: [], recommended: "transparent" },
     { key: "shadow", property: "box-shadow", description: "Glass surface shadow.", consumers: [], recommended: "var(--shadow-xl)" },
     { key: "ink", property: "color", description: "Text colour on glass over a photo.", consumers: [], recommended: "var(--text-primary)" },
+    // VI-810: a dark scrim under white labels in the dark photo look: at 55% black, white clears 4.5:1 (4.95:1)
+    // even over pure white, so over any photo; and FormDeck's label shadow. Light + Photo keeps the light glass and its ink.
+    { key: "scrim", property: "background", description: "Dark glass laid under white labels on a photo in dark mode (e.g. Stepper's rail panel in Dark + Photo), dark enough that white clears 4.5:1 on a bright photo.", consumers: [], recommended: "rgb(0 0 0 / 0.55)" },
+    { key: "scrim-ink", property: "color", description: "Label colour on the scrim, in dark mode over a photo.", consumers: [], recommended: "#ffffff" },
+    { key: "ink-shadow", property: "text-shadow", description: "Shadow under the scrim ink in dark mode over a photo, seating the labels.", consumers: [], recommended: "0 0 10px rgb(0 0 0 / 0.55), 0 1px 3px rgb(0 0 0 / 0.5)" },
     { key: "control-fill", property: "background", description: "Glass control fill (icon buttons, toggles).", consumers: [], recommended: "color-mix(in srgb, var(--text-primary) 14%, transparent)" },
     { key: "control-hover-fill", property: "background", description: "Glass control fill on hover.", consumers: [], recommended: "color-mix(in srgb, var(--text-primary) 24%, transparent)" },
     { key: "control-ring", property: "box-shadow (inset ring)", description: "Glass control ring colour.", consumers: [], recommended: "color-mix(in srgb, var(--text-primary) 16%, transparent)" },
@@ -735,6 +741,24 @@ const spinnerFamily: ComponentTokenFamily = {
     { key: "label-font-size", property: "font-size", description: "Visible words size (`showLabel`).", consumers: at(SPINNER, "var(--font-size-sm, 0.875rem)") },
     { key: "label-font-weight", property: "font-weight", description: "Visible words weight (`showLabel`).", consumers: at(SPINNER, "var(--font-weight-medium, 500)") },
     { key: "label-color", property: "color", description: "Visible words colour (`showLabel`).", consumers: at(SPINNER, "var(--text-secondary, #4b5563)") },
+  ],
+};
+
+// VI-810: Stepper's rail variant, the side list of form sections (FormDeck's section
+// rail). Sizes only: the ink is --text-primary, or over a photo the glass ink (light) or scrim ink (dark).
+const stepperFamily: ComponentTokenFamily = {
+  family: "stepper",
+  prefix: "stepper",
+  description: "Stepper's `rail` variant — row gap and inset, the space between mark and label, label size, weight and tracking, and the dot mark's size and current width.",
+  tokens: [
+    { key: "rail-gap", property: "gap", description: "Space between rail rows.", consumers: at(STEPPER, "0") },
+    { key: "rail-padding", property: "padding", description: "Rail row inset.", consumers: at(STEPPER, "var(--spacing-2, 0.5rem) var(--spacing-1, 0.25rem)") },
+    { key: "rail-mark-gap", property: "gap", description: "Space between the mark and the label.", consumers: at(STEPPER, "var(--spacing-3, 0.75rem)") },
+    { key: "rail-font-size", property: "font-size", description: "Rail label size.", consumers: at(STEPPER, "var(--font-size-sm, 0.875rem)") },
+    { key: "rail-font-weight", property: "font-weight", description: "Rail label weight.", consumers: at(STEPPER, "var(--font-weight-medium, 500)") },
+    { key: "rail-letter-spacing", property: "letter-spacing", description: "Rail label tracking.", consumers: at(STEPPER, "normal") },
+    { key: "rail-mark-size", property: "width / height", description: "Dot mark diameter.", consumers: at(STEPPER, "calc(var(--spacing-1, 0.25rem) * 1.5)") },
+    { key: "rail-mark-active-width", property: "width", description: "The current row's mark, stretched to a pill.", consumers: at(STEPPER, "var(--spacing-5, 1.25rem)") },
   ],
 };
 
@@ -1829,6 +1853,7 @@ export const COMPONENT_TOKEN_FAMILIES: readonly ComponentTokenFamily[] = [
   tabsFamily,
   skeletonFamily,
   spinnerFamily,
+  stepperFamily,
   checkboxFamily,
   inputFamily,
   textareaFamily,

@@ -401,7 +401,7 @@ Dialog's panel and page scrim — width, corners, fill, inset, shadow, a backdro
 
 ### `glass`
 
-The glass layer over a photo: surface fill, blur, edge, lift, shadow and on-photo ink, plus the glass values controls read. No component reads these directly. visor-core's `data-glass="on"` switch copies each one into a `--glass-on-<key>` variable, and components read those, so glass draws only where the switch is on. See [Glass](/docs/themes/glass).
+The glass layer over a photo: surface fill, blur, edge, lift, shadow, on-photo ink, the scrim under white labels with its ink and shadow, plus the glass values controls read. No component reads these directly. visor-core's `data-glass="on"` switch copies each one into a `--glass-on-<key>` variable, and components read those, so glass draws only where the switch is on. See [Glass](/docs/themes/glass).
 
 | Token | Binds | Recommended (Visor default) |
 |---|---|---|
@@ -411,6 +411,9 @@ The glass layer over a photo: surface fill, blur, edge, lift, shadow and on-phot
 | `--glass-lift` | White lift laid over the fill, e.g. `rgb(255 255 255 / 0.45)` in light. | `transparent` |
 | `--glass-shadow` | Glass surface shadow. | `var(--shadow-xl)` |
 | `--glass-ink` | Text colour on glass over a photo. | `var(--text-primary)` |
+| `--glass-scrim` | Dark glass laid under white labels on a photo in dark mode (e.g. Stepper's rail panel in Dark + Photo), dark enough that white clears 4.5:1 on a bright photo. | `rgb(0 0 0 / 0.55)` |
+| `--glass-scrim-ink` | Label colour on the scrim, in dark mode over a photo. | `#ffffff` |
+| `--glass-ink-shadow` | Shadow under the scrim ink in dark mode over a photo, seating the labels. | `0 0 10px rgb(0 0 0 / 0.55), 0 1px 3px rgb(0 0 0 / 0.5)` |
 | `--glass-control-fill` | Glass control fill (icon buttons, toggles). | `color-mix(in srgb, var(--text-primary) 14%, transparent)` |
 | `--glass-control-hover-fill` | Glass control fill on hover. | `color-mix(in srgb, var(--text-primary) 24%, transparent)` |
 | `--glass-control-ring` | Glass control ring colour. | `color-mix(in srgb, var(--text-primary) 16%, transparent)` |
@@ -489,6 +492,21 @@ Inline loading ring — track, leading edge, per-size geometry, cycle length, th
 | `--spinner-label-font-size` | Visible words size (`showLabel`). | `var(--font-size-sm, 0.875rem)` |
 | `--spinner-label-font-weight` | Visible words weight (`showLabel`). | `var(--font-weight-medium, 500)` |
 | `--spinner-label-color` | Visible words colour (`showLabel`). | `var(--text-secondary, #4b5563)` |
+
+### `stepper`
+
+Stepper's `rail` variant — row gap and inset, the space between mark and label, label size, weight and tracking, and the dot mark's size and current width. The rail's ink is `--text-primary`, or over a photo the glass ink in light and the glass scrim ink in dark, at the kit's 100/64/40/24% ramp.
+
+| Token | Binds | Falls back to |
+|---|---|---|
+| `--stepper-rail-gap` | Space between rail rows. | `0` |
+| `--stepper-rail-padding` | Rail row inset. | `var(--spacing-2, 0.5rem) var(--spacing-1, 0.25rem)` |
+| `--stepper-rail-mark-gap` | Space between the mark and the label. | `var(--spacing-3, 0.75rem)` |
+| `--stepper-rail-font-size` | Rail label size. | `var(--font-size-sm, 0.875rem)` |
+| `--stepper-rail-font-weight` | Rail label weight. | `var(--font-weight-medium, 500)` |
+| `--stepper-rail-letter-spacing` | Rail label tracking. | `normal` |
+| `--stepper-rail-mark-size` | Dot mark diameter. | `calc(var(--spacing-1, 0.25rem) * 1.5)` |
+| `--stepper-rail-mark-active-width` | The current row's mark, stretched to a pill. | `var(--spacing-5, 1.25rem)` |
 
 ### `checkbox`
 
