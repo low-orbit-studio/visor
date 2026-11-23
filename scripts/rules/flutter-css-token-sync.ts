@@ -1,3 +1,4 @@
+import { execFileSync } from 'node:child_process';
 import { readFile } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
@@ -29,6 +30,25 @@ const WEB_ONLY_THEMES = new Set<string>([
   'strata',
   'veronica',
 ]);
+
+/**
+ * The paths git ignores. Private theme CSS is generated into packages/docs/app
+ * by the docs dev server and gitignored, so CI never sees it and no Flutter
+ * theme pairs with it (VI-815). A tracked file is never reported as ignored.
+ */
+function gitIgnored(paths: string[], cwd: string): Set<string> {
+  try {
+    const out = execFileSync('git', ['check-ignore', '--', ...paths], {
+      cwd,
+      encoding: 'utf-8',
+      stdio: ['ignore', 'pipe', 'ignore'],
+    });
+    return new Set(out.split('\n').filter(Boolean));
+  } catch {
+    // Exit 1 means nothing is ignored. Without git, check every file.
+    return new Set();
+  }
+}
 
 /** Normalize any CSS color to an 8-char lowercase hex string like "ff020214". */
 function normalizeCssColor(css: string): string | null {
@@ -97,97 +117,113 @@ function extractDartDarkTokens(dart: string, dartFields: string[]): Record<strin
 export const flutterCssTokenSync: Rule = {
   name: 'flutter-css-token-sync',
   description:
-    'Dark-mode Flutter token values in visor_themes must match the authoritative CSS theme values for surface-page, surface-card, interactive-primary-bg, and interactive-primary-text',
+    'Dark-mode Flutter token values in visor_themes must match the authoritative CSS theme values for surface-page, surface-card, interactive-primary-bg, and interactive-primary-text. Gitignored, generated theme CSS is skipped',
   category: 'tokens',
-  async run() {
-    const results: RuleResult[] = [];
-    const cssVars = TOKENS.map((t) => t.cssVar);
-    const dartFields = TOKENS.map((t) => t.dartField);
+  run: () => syncFlutterCssTokens('.'),
+};
 
-    for await (const cssPath of glob('packages/docs/app/*-theme.css')) {
-      const filename = cssPath.split('/').pop() ?? '';
-      const slug = filename.replace(/-theme\.css$/, '');
+/** The rule's check against the themes under `cwd` (the repo root when the rule runs). */
+export async function syncFlutterCssTokens(cwd: string): Promise<RuleResult[]> {
+  const results: RuleResult[] = [];
+  const cssVars = TOKENS.map((t) => t.cssVar);
+  const dartFields = TOKENS.map((t) => t.dartField);
 
-      if (WEB_ONLY_THEMES.has(slug)) {
-        results.push({
-          pass: true,
-          message: `${slug}: web-only theme, exempt from Flutter parity`,
-          file: cssPath,
-        });
-        continue;
-      }
+  const cssPaths: string[] = [];
+  for await (const cssPath of glob('packages/docs/app/*-theme.css', { cwd })) cssPaths.push(cssPath);
+  const ignored = gitIgnored(cssPaths, cwd);
 
-      const dartPath = join(
-        'packages/visor_themes/lib/src',
-        slug,
-        'colors/visor_colors.dart'
-      );
+  for (const cssPath of cssPaths) {
+    const filename = cssPath.split('/').pop() ?? '';
+    const slug = filename.replace(/-theme\.css$/, '');
 
-      if (!existsSync(dartPath)) {
-        results.push({
-          pass: false,
-          message: `No Flutter Dart file for CSS theme "${slug}" — expected ${dartPath}`,
-          file: cssPath,
-        });
-        continue;
-      }
-
-      const [cssContent, dartContent] = await Promise.all([
-        readFile(cssPath, 'utf-8'),
-        readFile(dartPath, 'utf-8'),
-      ]);
-
-      const cssTokens = extractCssDarkTokens(cssContent, cssVars);
-      const dartTokens = extractDartDarkTokens(dartContent, dartFields);
-
-      let themePass = true;
-      for (const { cssVar, dartField } of TOKENS) {
-        const cssRaw = cssTokens[cssVar];
-        const dartRaw = dartTokens[dartField];
-
-        if (!cssRaw) continue;
-
-        if (!dartRaw) {
-          results.push({
-            pass: false,
-            message: `${slug}: dark ${dartField} missing in Dart (CSS has ${cssRaw})`,
-            file: dartPath,
-          });
-          themePass = false;
-          continue;
-        }
-
-        const cssNorm = normalizeCssColor(cssRaw);
-        const dartNorm = normalizeDartColor(dartRaw);
-
-        if (cssNorm === null) continue;
-
-        if (cssNorm !== dartNorm) {
-          results.push({
-            pass: false,
-            message: `${slug}: dark ${dartField} mismatch — CSS ${cssVar}: ${cssRaw} (${cssNorm}) != Dart ${dartRaw} (${dartNorm ?? 'unparseable'})`,
-            file: dartPath,
-          });
-          themePass = false;
-        }
-      }
-
-      if (themePass) {
-        results.push({
-          pass: true,
-          message: `${slug}: dark-mode token values match CSS`,
-          file: dartPath,
-        });
-      }
-    }
-
-    if (results.length === 0) {
+    if (WEB_ONLY_THEMES.has(slug)) {
       results.push({
         pass: true,
-        message: 'No CSS theme files found — flutter-css-token-sync not applicable',
+        message: `${slug}: web-only theme, exempt from Flutter parity`,
+        file: cssPath,
       });
+      continue;
     }
 
-    return results;
-  },
-};
+    if (ignored.has(cssPath)) {
+      results.push({
+        pass: true,
+        message: `${slug}: gitignored generated theme, exempt from Flutter parity`,
+        file: cssPath,
+      });
+      continue;
+    }
+
+    const dartPath = join(
+      'packages/visor_themes/lib/src',
+      slug,
+      'colors/visor_colors.dart'
+    );
+
+    if (!existsSync(join(cwd, dartPath))) {
+      results.push({
+        pass: false,
+        message: `No Flutter Dart file for CSS theme "${slug}" — expected ${dartPath}`,
+        file: cssPath,
+      });
+      continue;
+    }
+
+    const [cssContent, dartContent] = await Promise.all([
+      readFile(join(cwd, cssPath), 'utf-8'),
+      readFile(join(cwd, dartPath), 'utf-8'),
+    ]);
+
+    const cssTokens = extractCssDarkTokens(cssContent, cssVars);
+    const dartTokens = extractDartDarkTokens(dartContent, dartFields);
+
+    let themePass = true;
+    for (const { cssVar, dartField } of TOKENS) {
+      const cssRaw = cssTokens[cssVar];
+      const dartRaw = dartTokens[dartField];
+
+      if (!cssRaw) continue;
+
+      if (!dartRaw) {
+        results.push({
+          pass: false,
+          message: `${slug}: dark ${dartField} missing in Dart (CSS has ${cssRaw})`,
+          file: dartPath,
+        });
+        themePass = false;
+        continue;
+      }
+
+      const cssNorm = normalizeCssColor(cssRaw);
+      const dartNorm = normalizeDartColor(dartRaw);
+
+      if (cssNorm === null) continue;
+
+      if (cssNorm !== dartNorm) {
+        results.push({
+          pass: false,
+          message: `${slug}: dark ${dartField} mismatch — CSS ${cssVar}: ${cssRaw} (${cssNorm}) != Dart ${dartRaw} (${dartNorm ?? 'unparseable'})`,
+          file: dartPath,
+        });
+        themePass = false;
+      }
+    }
+
+    if (themePass) {
+      results.push({
+        pass: true,
+        message: `${slug}: dark-mode token values match CSS`,
+        file: dartPath,
+      });
+    }
+  }
+
+  if (results.length === 0) {
+    results.push({
+      pass: true,
+      message: 'No CSS theme files found — flutter-css-token-sync not applicable',
+    });
+  }
+
+  return results;
+}
