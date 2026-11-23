@@ -5,7 +5,11 @@ description: A round light/dark button. The icon going away turns and shrinks ou
 
 import { ComponentPreview } from '@/components/preview';
 import { PropsTable } from '@/components/props-table';
-import { ThemeToggleControlledDemo, ThemeToggleGlassDemo } from '@/components/ui/theme-toggle-demos';
+import { ThemeToggleControlledDemo } from '@/components/ui/theme-toggle-demos';
+import { FiveLooks } from '@/components/looks/five-looks';
+import { PRIVATE_THEMES } from '@/lib/private-themes';
+
+export const HONCHO_BACKSTAGE = PRIVATE_THEMES.some((t) => t.slug === 'honcho-backstage');
 
 ## Default
 
@@ -20,14 +24,25 @@ One button that flips between light and dark. Dark shows the sun, the way to lig
 
 ## On a Photo
 
-The same component dressed as Honcho Backstage's glass button: every part of the look is a CSS variable, and the blur is a plain `backdrop-filter` on top.
+Glass is off by default: the toggle is a solid button on the theme's surface, border and ink. Inside `data-glass="on"` (see [Glass](/docs/themes/glass)), where a photo sits behind, it reads the glass layer's control values, the same set Button's `glass` variant reads: the control fill and its hover, the ring, the ink and the blur. The theme sets those values, so no app passes colours or a `backdrop-filter`. The toggle stays round where a theme draws squircle corners.
 
-<ComponentPreview
-  title="On a Photo"
-  code={"<ThemeToggle\n  value={tone}\n  onValueChange={setTone}\n  style={{\n    '--theme-toggle-size': '42px',\n    '--theme-toggle-icon-size': '17px',\n    '--theme-toggle-bg': 'rgb(255 255 255 / 0.14)',\n    '--theme-toggle-bg-hover': 'rgb(255 255 255 / 0.24)',\n    '--theme-toggle-ring': 'rgb(255 255 255 / 0.16)',\n    '--theme-toggle-color': '#ffffff',\n    backdropFilter: 'blur(16px)',\n  }}\n/>"}
->
-  <ThemeToggleGlassDemo />
-</ComponentPreview>
+### In Five Looks
+
+The toggle as the theme draws it, in each look on the theme picked in the docs, at Backstage's top-bar size (42px, 38px on phones). The Photo looks turn glass on over a photo.
+
+<FiveLooks specimen="theme-toggle" height={160} />
+
+{HONCHO_BACKSTAGE && (
+  <section data-slot="honcho-backstage-looks" aria-label="Honcho Backstage">
+    <h3>Honcho Backstage</h3>
+    <p>
+      The Backstage top-bar toggle from the theme alone. Today is the <code>honcho</code> theme; the other four looks
+      are <code>honcho-backstage</code>. Dark and Light draw it in the theme's ink on its secondary surface; over a
+      photo it takes the theme's glass control values.
+    </p>
+    <FiveLooks specimen="theme-toggle" theme="honcho-backstage" todayTheme="honcho" height={160} />
+  </section>
+)}
 
 ## Installation
 
@@ -62,11 +77,13 @@ const [tone, setTone] = useState<'light' | 'dark'>('light');
 |---|---|---|
 | `--theme-toggle-size` | `--spacing-10` (40px) | Width and height |
 | `--theme-toggle-icon-size` | `--spacing-4` (16px) | Sun and moon size |
-| `--theme-toggle-bg` | `--surface-subtle` | Background |
-| `--theme-toggle-bg-hover` | `--surface-muted` | Background on hover |
-| `--theme-toggle-ring` | `--border-default` | The 1px inset ring's colour |
-| `--theme-toggle-color` | `--text-primary` | Icon colour |
-| `--theme-toggle-ease` | `cubic-bezier(0.22, 1, 0.36, 1)` | The turn's and the hover's easing |
+| `--theme-toggle-bg` | `--surface-subtle`; under glass, `--glass-on-control-fill` | Background |
+| `--theme-toggle-bg-hover` | `--surface-muted`; under glass, `--glass-on-control-hover-fill` | Background on hover |
+| `--theme-toggle-ring` | `--border-default`; under glass, `--glass-on-control-ring` | The 1px inset ring's colour |
+| `--theme-toggle-color` | `--text-primary`; under glass, `--glass-on-control-ink` | Icon colour |
+| `--theme-toggle-ease` | `--motion-easing-enter` | The turn's and the hover's easing |
+
+Under glass the toggle also blurs the photo with `--glass-on-control-blur`. Leave the colour variables unset to follow the theme; set them only to depart from it.
 
 The motion itself is fixed: the turn takes 600ms, the scale 500ms on `--motion-easing-spring`, the fade 300ms, and a press dips the button to 0.94.
 

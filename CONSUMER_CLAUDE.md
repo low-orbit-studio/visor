@@ -177,10 +177,11 @@ npx visor add <component-name> --overwrite
 | `surface-row` | Surface token color demonstration |
 | `type-specimen` | Typography scale demonstration |
 
-### Typography (3)
+### Typography (4)
 
 | Component | Description |
 | --- | --- |
+| `animated-title` | Title drawn word by word in CSS; screen readers read it once |
 | `code-block` | Syntax-highlighted code display |
 | `heading` | Semantic heading (h1–h6) with visual size override |
 | `text` | General-purpose text element with size variants |

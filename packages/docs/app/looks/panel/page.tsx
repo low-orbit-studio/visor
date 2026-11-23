@@ -12,6 +12,17 @@ const THEME_CLASS_PATTERN = /(^|\s)[\w-]+-theme(?=\s|$)/g;
 // Only a same-origin path, so a link can't point the frame at another site.
 const PHOTO_PATH = /^\/[\w./-]+$/;
 
+/**
+ * The real photos behind the photo looks (VI-829): the theme's own, else any private theme's, so
+ * every demo on a machine with the private themes shows a real photo. The stand-in is left only
+ * for a public build without them.
+ */
+function lookPhotos(theme: string) {
+  return (
+    PRIVATE_THEMES.find((t) => t.slug === theme)?.lookPhotos ?? PRIVATE_THEMES.find((t) => t.lookPhotos)?.lookPhotos
+  );
+}
+
 /** One look of one specimen, in its own document so each look gets its own mode. */
 function LookPanel() {
   const params = useSearchParams();
@@ -20,7 +31,9 @@ function LookPanel() {
   const mode: LookMode = look.mode ?? (params.get('mode') === 'dark' ? 'dark' : 'light');
   const Specimen = LOOK_SPECIMENS[params.get('specimen') ?? ''] ?? LOOK_SPECIMENS.glass;
   const photoParam = params.get('photo') ?? '';
-  const photo = PHOTO_PATH.test(photoParam) && !photoParam.startsWith('//') ? photoParam : STAND_IN_PHOTO;
+  const photo = PHOTO_PATH.test(photoParam) && !photoParam.startsWith('//')
+    ? photoParam
+    : (lookPhotos(theme)?.[mode] ?? STAND_IN_PHOTO);
 
   useEffect(() => {
     const body = document.body;

@@ -49,13 +49,13 @@ const CONCURRENCY = 6;
 type Found = ConcentricPair & { page: string };
 const allowed = (p: Found) => `${p.page} ${p.key}` in ALLOWLIST;
 
-/** Wait for finite animations and transitions, so boxes are measured at rest. */
+/** Wait for finite animations and transitions, so boxes are measured at rest. A paused one never finishes (a held AnimatedTitle), so skip it. */
 const settle = (frame: Frame) =>
   frame.evaluate(() =>
     Promise.all(
       document
         .getAnimations()
-        .filter((a) => a.effect?.getComputedTiming().iterations !== Infinity)
+        .filter((a) => a.playState !== "paused" && a.effect?.getComputedTiming().iterations !== Infinity)
         .map((a) => a.finished.catch(() => null)),
     ).then(() => true),
   );
