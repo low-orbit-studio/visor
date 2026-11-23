@@ -29,7 +29,7 @@
 
 /* Keyboard focus: the edge wakes (below), and the row draws the focus ring, which the clip
    can't cut and reduced motion leaves on. */
-.row:has(.input:focus-visible) {
+.row:has(.input:focus-visible, .zone:focus-visible) {
   outline: var(--focus-ring-width, 2px) solid var(--border-focus, #3b82f6);
   outline-offset: var(--focus-ring-offset, 2px);
 }

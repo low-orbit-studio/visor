@@ -102,6 +102,8 @@ export const PhotoDrop = React.forwardRef<HTMLDivElement, PhotoDropProps>(functi
     readOnlyReason,
     alt,
     className,
+    onFocus,
+    onBlur,
     ...props
   },
   ref
@@ -119,6 +121,21 @@ export const PhotoDrop = React.forwardRef<HTMLDivElement, PhotoDropProps>(functi
   // Nothing to pick while it uploads, is locked or is read-only: no input, so nothing inside takes focus.
   const pickable = !uploading && !locked && !readOnly
   const quiet = locked || readOnly
+  const zoneRef = React.useRef<HTMLDivElement>(null)
+  // Whether focus is in the row. React drops the blur a removed node fires, so this outlives an unmount.
+  const focusInside = React.useRef(false)
+
+  // A state change can unmount the focused input, Try Again or Remove: keep focus in the tile, on the
+  // input when there is one (no input means the zone is tabIndex -1), so a keyboard user doesn't
+  // fall back to the top of the page.
+  React.useLayoutEffect(() => {
+    const zone = zoneRef.current
+    if (!focusInside.current || !zone) return
+    const active = document.activeElement
+    if (active && active !== zone && zone.parentElement?.contains(active)) return
+    const target = zone.querySelector("input") ?? zone
+    if (target !== active) target.focus()
+  }, [pickable, failed, src])
 
   const badge = locked ? (
     <span className={styles.badge} data-slot="photo-drop-lock">
@@ -138,9 +155,25 @@ export const PhotoDrop = React.forwardRef<HTMLDivElement, PhotoDropProps>(functi
   ) : null
 
   return (
-    <div ref={ref} className={cn(styles.row, className)} data-slot="photo-drop" {...props}>
+    <div
+      ref={ref}
+      className={cn(styles.row, className)}
+      data-slot="photo-drop"
+      onFocus={(e) => {
+        focusInside.current = true
+        onFocus?.(e)
+      }}
+      onBlur={(e) => {
+        focusInside.current = e.currentTarget.contains(e.relatedTarget)
+        onBlur?.(e)
+      }}
+      {...props}
+    >
       <div
+        ref={zoneRef}
         className={styles.zone}
+        // Not in the Tab order; only a place to hold focus while there is no input.
+        tabIndex={pickable ? undefined : -1}
         style={{ width: size, height: size, ["--clip" as string]: `path("${shape.clip}")` }}
         data-filled={src ? "" : undefined}
         data-drag={drag ? "" : undefined}

@@ -301,6 +301,50 @@ describe("PhotoDrop keyboard (A3)", () => {
     expect(file.onClear).toHaveBeenCalledOnce()
   })
 
+  it("upload starts: the input goes, and focus stays in the tile instead of falling to <body>", async () => {
+    const { container, rerender } = render(<Tile />)
+    await userEvent.click(screen.getByRole("button", { name: "Before" }))
+    await userEvent.tab()
+    await userEvent.upload(input(container)!, new File(["x"], "me.png", { type: "image/png" }))
+    rerender(<Tile {...STATES.uploading} />)
+    expect(input(container)).toBeNull()
+    expect(zone(container)).toHaveFocus()
+    // The upload finishes: the input comes back and takes focus again.
+    rerender(<Tile {...STATES.filled} />)
+    expect(input(container)).toHaveFocus()
+  })
+
+  it("Try Again: the retry starts, and focus stays in the tile", async () => {
+    const { container, rerender } = render(<Tile {...STATES.failed} />)
+    await userEvent.click(screen.getByRole("button", { name: "Before" }))
+    await userEvent.tab()
+    await userEvent.tab()
+    await userEvent.keyboard("{Enter}")
+    rerender(<Tile {...STATES.uploading} />)
+    expect(screen.queryByRole("button", { name: "Try Again" })).toBeNull()
+    expect(zone(container)).toHaveFocus()
+  })
+
+  it("Remove: the file goes, and focus lands on the input", async () => {
+    const file = fileMode()
+    const { container, rerender } = render(<Tile src="insurance.pdf" file={file} />)
+    await userEvent.click(screen.getByRole("button", { name: "Before" }))
+    await userEvent.tab()
+    await userEvent.tab()
+    await userEvent.keyboard("{Enter}")
+    rerender(<Tile src="" file={file} />)
+    expect(screen.queryByRole("button", { name: "Remove" })).toBeNull()
+    expect(input(container)).toHaveFocus()
+  })
+
+  it("a state change does not pull focus in from outside the tile", () => {
+    const { container, rerender } = render(<Tile />)
+    screen.getByRole("button", { name: "Before" }).focus()
+    rerender(<Tile {...STATES.uploading} />)
+    expect(screen.getByRole("button", { name: "Before" })).toHaveFocus()
+    expect(zone(container)).not.toHaveFocus()
+  })
+
   it.each(["uploading", "locked", "readOnly"])("%s: nothing inside takes focus", async (state) => {
     render(<Tile {...STATES[state]} />)
     await userEvent.click(screen.getByRole("button", { name: "Before" }))
@@ -350,7 +394,7 @@ describe("PhotoDrop CSS", () => {
     // The awake stroke is outside the media block, so focus changes it with reduced motion too.
     const awake = rules(css.slice(0, css.indexOf("@media (prefers-reduced-motion")), /:focus-visible\)\) \.ants/)
     expect(awake.join()).toContain("stroke: var(--_ink)")
-    const ring = rules(css, /\.row:has\(\.input:focus-visible\)\s*$/)
+    const ring = rules(css, /\.row:has\(\.input:focus-visible, \.zone:focus-visible\)\s*$/)
     expect(ring.join()).toContain("outline: var(--focus-ring-width")
   })
 
