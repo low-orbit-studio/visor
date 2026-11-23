@@ -359,6 +359,13 @@ describe("PhotoDrop screen reader (A4)", () => {
     await checkA11y(container)
   })
 
+  it("dragging has no axe violations", async () => {
+    const { container } = render(<Tile />)
+    fireEvent.dragEnter(zone(container))
+    expect(zone(container)).toHaveAttribute("data-drag")
+    await checkA11y(container)
+  })
+
   it("the input is described by the hint and the consumer's describedBy, and passes invalid and required", () => {
     const { container } = render(
       <>
