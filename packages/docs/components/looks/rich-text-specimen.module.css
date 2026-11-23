@@ -1,0 +1,6 @@
+/* The glass recipe's panel, widened to a form column: FormDeck's intro card. */
+.card {
+  width: 100%;
+  max-width: 30rem;
+  box-sizing: border-box;
+}

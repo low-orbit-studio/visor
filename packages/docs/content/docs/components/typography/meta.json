@@ -4,6 +4,7 @@
   "defaultOpen": true,
   "pages": [
     "heading",
+    "rich-text",
     "text",
     "utilities"
   ]
