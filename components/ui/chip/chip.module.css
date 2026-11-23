@@ -378,3 +378,29 @@ button.base,
     transform: translateY(calc((var(--label-box-height) + 1cap) / 2 - round((var(--label-box-height) + 1cap) / 2, 1px)));
   }
 }
+
+/* Squircle fallback (VI-839). Where the browser has no corner-shape (Safari)
+   and the theme draws squircles, the chip draws the theme's squircle from
+   --squircle-radius and --squircle-clip, its radius clamped to half its outer
+   height (--label-box-height). Chromium and round themes skip this. */
+@supports not (corner-shape: squircle) {
+  @container style(--corner-shape: squircle) {
+    .base {
+      --squircle-edge: var(--control-edge-width, var(--stroke-width-thin, 1px));
+      --squircle-r: min(var(--chip-radius, var(--radius-full, 9999px)), calc(var(--label-box-height) / 2));
+      border-radius: var(--squircle-radius, var(--squircle-r));
+      clip-path: var(--squircle-clip, none);
+    }
+
+    /* The edge on ::after becomes the squircle ring: a square outline thick
+       enough to cover the ring's corners, clipped to it. */
+    .base::after {
+      --squircle-r: inherit;
+      --squircle-edge: inherit;
+      border-radius: var(--squircle-ring-radius, var(--squircle-r));
+      outline-width: var(--squircle-ring-paint, var(--control-edge-width, var(--stroke-width-thin, 1px)));
+      outline-offset: calc(-1 * var(--squircle-ring-paint, var(--control-edge-width, var(--stroke-width-thin, 1px))));
+      clip-path: var(--squircle-ring, none);
+    }
+  }
+}

@@ -1,0 +1,75 @@
+---
+title: Reach Rings
+description: Concentric rings, the innermost a filled core holding an icon, lit from the centre out to show how far something reaches.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { ReachPickerDemo, ReachRingsLevelsDemo } from '@/components/ui/reach-rings-demos';
+
+## Default
+
+Pass `levels` (the core included) and `value`, how far the reach goes. `value + 1` rings are lit,
+from the core outward: `0` lights the core alone and `levels - 1` lights every ring. The icon in the
+core is yours to pass. Pair the rings with the control that sets the reach, here a stepped
+[Radio Group](/docs/components/form/radio-group#stepped-variant): the chosen level's index is the
+value.
+
+<ComponentPreview
+  title="Reach beside its picker"
+  code={"import { ReachRings } from '@/components/ui/reach-rings/reach-rings';\nimport { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group/radio-group';\n\nconst reach = LEVELS.findIndex((l) => l.value === value);\n\n<ReachRings levels={4} value={reach} icon={<UserIcon />} />\n<RadioGroup variant=\"stepped\" aria-label=\"Who can see\" value={value} onValueChange={setValue}>\n  {LEVELS.map((l) => (\n    <RadioGroupItem key={l.value} value={l.value} icon={l.icon} title={l.title} />\n  ))}\n</RadioGroup>"}
+>
+  <ReachPickerDemo />
+</ComponentPreview>
+
+Rings light in sequence, 70ms apart from the centre outward, over a 500ms ease-out. With
+`prefers-reduced-motion: reduce` they change at once.
+
+## Compact
+
+`size="compact"` draws the rings 112px across with 15px steps, for a narrow sheet. The default is
+148px with 20px steps.
+
+<ComponentPreview
+  title="Every reach, compact"
+  code={"[0, 1, 2, 3].map((v) => (\n  <ReachRings key={v} levels={4} value={v} size=\"compact\" icon={<UserIcon />} />\n))"}
+>
+  <ReachRingsLevelsDemo />
+</ComponentPreview>
+
+## Theming
+
+| Token | Binds | Default |
+| --- | --- | --- |
+| `--reach-rings-key` | A lit ring's stroke, halo and 5% wash, and the solid core | `--interactive-primary-bg` |
+| `--reach-rings-ring` | An unlit ring's stroke | `--text-primary` at 12% |
+| `--reach-rings-core-ink` | The icon on the lit core | `--interactive-primary-text` |
+| `--reach-rings-glyph` | The icon while the core is unlit | `--text-primary` at 50% |
+
+A theme binds them from its yaml under `components.reach-rings` (`key`, `ring`, `core-ink`,
+`glyph`). See [Component Tokens](/docs/themes/component-tokens).
+
+## Installation
+
+```bash
+npx visor add reach-rings
+```
+
+This copies two files into your project:
+
+- `components/ui/reach-rings/reach-rings.tsx` — the component
+- `components/ui/reach-rings/reach-rings.module.css` — the styles
+
+## API Reference
+
+### ReachRingsProps
+
+<PropsTable component="reach-rings" />
+
+The component also accepts all standard `<div>` HTML attributes, on the root.
+
+## Accessibility
+
+- The rings are decorative: the root is `aria-hidden="true"` and announces nothing.
+- The control beside them carries the state and the names, so pair the rings with one (a stepped
+  Radio Group, say) and never show them alone as the only sign of a setting.

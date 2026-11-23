@@ -147,6 +147,7 @@ const LAYER_CHART = "components/ui/layer-chart/layer-chart.module.css";
 const PROPORTION_BAR = "components/ui/proportion-bar/proportion-bar.module.css";
 const TOGGLE_GROUP = "components/ui/toggle-group/toggle-group.module.css";
 const RADIO_GROUP = "components/ui/radio-group/radio-group.module.css";
+const REACH_RINGS = "components/ui/reach-rings/reach-rings.module.css";
 const TOOLTIP = "components/ui/tooltip/tooltip.module.css";
 const ACTION_ROW = "components/ui/action-row/action-row.module.css";
 const DIALOG_FIELD = "blocks/dialog-field/dialog-field.module.css";
@@ -656,7 +657,7 @@ const tabsFamily: ComponentTokenFamily = {
     { key: "list-color", property: "color", description: "Tab-rail base text colour.", consumers: at(TABS, "var(--text-secondary, #6b7280)") },
     { key: "list-bg", property: "background-color", description: "Segmented-variant rail fill.", consumers: at(TABS, "var(--surface-muted, #f3f4f6)") },
     { key: "line-border-bottom", property: "border-bottom", description: "Underlined-variant rail rule (width, style and colour). Unbound, the rail rule is painted at `--hairline-width`; binding this draws your border instead.", consumers: at(TABS, "1px solid transparent") },
-    { key: "trigger-radius", property: "border-radius", description: "Trigger corner rounding.", consumers: at(TABS, "var(--radius-md, 0.375rem)") },
+    { key: "trigger-radius", property: "border-radius", description: "Trigger corner rounding. Leave unset: derived from the rail (rail radius minus rail padding minus the 1px trigger inset), so the corners stay concentric (VI-837); the line variant falls back to `--radius-md`. Bound, an explicit override.", consumers: at(TABS, "var(--_inner-radius)") },
     { key: "trigger-padding", property: "padding", description: "Trigger inset.", consumers: at(TABS, "var(--spacing-1, 0.25rem) var(--spacing-2, 0.5rem)") },
     { key: "trigger-font-size", property: "font-size", description: "Trigger type size.", consumers: at(TABS, "var(--font-size-sm, 0.875rem)") },
     { key: "trigger-font-weight", property: "font-weight", description: "Trigger weight.", consumers: at(TABS, "var(--font-weight-medium, 500)") },
@@ -1547,23 +1548,19 @@ const segmentedControlFamily: ComponentTokenFamily = {
     {
       key: "item-radius",
       property: "border-radius",
-      description: "Segment corners: the hover fill and the focus ring. Unset, each size keeps its ToggleGroup radius (xs reads `toggle-group.xs-item-radius`).",
+      description: "Segment corners: the hover fill and the focus ring. Leave unset: derived from the track (track radius minus track padding minus its 1px border), so the corners stay concentric (VI-837). Bound, an explicit override (xs reads `toggle-group.xs-item-radius` first).",
       consumers: [
-        { file: SEGMENTED_CONTROL, fallback: "var(--toggle-group-xs-item-radius, var(--radius-sm, 0.25rem))" },
-        { file: SEGMENTED_CONTROL, fallback: "var(--radius-md, 0.375rem)" },
-        { file: SEGMENTED_CONTROL, fallback: "var(--radius-md, 0.375rem)" },
-        { file: SEGMENTED_CONTROL, fallback: "var(--radius-lg, 0.5rem)" },
+        { file: SEGMENTED_CONTROL, fallback: "var(--_inner-radius)" },
+        { file: SEGMENTED_CONTROL, fallback: "var(--toggle-group-xs-item-radius, var(--_inner-radius))" },
       ],
     },
     {
       key: "indicator-radius",
       property: "border-radius",
-      description: "Sliding pill corners. Bind `999px` with `radius` for a fully round switch. Unset, each size keeps its ToggleGroup radius (xs reads `toggle-group.xs-item-radius`).",
+      description: "Sliding pill corners. Leave unset: derived from the track, so binding `radius: 999px` alone gives a fully round switch (VI-837). Bound, an explicit override (xs reads `toggle-group.xs-item-radius` first).",
       consumers: [
-        { file: SEGMENTED_CONTROL, fallback: "var(--toggle-group-xs-item-radius, var(--radius-sm, 0.25rem))" },
-        { file: SEGMENTED_CONTROL, fallback: "var(--radius-md, 0.375rem)" },
-        { file: SEGMENTED_CONTROL, fallback: "var(--radius-md, 0.375rem)" },
-        { file: SEGMENTED_CONTROL, fallback: "var(--radius-lg, 0.5rem)" },
+        { file: SEGMENTED_CONTROL, fallback: "var(--_inner-radius)" },
+        { file: SEGMENTED_CONTROL, fallback: "var(--toggle-group-xs-item-radius, var(--_inner-radius))" },
       ],
     },
     { key: "indicator-bg", property: "background-color", description: "Sliding active pill. Bind a lifted dark fill where the theme wants one.", consumers: at(SEGMENTED_CONTROL, "var(--interactive-primary-bg, var(--primary, #111827))") },
@@ -1595,7 +1592,16 @@ const toggleGroupFamily: ComponentTokenFamily = {
     { key: "xs-font-size", property: "font-size", description: "Compact (`xs`) label size.", consumers: at(TOGGLE_GROUP, "var(--font-size-xs, 0.75rem)") },
     { key: "xs-padding-x", property: "padding-inline", description: "Compact (`xs`) option sides.", consumers: at(TOGGLE_GROUP, "var(--spacing-2, 0.5rem)") },
     { key: "xs-track-radius", property: "border-radius", description: "Compact (`xs`) outline track corner radius.", consumers: at(TOGGLE_GROUP, "var(--radius-md, 0.375rem)") },
-    { key: "xs-item-radius", property: "border-radius", description: "Compact (`xs`) option and indicator corner radius. Concentric with the track is the track radius minus its 2px inset.", consumers: at(TOGGLE_GROUP, "var(--radius-sm, 0.25rem)") },
+    {
+      key: "xs-item-radius",
+      property: "border-radius",
+      description: "Compact (`xs`) option and indicator corner radius. Leave unset: in the outline track it is derived from the track (track radius minus padding minus its 1px border), so the corners stay concentric (VI-837). Bound, an explicit override. The default variant has no track and falls back to `--radius-sm`.",
+      consumers: [
+        { file: TOGGLE_GROUP, fallback: "var(--radius-sm, 0.25rem)" },
+        { file: TOGGLE_GROUP, fallback: "var(--_inner-radius)" },
+        { file: TOGGLE_GROUP, fallback: "var(--_inner-radius)" },
+      ],
+    },
     { key: "option-gap", property: "gap", description: "Option variant (VI-787): the space between rows.", consumers: at(TOGGLE_GROUP, "var(--spacing-2, 0.5rem)") },
     { key: "option-inner-gap", property: "gap", description: "Option row: the space between key, label and check.", consumers: at(TOGGLE_GROUP, "var(--spacing-3_5, 0.875rem)") },
     { key: "option-min-height", property: "min-height", description: "Option row height; a wrapped label grows past it.", consumers: at(TOGGLE_GROUP, "3.375rem") },
@@ -1641,6 +1647,36 @@ const radioCardFamily: ComponentTokenFamily = {
     { key: "ring", property: "outline-color", description: "The ring on a card that is not chosen.", consumers: at(RADIO_GROUP, "color-mix(in srgb, var(--text-primary, #111827) 30%, transparent)") },
     { key: "ring-selected", property: "outline-color", description: "The ring on the chosen card. Unbound it follows the dot.", consumers: at(RADIO_GROUP, "var(--radio-card-dot, var(--interactive-primary-bg, var(--primary, #111827)))") },
     { key: "dot", property: "background-color", description: "The dot inside the chosen card.", consumers: at(RADIO_GROUP, "var(--interactive-primary-bg, var(--primary, #111827))") },
+  ],
+};
+
+// VI-840: the stepped RadioGroup and ReachRings (Blacklight's Who Can See picker).
+const radioStepFamily: ComponentTokenFamily = {
+  family: "radio-step",
+  prefix: "radio-step",
+  description:
+    "RadioGroup `variant=\"stepped\"` \u2014 the key colour, the well and its radius, the resting ink, the icon size, and the chosen tile's fill and hairline.",
+  tokens: [
+    { key: "key", property: "background-color", description: "The key colour: the chosen tile's fill tint, hairline and icon, and the focus ring.", consumers: at(RADIO_GROUP, "var(--interactive-primary-bg, var(--primary, #111827))") },
+    { key: "well", property: "background-color", description: "The well the tiles sit in. Default is the page nudged 12% toward the ink; a dark app binds it darker than its plane (Blacklight: `rgb(0 0 0 / 0.65)`).", consumers: at(RADIO_GROUP, "color-mix(in srgb, var(--text-primary, #111827) 12%, var(--surface-page, #ffffff))") },
+    { key: "well-radius", property: "border-radius", description: "Well corner radius. The tiles take it minus the well padding, so the corners stay concentric.", consumers: at(RADIO_GROUP, "var(--radius-xl, 0.75rem)") },
+    { key: "ink", property: "color", description: "Icon and label ink on a tile that is not chosen.", consumers: at(RADIO_GROUP, "var(--text-tertiary, #9ca3af)") },
+    { key: "icon-size", property: "font-size", description: "Tile icon size.", consumers: at(RADIO_GROUP, "1.25rem") },
+    { key: "selected-bg", property: "background-color", description: "Chosen tile fill. Default is 12% key over `--surface-elev-2`.", consumers: at(RADIO_GROUP, "color-mix(in srgb, var(--_key) 12%, var(--surface-elev-2, #f3f4f6))") },
+    { key: "selected-border", property: "box-shadow", description: "Chosen tile hairline. Default is 35% key.", consumers: at(RADIO_GROUP, "color-mix(in srgb, var(--_key) 35%, transparent)") },
+  ],
+};
+
+const reachRingsFamily: ComponentTokenFamily = {
+  family: "reach-rings",
+  prefix: "reach-rings",
+  description:
+    "ReachRings \u2014 the key colour of lit rings and the core, the unlit ring stroke, and the core icon lit and unlit.",
+  tokens: [
+    { key: "key", property: "background-color", description: "The key colour: a lit ring's stroke, halo and wash, and the filled core.", consumers: at(REACH_RINGS, "var(--interactive-primary-bg, var(--primary, #111827))") },
+    { key: "ring", property: "box-shadow", description: "An unlit ring's stroke.", consumers: at(REACH_RINGS, "color-mix(in srgb, var(--text-primary, #111827) 12%, transparent)") },
+    { key: "glyph", property: "color", description: "The core icon while the core is unlit.", consumers: at(REACH_RINGS, "color-mix(in srgb, var(--text-primary, #111827) 50%, transparent)") },
+    { key: "core-ink", property: "color", description: "The core icon on the lit core.", consumers: at(REACH_RINGS, "var(--interactive-primary-text, #f9fafb)") },
   ],
 };
 
@@ -1792,6 +1828,8 @@ export const COMPONENT_TOKEN_FAMILIES: readonly ComponentTokenFamily[] = [
   segmentedControlFamily,
   toggleGroupFamily,
   radioCardFamily,
+  radioStepFamily,
+  reachRingsFamily,
   tooltipFamily,
   actionRowFamily,
   inputAffixFamily,

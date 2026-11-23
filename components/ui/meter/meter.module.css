@@ -14,6 +14,7 @@
   /* Compact (row) geometry from the LO-344 frame: a 10px track, the fill inset 2px, ticks 3px proud. */
   --_track-h: 10px;
   --_track-radius: var(--radius-full, 9999px);
+  /* One inset on both axes: the fill nests concentric in the track (VI-838). */
   --_inset-x: 2px;
   --_inset-y: 2px;
   --_tick-out: 3px;
@@ -21,11 +22,12 @@
   min-width: 0;
 }
 
-/* Contract geometry from the LO-345 frame: a 30px track, a thinner used bar, ticks 6px proud. */
+/* Contract geometry from the LO-345 frame: a 30px track, a thinner used bar, ticks 6px proud.
+   The track is a pill so the bar, inset 9px all round, nests in it as a pill (VI-838). */
 .root[data-size="contract"] {
   --_track-h: 30px;
-  --_track-radius: 10px;
-  --_inset-x: 6px;
+  --_track-radius: var(--radius-full, 9999px);
+  --_inset-x: 9px;
   --_inset-y: 9px;
   --_tick-out: 6px;
 }
@@ -89,7 +91,8 @@
   left: var(--_inset-x);
   top: var(--_inset-y);
   bottom: var(--_inset-y);
-  border-radius: var(--radius-full, 9999px);
+  /* Concentric: the track radius minus the inset (a pill in the compact pill track). */
+  border-radius: max(0px, calc(var(--_track-radius) - var(--_inset-y)));
   background: var(--_ink);
 }
 
@@ -165,4 +168,28 @@
 /* Past the heads-up the figure turns heavier in ink, never the alert colour (intentional 800, no token). */
 .root[data-over] .label strong {
   font-weight: 800;
+}
+
+/* Squircle fallback (VI-839). Where the browser has no corner-shape (Safari)
+   and the theme draws squircles, the track, its zones and the fill draw the
+   theme's squircle from --squircle-radius and --squircle-clip, each from its
+   radius clamped to half its height. Chromium and round themes skip this. */
+@supports not (corner-shape: squircle) {
+  @container style(--corner-shape: squircle) {
+    .track,
+    .zone {
+      --squircle-r: min(var(--_track-radius), calc(var(--_track-h) / 2));
+    }
+
+    .fill {
+      --squircle-r: min(max(0px, calc(var(--_track-radius) - var(--_inset-y))), calc(var(--_track-h) / 2 - var(--_inset-y)));
+    }
+
+    .track,
+    .zone,
+    .fill {
+      border-radius: var(--squircle-radius, var(--squircle-r));
+      clip-path: var(--squircle-clip, none);
+    }
+  }
 }

@@ -1,0 +1,72 @@
+/* ReachRings (VI-840): concentric rings, the innermost a filled core holding an
+   icon, lit from the centre out. Ring --_k counts out from the core (0); its
+   inset is the rings outside it times the step, so the core keeps its size and
+   the rings share the space between core and edge evenly. */
+.root {
+  --_key: var(--reach-rings-key, var(--interactive-primary-bg, var(--primary, #111827)));
+  --_size: 148px;
+  --_core: 28px;
+  --_icon-size: 15px;
+  --_step: calc((var(--_size) - var(--_core)) / (2 * max(1, var(--_levels) - 1)));
+  position: relative;
+  flex-shrink: 0;
+  width: var(--_size);
+  aspect-ratio: 1;
+}
+
+.root[data-size="compact"] {
+  --_size: 112px;
+  --_core: 22px;
+  --_icon-size: 12px;
+}
+
+.ring {
+  position: absolute;
+  inset: calc((var(--_levels) - 1 - var(--_k)) * var(--_step));
+  border-radius: var(--radius-full, 9999px);
+  box-shadow: inset 0 0 0 var(--stroke-width-regular, 1.5px) var(--reach-rings-ring, color-mix(in srgb, var(--text-primary, #111827) 12%, transparent));
+  transition: box-shadow var(--motion-duration-500, 500ms) var(--motion-easing-enter, cubic-bezier(0, 0, 0.2, 1)),
+    background-color var(--motion-duration-500, 500ms) var(--motion-easing-enter, cubic-bezier(0, 0, 0.2, 1));
+  /* Lit in sequence from the centre outward, 70ms apart. */
+  transition-delay: calc(var(--_k) * 70ms);
+}
+
+/* A lit ring: a keyed stroke, a soft keyed halo and a 5% keyed wash. */
+.ring[data-state="on"] {
+  background-color: color-mix(in srgb, var(--_key) 5%, transparent);
+  box-shadow: inset 0 0 0 var(--stroke-width-regular, 1.5px) var(--_key),
+    0 0 18px -4px color-mix(in srgb, var(--_key) 55%, transparent);
+}
+
+/* The lit core is solid key with a stronger glow. */
+.core[data-state="on"] {
+  background-color: var(--_key);
+  box-shadow: 0 0 22px color-mix(in srgb, var(--_key) 70%, transparent);
+}
+
+.icon {
+  position: absolute;
+  z-index: 1;
+  inset: calc((var(--_size) - var(--_core)) / 2);
+  display: grid;
+  place-items: center;
+  line-height: 0;
+  font-size: var(--_icon-size);
+  color: var(--reach-rings-glyph, color-mix(in srgb, var(--text-primary, #111827) 50%, transparent));
+}
+
+/* A dark glyph on the lit core. */
+.core[data-state="on"] ~ .icon {
+  color: var(--reach-rings-core-ink, var(--interactive-primary-text, #f9fafb));
+}
+
+.icon > svg {
+  width: 1em;
+  height: 1em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ring {
+    transition: none;
+  }
+}

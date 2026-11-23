@@ -475,6 +475,12 @@ export const FIXTURES: Record<string, Record<string, Fixture>> = {
     empty: { export: "ProportionBar", props: `{ style: { width: 360 }, parts: [] }` },
   },
   // VI-767: a row meter past its heads-up tick, and a contract meter with zones and mark text.
+  // VI-840: four rings at reach 2 (three lit), the compact size at reach 0, and none lit.
+  "reach-rings": {
+    default: { export: "ReachRings", props: `(function () { var h = React.createElement; return { levels: 4, value: 2, icon: h("svg", { width: "1em", height: "1em", viewBox: "0 0 24 24", fill: "currentColor" }, [h("circle", { key: 1, cx: 12, cy: 8, r: 4 }), h("path", { key: 2, d: "M4 21a8 8 0 0 1 16 0Z" })]) }; })()` },
+    compact: { export: "ReachRings", props: `(function () { var h = React.createElement; return { levels: 4, value: 0, size: "compact", icon: h("svg", { width: "1em", height: "1em", viewBox: "0 0 24 24", fill: "currentColor" }, [h("circle", { key: 1, cx: 12, cy: 8, r: 4 }), h("path", { key: 2, d: "M4 21a8 8 0 0 1 16 0Z" })]) }; })()` },
+    full: { export: "ReachRings", props: `(function () { var h = React.createElement; return { levels: 4, value: 3, icon: h("svg", { width: "1em", height: "1em", viewBox: "0 0 24 24", fill: "currentColor" }, [h("circle", { key: 1, cx: 12, cy: 8, r: 4 }), h("path", { key: 2, d: "M4 21a8 8 0 0 1 16 0Z" })]) }; })()` },
+  },
   meter: {
     default: {
       export: "Meter",
@@ -730,6 +736,30 @@ export const FIXTURES: Record<string, Record<string, Fixture>> = {
               disabled: i === 2, "aria-describedby": i === 2 ? "radio-reason" : undefined,
             });
           }).concat([h("p", { key: "r", id: "radio-reason", style: { margin: 0, fontSize: 12 } }, "Public needs a verified booking.")]),
+        };
+      })()`,
+    },
+    // VI-840: four ordered levels as tiles, the third disabled.
+    stepped: {
+      export: "RadioGroup",
+      interactiveTarget: "[role=\"radio\"]",
+      props: `(function () {
+        var h = React.createElement;
+        var icon = function (d) { return h("svg", { width: "1em", height: "1em", viewBox: "0 0 24 24", fill: "currentColor" }, h("path", { d: d })); };
+        var levels = [
+          ["you", "Just You", "M12 4a4 4 0 1 1 0 8 4 4 0 0 1 0-8ZM4 21a8 8 0 0 1 16 0Z"],
+          ["team", "Your Team", "M8 6a3.5 3.5 0 1 1 0 7 3.5 3.5 0 0 1 0-7Zm8 0a3.5 3.5 0 1 1 0 7 3.5 3.5 0 0 1 0-7ZM1 20a7 7 0 0 1 14 0Zm8 0a7 7 0 0 1 14 0Z"],
+          ["bookers", "Verified Bookers", "M12 2l3 3h4v4l3 3-3 3v4h-4l-3 3-3-3H5v-4l-3-3 3-3V5h4Z"],
+          ["public", "Public", "M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm0 3a7 7 0 0 1 0 14 7 7 0 0 1 0-14Z"],
+        ];
+        return {
+          variant: "stepped",
+          "aria-label": "Who can see",
+          defaultValue: "team",
+          style: { width: 400 },
+          children: levels.map(function (l, i) {
+            return h(__mod.RadioGroupItem, { key: l[0], value: l[0], icon: icon(l[2]), title: l[1], disabled: i === 2 });
+          }),
         };
       })()`,
     },
