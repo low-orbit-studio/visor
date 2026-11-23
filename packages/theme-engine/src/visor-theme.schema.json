@@ -623,6 +623,13 @@
             "$ref": "#/$defs/componentTokenBinding"
           }
         },
+        "scroll-hint": {
+          "type": "object",
+          "description": "ScrollHint — the \"More Below\" pill pinned to a scroll box's bottom edge: the solid chip's fill, edge and ink, the fill it takes over a photo, and the gap it undoes. Keys: bg, border, color, glass-bg, gap.",
+          "additionalProperties": {
+            "$ref": "#/$defs/componentTokenBinding"
+          }
+        },
         "dialog": {
           "type": "object",
           "description": "Dialog's panel and page scrim — width, corners, fill, inset, shadow, a backdrop filter for glass, and the scrim's colour and blur. ConfirmDialog shares them. Keys: max-width, radius, bg, padding, shadow, backdrop-filter, overlay-bg, overlay-blur.",

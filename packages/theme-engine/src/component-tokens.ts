@@ -154,6 +154,7 @@ const DIALOG_FIELD = "blocks/dialog-field/dialog-field.module.css";
 const ADMIN_SHELL = "blocks/admin-shell/admin-shell.module.css";
 const BILLING_SLIDER = "components/ui/billing-slider/billing-slider.module.css";
 const RESIZABLE_SPLIT = "components/ui/resizable-split/resizable-split.module.css";
+const SCROLL_HINT = "components/ui/scroll-hint/scroll-hint.module.css";
 const DIALOG = "components/ui/dialog/dialog.module.css";
 const STAT_CARD = "components/ui/stat-card/stat-card.module.css";
 const KEY_VALUE_LIST = "components/ui/key-value-list/key-value-list.module.css";
@@ -643,6 +644,21 @@ const glassFamily: ComponentTokenFamily = {
     { key: "control-ring", property: "box-shadow (inset ring)", description: "Glass control ring colour.", consumers: [], recommended: "color-mix(in srgb, var(--text-primary) 16%, transparent)" },
     { key: "control-ink", property: "color", description: "Glass control icon and label colour.", consumers: [], recommended: "var(--text-primary)" },
     { key: "control-blur", property: "backdrop-filter", description: "Filter on the photo behind a glass control.", consumers: [], recommended: "blur(16px)" },
+  ],
+};
+
+// VI-814: the "More Below" pill. A solid chip in plain looks; over a photo (data-glass="on") the glass fill.
+const scrollHintFamily: ComponentTokenFamily = {
+  family: "scroll-hint",
+  prefix: "scroll-hint",
+  description:
+    "ScrollHint — the \"More Below\" pill pinned to a scroll box's bottom edge: the solid chip's fill, edge and ink, the fill it takes over a photo, and the gap it undoes.",
+  tokens: [
+    { key: "bg", property: "background", description: "The chip's fill, glass off.", consumers: at(SCROLL_HINT, "var(--surface-card, #ffffff)") },
+    { key: "border", property: "box-shadow (inset ring)", description: "The chip's edge, glass off. Over a photo the pill has no edge.", consumers: at(SCROLL_HINT, "var(--border-default, #e5e7eb)") },
+    { key: "color", property: "color", description: "The pill's words and caret.", consumers: at(SCROLL_HINT, "var(--text-secondary, #4b5563)") },
+    { key: "glass-bg", property: "background", description: "The pill's fill inside `data-glass=\"on\"`, blurred with the glass layer's control blur.", consumers: at(SCROLL_HINT, "color-mix(in srgb, var(--surface-page, #ffffff) 70%, transparent)") },
+    { key: "gap", property: "margin-top (negated)", description: "The scroll box's row gap, which the zero-height hint row undoes so it adds no space.", consumers: at(SCROLL_HINT, "0px") },
   ],
 };
 
@@ -1809,6 +1825,7 @@ export const COMPONENT_TOKEN_FAMILIES: readonly ComponentTokenFamily[] = [
   resizableSplitFamily,
   dialogFamily,
   glassFamily,
+  scrollHintFamily,
   tabsFamily,
   skeletonFamily,
   spinnerFamily,

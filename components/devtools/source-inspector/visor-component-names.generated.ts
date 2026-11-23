@@ -369,6 +369,7 @@ export const VISOR_COMPONENT_NAMES: ReadonlySet<string> = new Set([
   "ScoreIndicator",
   "ScrollArea",
   "ScrollBar",
+  "ScrollHint",
   "SearchInput",
   "SectionHeader",
   "SectionIntro",

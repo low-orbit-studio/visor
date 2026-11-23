@@ -50,6 +50,12 @@ interface Fixture {
    * action row renders a real Button rather than a bare `<button>`.
    */
   with?: string[]
+  /**
+   * JS source that evaluates to the element to render, in place of the export
+   * with `props`. For parts a hook drives (`ScrollHint` and `useKeepGoing`), so the
+   * fixture can mount the hook and its scroll box. `__mod` and `React` are in scope.
+   */
+  element?: string
 }
 
 /** A 1em Phosphor "X" glyph, inline so icon fixtures need no icon package. */
@@ -453,6 +459,23 @@ export const FIXTURES: Record<string, Record<string, Fixture>> = {
     hero: {
       export: "BillingSlider",
       props: `{ "aria-label": "Hours Website embeds bills", value: 12.5, savedValue: 8, min: 8, max: 16.75, hue: 339, size: "lg", marks: [{ value: 10, label: "High", hatchPast: true }], evidence: { value: 10.5, agent: 3, proposed: 1.25 }, minLabel: "Low", maxLabel: "Ceiling allows", formatValue: (h) => h + " h", onValueChange: () => {}, style: { width: 640 } }`,
+    },
+  },
+  // VI-814: a 320px scroll box of twelve fields, the hint as its last child, f7 still to fill.
+  // The hook's result is left on window.__keepGoing so a browser test can call go().
+  "scroll-hint": {
+    default: {
+      export: "ScrollHint",
+      props: `{}`,
+      element: `React.createElement(function KeepGoingBox() {
+        var box = React.useRef(null);
+        var kg = __mod.useKeepGoing(box, ["f7"]);
+        window.__keepGoing = kg;
+        var fields = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map(function (n) {
+          return React.createElement("label", { key: n, "data-field": "f" + n, style: { display: "grid", gap: 4 } }, "Field " + n, React.createElement("input", { "aria-label": "Field " + n, style: { height: 40, padding: "0 12px", border: "1px solid var(--border-default)", borderRadius: 8, background: "var(--surface-card)", color: "var(--text-primary)", font: "inherit" } }));
+        });
+        return React.createElement("div", { ref: box, "data-slot": "scroll-box", style: { width: 320, height: 320, overflowY: "auto", display: "grid", gap: 16, padding: 16, boxSizing: "border-box", "--scroll-hint-gap": "16px", background: "var(--surface-page)", color: "var(--text-primary)", border: "1px solid var(--border-default)", borderRadius: 12 } }, fields, React.createElement(__mod.ScrollHint, { boxRef: box, keepGoing: kg }));
+      })`,
     },
   },
   // VI-778: an editor and a preview pane, the editor at 280px.
@@ -1242,7 +1265,7 @@ function __resolveComponent(mod, preferred) {
 var __Component = __resolveComponent(__mod, ${JSON.stringify(exportName)});
 var __props = ${fixture.props};
 createRoot(document.getElementById("root")).render(
-  React.createElement(__Component, __props)
+  ${fixture.element ?? "React.createElement(__Component, __props)"}
 );`
 }
 
