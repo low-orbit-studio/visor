@@ -115,8 +115,8 @@ The registry ships 88+ UI components across 6 categories, plus admin compounds, 
 **Form (29)**
 `billing-slider` · `button` · `calendar` · `checkbox` · `combobox` · `date-picker` · `field` · `fieldset` · `file-upload` · `form` · `input` · `label` · `number-input` · `otp-input` · `password-input` · `phone-input` · `photo-picker` · `position-picker` · `radio-group` · `scroll-hint` · `search-input` · `select` · `slider` · `slider-control` · `switch` · `tag-input` · `textarea` · `time-picker` · `toggle-group`
 
-**Data Display (14)**
-`accordion` · `avatar` · `carousel` · `code-block` · `collapsible` · `heading` · `image` · `layer-chart` · `meter` · `progress` · `proportion-bar` · `separator` · `skeleton` · `text` · `timeline`
+**Data Display (15)**
+`accordion` · `avatar` · `carousel` · `code-block` · `collapsible` · `heading` · `image` · `layer-chart` · `meter` · `progress` · `proportion-bar` · `reach-rings` · `separator` · `skeleton` · `text` · `timeline`
 
 **Navigation (6)**
 `bottom-nav` · `breadcrumb` · `command` · `navbar` · `pagination` · `stepper`
@@ -347,7 +347,7 @@ emits no extra CSS at all. Bind one and every consuming surface follows.
 
 Families: `table` · `data-table` · `chip` · `badge` · `status-badge` ·
 `filter-bar` · `page-header` · `empty-state` · `banner` · `sidebar` · `tabs` ·
-`skeleton` · `spinner` · `checkbox` · `switch` · `toggle-group` · `radio-card` · `tooltip` · `action-row` · `glass` · `admin-ui`. The full token list, with each
+`skeleton` · `spinner` · `checkbox` · `switch` · `toggle-group` · `radio-card` · `radio-step` · `reach-rings` · `tooltip` · `action-row` · `glass` · `admin-ui`. The full token list, with each
 one's fallback, is in [Component Tokens](https://visor.design/docs/themes/component-tokens)
 and in [`docs/token-rules.md`](./docs/token-rules.md).
 

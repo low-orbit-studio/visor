@@ -95,6 +95,7 @@ Re-export every public type (`Props`, sub-component prop types, named tuple/unio
 - Use **Radix UI primitives** only for components that require complex accessibility behavior (dialogs, dropdowns, etc.). Prefer plain HTML elements otherwise.
 - Use **Phosphor Icons** (`@phosphor-icons/react`) for any icon needs.
 - Components must be fully **theme-agnostic** — they should look correct under any theme class without modification.
+- **Nested corners are concentric:** inner radius = outer radius − the gap, with the same gap on both axes. Derive the inner radius from the outer one in CSS, never type it twice. `packages/docs/e2e/concentric-scan.spec.ts` checks every component page in CI; a pair that is not concentric on purpose goes in its allowlist with a one-line reason (see [`docs/audits/concentric-corners.md`](./docs/audits/concentric-corners.md)).
 
 ## Flutter Components
 

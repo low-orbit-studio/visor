@@ -805,6 +805,20 @@
             "$ref": "#/$defs/componentTokenBinding"
           }
         },
+        "radio-step": {
+          "type": "object",
+          "description": "RadioGroup `variant=\"stepped\"` \u2014 the key colour, the well and its radius, the resting ink, the icon size, and the chosen tile's fill and hairline. Keys: key, well, well-radius, ink, icon-size, selected-bg, selected-border.",
+          "additionalProperties": {
+            "$ref": "#/$defs/componentTokenBinding"
+          }
+        },
+        "reach-rings": {
+          "type": "object",
+          "description": "ReachRings \u2014 the key colour of lit rings and the core, the unlit ring stroke, and the core icon lit and unlit. Keys: key, ring, glyph, core-ink.",
+          "additionalProperties": {
+            "$ref": "#/$defs/componentTokenBinding"
+          }
+        },
         "tooltip": {
           "type": "object",
           "description": "Tooltip ground and ink, so a dark theme can keep the label legible without retuning the shared inverse pair other components read. Keys: bg, text.",

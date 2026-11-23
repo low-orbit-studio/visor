@@ -114,9 +114,11 @@
   display: flex;
   font-family: var(--font-body, inherit);
   gap: var(--spacing-1, 0.25rem);
-  padding: var(--spacing-1, 0.25rem);
+  --_menu-padding: var(--spacing-1, 0.25rem);
+  padding: var(--_menu-padding);
   background-color: var(--field-menu-bg, var(--surface-popover, var(--surface-card, #ffffff)));
-  border-radius: var(--radius-lg, 0.5rem);
+  --_menu-radius: var(--radius-lg, 0.5rem);
+  border-radius: var(--_menu-radius);
   box-shadow: var(--shadow-md);
   outline: var(--hairline-width, var(--stroke-width-thin, 1px)) solid var(--hairline-strong, #d1d5db);
   outline-offset: calc(-1 * var(--hairline-width, var(--stroke-width-thin, 1px)));
@@ -136,7 +138,8 @@
   flex-shrink: 0;
   padding: var(--spacing-1, 0.25rem) var(--spacing-3, 0.75rem);
   border: 0;
-  border-radius: var(--radius-sm, 0.25rem);
+  /* Concentric with the list (VI-838): its radius minus its padding. */
+  border-radius: max(0px, calc(var(--_menu-radius) - var(--_menu-padding)));
   background: transparent;
   color: var(--text-primary, #111827);
   font-size: var(--font-size-sm, 0.875rem);

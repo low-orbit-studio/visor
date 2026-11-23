@@ -13,7 +13,7 @@ import { Command, CommandInput, CommandList, CommandEmpty, CommandGroup, Command
   title="Command Palette"
   code={"import {\n  Command,\n  CommandInput,\n  CommandList,\n  CommandEmpty,\n  CommandGroup,\n  CommandItem,\n} from '@/components/ui/command/command';\n\n<Command>\n  <CommandInput placeholder=\"Search actions...\" />\n  <CommandList>\n    <CommandEmpty>No results found.</CommandEmpty>\n    <CommandGroup heading=\"Account\">\n      <CommandItem>Profile</CommandItem>\n      <CommandItem>Settings</CommandItem>\n    </CommandGroup>\n    <CommandGroup heading=\"Session\">\n      <CommandItem>Logout</CommandItem>\n    </CommandGroup>\n  </CommandList>\n</Command>"}
 >
-  <div style={{ maxWidth: '28rem', border: '1px solid var(--border-default, #e5e7eb)', borderRadius: '0.5rem' }}>
+  <div style={{ maxWidth: '28rem', border: '1px solid var(--border-default, #e5e7eb)', borderRadius: '0.5rem', overflow: 'hidden' }}>
     <Command>
       <CommandInput placeholder="Search actions..." />
       <CommandList>
@@ -36,7 +36,7 @@ import { Command, CommandInput, CommandList, CommandEmpty, CommandGroup, Command
   title="Multiple Groups"
   code={"<Command>\n  <CommandInput placeholder=\"Search...\" />\n  <CommandList>\n    <CommandEmpty>No results found.</CommandEmpty>\n    <CommandGroup heading=\"Navigation\">\n      <CommandItem>Dashboard</CommandItem>\n      <CommandItem>Analytics</CommandItem>\n      <CommandItem>Reports</CommandItem>\n    </CommandGroup>\n    <CommandGroup heading=\"Settings\">\n      <CommandItem>Profile</CommandItem>\n      <CommandItem>Billing</CommandItem>\n      <CommandItem>Team</CommandItem>\n    </CommandGroup>\n    <CommandGroup heading=\"Help\">\n      <CommandItem>Documentation</CommandItem>\n      <CommandItem>Support</CommandItem>\n    </CommandGroup>\n  </CommandList>\n</Command>"}
 >
-  <div style={{ maxWidth: '28rem', border: '1px solid var(--border-default, #e5e7eb)', borderRadius: '0.5rem' }}>
+  <div style={{ maxWidth: '28rem', border: '1px solid var(--border-default, #e5e7eb)', borderRadius: '0.5rem', overflow: 'hidden' }}>
     <Command>
       <CommandInput placeholder="Search..." />
       <CommandList>
@@ -66,7 +66,7 @@ import { Command, CommandInput, CommandList, CommandEmpty, CommandGroup, Command
   title="Empty State"
   code={"<Command>\n  <CommandInput placeholder=\"Search for something rare...\" />\n  <CommandList>\n    <CommandEmpty>No results found. Try a different search.</CommandEmpty>\n  </CommandList>\n</Command>"}
 >
-  <div style={{ maxWidth: '28rem', border: '1px solid var(--border-default, #e5e7eb)', borderRadius: '0.5rem' }}>
+  <div style={{ maxWidth: '28rem', border: '1px solid var(--border-default, #e5e7eb)', borderRadius: '0.5rem', overflow: 'hidden' }}>
     <Command>
       <CommandInput placeholder="Search for something rare..." defaultValue="xyzzy" />
       <CommandList>

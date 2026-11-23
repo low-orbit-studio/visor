@@ -394,6 +394,25 @@ export const propsData: Record<string, PropDef[]> = {
       default: 'false',
       description: 'Disables all radio items in the group.',
     },
+    {
+      name: 'variant',
+      type: "'default' | 'card' | 'stepped'",
+      default: "'default'",
+      description: 'default draws a dot beside a label; card draws each item as a card with icon, title and description; stepped draws one row of equal tiles in a well, each an icon over a label.',
+    },
+    {
+      name: 'size',
+      type: "'default' | 'compact'",
+      default: "'default'",
+      description: 'Stepped variant only. compact sets the tile labels at 10px instead of 11px.',
+    },
+  ],
+
+  'reach-rings': [
+    { name: 'levels', type: 'number', required: true, description: 'How many rings, the filled core included.' },
+    { name: 'value', type: 'number', required: true, description: 'How far the reach goes: 0 (the core alone) to levels - 1 (every ring). value + 1 rings are lit, from the centre out; -1 lights none.' },
+    { name: 'icon', type: 'ReactNode', description: 'The glyph in the core, passed in by the consumer.' },
+    { name: 'size', type: "'default' | 'compact'", default: "'default'", description: 'default is 148px across; compact is 112px.' },
   ],
 
   'billing-slider': [

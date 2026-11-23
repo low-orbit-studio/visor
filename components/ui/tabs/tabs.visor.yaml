@@ -25,6 +25,19 @@ why: >
 variants:
   variant: [default, line]
 
+theme_hooks:
+  - name: --tabs-list-radius
+    description: >
+      Default-variant rail corners. The triggers derive their radius from it
+      (rail radius minus rail padding minus the 1px trigger inset), so the
+      corners stay concentric (VI-837): a pill rail holds pill triggers.
+      Theme key: components.tabs.list-radius.
+  - name: --tabs-trigger-radius
+    description: >
+      Trigger corners. Leave unset: derived from the rail (line variant:
+      var(--radius-md, 0.375rem)). Bound, it is an explicit override. Theme
+      key: components.tabs.trigger-radius.
+
 props:
   - name: variant
     type: '"default" | "line"'

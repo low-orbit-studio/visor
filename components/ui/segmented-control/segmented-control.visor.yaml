@@ -31,6 +31,23 @@ variants:
   size: [xs, sm, md, lg]
   fullWidth: [true, false]
 
+theme_hooks:
+  - name: --segmented-control-radius
+    description: >
+      Track corner radius. The segments and the sliding pill derive their
+      radius from it (track radius minus track padding minus the 1px border),
+      so the corners stay concentric (VI-837). Theme key:
+      components.segmented-control.radius.
+  - name: --segmented-control-item-radius
+    description: >
+      Segment corners (hover fill, focus ring). Leave unset: derived from the
+      track. Bound, it is an explicit override. Theme key:
+      components.segmented-control.item-radius.
+  - name: --segmented-control-indicator-radius
+    description: >
+      Sliding pill corners. Leave unset: derived from the track. Bound, it is
+      an explicit override. Theme key: components.segmented-control.indicator-radius.
+
 props:
   - name: options
     type: "{ value: string; label: ReactNode; icon?: ReactNode; disabled?: boolean }[]"

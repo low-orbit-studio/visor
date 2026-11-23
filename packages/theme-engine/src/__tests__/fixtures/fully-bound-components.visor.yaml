@@ -525,6 +525,19 @@ components:
     ring: "#c7b8d6"
     ring-selected: "#ffcc00"
     dot: "#ff00aa"
+  radio-step:
+    key: "#2ce0e6"
+    well: "#000000"
+    well-radius: "10px"
+    ink: "#757575"
+    icon-size: "22px"
+    selected-bg: "#103a3b"
+    selected-border: "#1b8c90"
+  reach-rings:
+    key: "#2ce0e6"
+    ring: "#2a2a2a"
+    glyph: "#808080"
+    core-ink: "#000000"
   tooltip:
     bg: "#ff00aa"
     text: "#2b0a3d"

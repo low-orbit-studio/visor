@@ -1,6 +1,6 @@
 {
   "name": "@loworbitstudio/visor-core",
-  "version": "0.18.0",
+  "version": "0.19.1",
   "description": "Design tokens for the Visor design system — CSS custom properties for theming.",
   "type": "module",
   "main": "./dist/index.css",
@@ -19,6 +19,7 @@
     "./themes/paper": "./dist/themes/paper.css",
     "./themes/space": "./dist/themes/space.css",
     "./types": "./src/types.ts",
+    "./test-utils": "./src/test-utils/concentric.ts",
     "./utilities": "./dist/utilities.css"
   },
   "scripts": {
@@ -29,7 +30,8 @@
   },
   "files": [
     "dist/",
-    "src/types.ts"
+    "src/types.ts",
+    "src/test-utils/"
   ],
   "keywords": [
     "design-tokens",
@@ -50,7 +52,7 @@
     "access": "public"
   },
   "devDependencies": {
-    "@loworbitstudio/visor-theme-engine": "^0.43.0",
+    "@loworbitstudio/visor-theme-engine": "^0.46.0",
     "@types/node": "^22.0.0",
     "tsx": "^4.19.2",
     "typescript": "^5.7.2",
