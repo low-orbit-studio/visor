@@ -1,5 +1,6 @@
 import type { ComponentType } from 'react';
 import { AlertSpecimen } from './alert-specimen';
+import { AnimatedTitleSpecimen } from './animated-title-specimen';
 import { ButtonSpecimen } from './button-specimen';
 import { GlassSpecimen } from './glass-specimen';
 import { ItineraryLabelsSpecimen } from './itinerary-labels-specimen';
@@ -19,6 +20,7 @@ import { ThemeSpecimen } from './theme-specimen';
  */
 export const LOOK_SPECIMENS: Record<string, ComponentType> = {
   alert: AlertSpecimen,
+  'animated-title': AnimatedTitleSpecimen,
   button: ButtonSpecimen,
   glass: GlassSpecimen,
   'itinerary-labels': ItineraryLabelsSpecimen,
