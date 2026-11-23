@@ -51,6 +51,28 @@ import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
   </div>
 </ComponentPreview>
 
+## Outline Sizes
+
+The outline track's corners are concentric at every size: the indicator's radius is the track radius minus the track's padding and border.
+
+<ComponentPreview
+  title="Outline Sizes"
+  code={"<ToggleGroup type=\"single\" variant=\"outline\" size=\"xs\" defaultValue=\"day\">\n  <ToggleGroupItem value=\"day\">Day</ToggleGroupItem>\n  <ToggleGroupItem value=\"week\">Week</ToggleGroupItem>\n</ToggleGroup>\n<ToggleGroup type=\"single\" variant=\"outline\" size=\"sm\" defaultValue=\"day\">…</ToggleGroup>\n<ToggleGroup type=\"single\" variant=\"outline\" size=\"md\" defaultValue=\"day\">…</ToggleGroup>\n<ToggleGroup type=\"single\" variant=\"outline\" size=\"lg\" defaultValue=\"day\">…</ToggleGroup>"}
+>
+  <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', alignItems: 'center' }}>
+    {['xs', 'sm', 'md', 'lg'].map((size) => (
+      <ToggleGroup key={size} type="single" variant="outline" size={size} defaultValue="day" aria-label={`View, ${size}`}>
+        <ToggleGroupItem value="day">Day</ToggleGroupItem>
+        <ToggleGroupItem value="week">Week</ToggleGroupItem>
+      </ToggleGroup>
+    ))}
+    <ToggleGroup type="multiple" variant="outline" defaultValue={['bold']} aria-label="Text style">
+      <ToggleGroupItem value="bold">Bold</ToggleGroupItem>
+      <ToggleGroupItem value="italic">Italic</ToggleGroupItem>
+    </ToggleGroup>
+  </div>
+</ComponentPreview>
+
 ## Multiple Selection
 
 <ComponentPreview

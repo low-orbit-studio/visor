@@ -2,7 +2,7 @@
  * Real-browser page harness for component tests (VI-655, VI-656).
  *
  * Bundles a component with one of its `visor render` fixtures exactly the way
- * `visor render` does, loads it in Chromium against the real tokens and theme
+ * `visor render` does, loads it in Chromium (or WebKit) against the real tokens and theme
  * CSS, and hands back the page. Chromium and esbuild are optional deps, so
  * `launch()` resolves to false where they are missing and callers self-skip.
  */
@@ -18,6 +18,7 @@ import {
   resolveResetCssFile,
   resolveTokensCssFile,
 } from "../../../packages/cli/src/commands/render"
+import { forceSquircleFallback } from "../../../packages/theme-engine/src/generate-css"
 
 const REPO_ROOT = process.cwd()
 export const THEME = "neutral"
@@ -34,18 +35,18 @@ export interface PageLike {
   emulateMedia(opts: { reducedMotion: "reduce" | "no-preference" }): Promise<void>
   close(): Promise<void>
 }
-interface BrowserLike { newPage(opts?: { viewport: { width: number; height: number } }): Promise<PageLike>; close(): Promise<void> }
+interface BrowserLike { newPage(opts?: { viewport: { width: number; height: number }; deviceScaleFactor?: number }): Promise<PageLike>; close(): Promise<void> }
 
 let browser: BrowserLike | null = null
 let esbuild: { build(opts: Record<string, unknown>): Promise<{ outputFiles?: Array<{ path: string; text: string }> }> } | null = null
 const bundles = new Map<string, Bundle>()
 
-/** Launch Chromium. Resolves false when playwright or esbuild is not installed. */
-export async function launch(): Promise<boolean> {
+/** Launch Chromium (or WebKit). Resolves false when playwright, the browser or esbuild is not installed. */
+export async function launch(engine: "chromium" | "webkit" = "chromium"): Promise<boolean> {
   for (const mod of ["playwright", "@playwright/test"]) {
     try {
-      const { chromium } = (await import(mod)) as { chromium: { launch: () => Promise<BrowserLike> } }
-      browser = await chromium.launch()
+      const engines = (await import(mod)) as Record<typeof engine, { launch: () => Promise<BrowserLike> }>
+      browser = await engines[engine].launch()
       esbuild = (await import("esbuild")) as unknown as typeof esbuild
       return true
     } catch {
@@ -103,7 +104,9 @@ export async function bundle(component: string, fixture: string): Promise<Bundle
  * #theme-scope, the element the theme class sits on; `componentCss` replaces
  * the bundle's CSS; `extraCss` is appended after it. `theme` swaps the default
  * neutral light theme for other theme CSS, its scope class and mode. `motion`
- * keeps animations on under that reduced-motion preference.
+ * keeps animations on under that reduced-motion preference. `scale` sets the
+ * device pixel ratio. `forceSquircle` draws the squircle fallback in any
+ * engine (VI-841, `forceSquircleFallback`).
  */
 export async function open(
   component: string,
@@ -114,16 +117,20 @@ export async function open(
     extraCss?: string
     theme?: { css: string; className: string; mode: "light" | "dark" }
     motion?: "reduce" | "no-preference"
+    /** Device pixels per CSS pixel. Default 1. */
+    scale?: number
+    forceSquircle?: boolean
   } = {},
 ): Promise<PageLike> {
   const b = await bundle(component, fixture)
-  const page = await browser!.newPage({ viewport: { width: 720, height: 480 } })
+  const page = await browser!.newPage({ viewport: { width: 720, height: 480 }, deviceScaleFactor: opts.scale ?? 1 })
   if (opts.motion) await page.emulateMedia({ reducedMotion: opts.motion })
+  const force = opts.forceSquircle ? forceSquircleFallback : (css: string) => css
   const html = buildHtml({
     resetCss: resetCss(),
     tokensCss: tokensCss(),
-    themeCss: opts.theme?.css ?? themeCss(),
-    componentCss: (opts.componentCss ?? b.css) + `\n#theme-scope { ${opts.scopeCss ?? ""} }\n${opts.extraCss ?? ""}`,
+    themeCss: force(opts.theme?.css ?? themeCss()),
+    componentCss: force(opts.componentCss ?? b.css) + `\n#theme-scope { ${opts.scopeCss ?? ""} }\n${opts.extraCss ?? ""}`,
     bundleJs: b.js,
     themeClass: opts.theme?.className ?? `${THEME}-theme`,
     mode: opts.theme?.mode ?? "light",
@@ -134,6 +141,18 @@ export async function open(
   await page.evaluate("document.fonts.ready.then(function () { return true })")
   if (!opts.motion) await page.addStyleTag({ content: "*, *::before, *::after { transition: none !important; animation: none !important; caret-color: transparent !important; }" })
   return page
+}
+
+/**
+ * VI-841: call first in any test of the unforced squircle fallback (the real
+ * `@supports not (corner-shape: squircle)` gate). An engine that draws
+ * `corner-shape` natively never takes that path, so the test would pass while
+ * testing nothing.
+ */
+export async function requireNoCornerShape(page: Pick<PageLike, "evaluate">): Promise<void> {
+  if ((await page.evaluate(`CSS.supports("corner-shape", "squircle")`)) !== false) {
+    throw new Error("this WebKit draws corner-shape natively; the fallback is not being tested")
+  }
 }
 
 /**

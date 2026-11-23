@@ -3,7 +3,8 @@
  * VI-709 — the `toggle-group` theme keys, proven in a real browser.
  *
  *  - **Unset equals what shipped.** `unset` is what 1.37.0 computes on the
- *    neutral light theme; an unbound theme must still compute it.
+ *    neutral light theme; an unbound theme must still compute it. (VI-837
+ *    moved the xs item radius to the concentric 3px on purpose.)
  *  - **Set equals the key.** Binding the token on the theme scope moves the
  *    computed style to the bound value.
  *
@@ -47,8 +48,8 @@ const CASES: Case[] = [
   { token: "--toggle-group-xs-font-size", fixture: "compact", target: ON, prop: "fontSize", value: "10px", expected: "10px", unset: "12px" },
   { token: "--toggle-group-xs-padding-x", fixture: "compact", target: ON, prop: "paddingLeft", value: "11px", expected: "11px", unset: "8px" },
   { token: "--toggle-group-xs-track-radius", fixture: "compact", target: GROUP, prop: "borderTopLeftRadius", value: "8px", expected: "8px", unset: "6px" },
-  { token: "--toggle-group-xs-item-radius", fixture: "compact", target: ON, prop: "borderTopLeftRadius", value: "6px", expected: "6px", unset: "4px" },
-  { token: "--toggle-group-xs-item-radius", fixture: "compact", target: INDICATOR, prop: "borderTopLeftRadius", value: "6px", expected: "6px", unset: "4px" },
+  { token: "--toggle-group-xs-item-radius", fixture: "compact", target: ON, prop: "borderTopLeftRadius", value: "6px", expected: "6px", unset: "3px" }, // VI-837: concentric, 6px - 2px - 1px
+  { token: "--toggle-group-xs-item-radius", fixture: "compact", target: INDICATOR, prop: "borderTopLeftRadius", value: "6px", expected: "6px", unset: "3px" }, // VI-837: concentric, 6px - 2px - 1px
 ]
 
 const style = (selector: string, prop: string) =>

@@ -2,8 +2,9 @@ import { defineConfig, devices } from "@playwright/test";
 
 export default defineConfig({
   testDir: "./e2e",
-  // Runs against the production build via playwright.prod.config.ts (VI-722).
-  testIgnore: "color-mode.spec.ts",
+  // These run against the production build: playwright.prod.config.ts (VI-722)
+  // and playwright.concentric.config.ts, in its own CI job (VI-838).
+  testIgnore: ["color-mode.spec.ts", "concentric-scan.spec.ts"],
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 1 : 0,

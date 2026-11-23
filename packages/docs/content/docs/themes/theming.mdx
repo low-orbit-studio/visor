@@ -127,7 +127,55 @@ One line draws every rounded corner as a squircle, the smooth superellipse corne
 corners: squircle   # round (default) | squircle
 ```
 
-`corners: squircle` emits `--corner-shape: squircle` and, in the lowest layer (`visor-base`), binds `corner-shape: var(--corner-shape)` to every element. Each `border-radius` keeps its value; only the curve changes. Browsers that can't draw `corner-shape` drop the declaration and draw round, so there is nothing to polyfill. To keep part of an app round (a circular avatar, a pill), set `--corner-shape: round` on it or on any ancestor, or write `corner-shape: round` in its own class, which beats the base layer. With `corners` absent or `round`, the theme emits nothing.
+`corners: squircle` emits `--corner-shape: squircle` and, in the lowest layer (`visor-base`), binds `corner-shape: var(--corner-shape)` to every element. Each `border-radius` keeps its value; only the curve changes. To keep part of an app round (a circular avatar, a pill), set `--corner-shape: round` on it or on any ancestor, or write `corner-shape: round` in its own class, which beats the base layer. With `corners` absent or `round`, the theme emits nothing.
+
+### Safari Fallback
+
+Safari has no `corner-shape` yet, on macOS or iOS, and every iPhone browser is Safari underneath. Without help it draws a squircle theme round. A squircle theme also ships a fallback for it, used only where `@supports not (corner-shape: squircle)` holds and only inside a squircle scope, so Chromium keeps the native corner and the fallback switches itself off once Safari ships the property.
+
+The fallback draws the curve on the components that need it: Button, Dialog, SegmentedControl and ToggleGroup (track, sliding pill and segments), Meter, Badge and Chip. Each sets `--squircle-r` to its radius clamped to half its height and draws two shared values from the theme:
+
+- `--squircle-radius`, a circle at 0.54 of the squircle's radius: the largest circle that still holds the whole squircle.
+- `--squircle-clip`, a `clip-path: shape()` that trims only what that circle draws outside the squircle, and keeps everything outside the box.
+- `--squircle-ring`, the band between the squircle and the same squircle inset by `--squircle-edge`. Button, Chip, SegmentedControl and ToggleGroup redraw their edge on a pseudo-element clipped to it, so the edge follows the squircle exactly.
+
+So the fill and those edges are the squircle, and focus rings and shadows stay whole: they are drawn round the smaller circle, never clipped. To draw your own element as a squircle in Safari, give it the same three lines inside the same gates:
+
+```css
+@supports not (corner-shape: squircle) {
+  @container style(--corner-shape: squircle) {
+    .tile {
+      --squircle-r: min(var(--radius-xl), 50px); /* the radius, at most half the height */
+      border-radius: var(--squircle-radius, var(--squircle-r));
+      clip-path: var(--squircle-clip, none);
+    }
+  }
+}
+```
+
+Its limits:
+
+- Inputs, cards and tabs stay round in Safari. Their focus halo or shadow hugs the box, and Safari cannot shape a shadow to a clip (`filter: drop-shadow()` runs before `clip-path`), so a squircle would show a hairline of page between it and the shadow. Round is what Safari draws today; a seam is not acceptable.
+- Focus rings and shadows on the other components follow the smaller circle, within 1.6% of the radius of the squircle. Give your own element a shadow that hugs it and it has the same seam, so leave it round.
+- `--squircle-r` must already be clamped: a radius past half the box's height draws a broken clip. Components clamp against their height token; a box with no known height needs one.
+- In Safari, `--corner-shape: round` keeps an element round when it is set on an ancestor, not on the element itself.
+- Only the listed components draw it. Any other rounded element stays round in Safari until it opts in.
+- A browser with neither `corner-shape` nor style queries skips the fallback and draws round.
+
+### Testing the Fallback
+
+Newer Playwright WebKit builds (1.64 and up) draw `corner-shape` natively, unlike shipping Safari, so a test that relies on WebKit lacking it quietly stops testing the fallback. `forceSquircleFallback(css)` from `@loworbitstudio/visor-theme-engine` is a test-only hook: it lifts every `@supports not (corner-shape: squircle)` gate and turns the native corner off, so Chromium or any WebKit draws what Safari draws. Production CSS never contains it. In a Playwright spec, rewrite the app's stylesheets as they load:
+
+```ts
+import { forceSquircleFallback } from "@loworbitstudio/visor-theme-engine"
+
+await page.route("**/*.css", async (route) => {
+  const response = await route.fetch()
+  await route.fulfill({ response, body: forceSquircleFallback(await response.text()) })
+})
+```
+
+A test that checks the real, unforced gate should first assert `CSS.supports("corner-shape", "squircle")` is false and fail with "this WebKit draws corner-shape natively; the fallback is not being tested" when it is not.
 
 ## Motion Values (`motion`)
 

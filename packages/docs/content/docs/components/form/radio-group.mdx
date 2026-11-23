@@ -7,6 +7,7 @@ import { ComponentPreview } from '@/components/preview';
 import { PropsTable } from '@/components/props-table';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
+import { ReachPickerDemo, SteppedDisabledDemo } from '@/components/ui/reach-rings-demos';
 
 ## Options
 
@@ -75,6 +76,37 @@ The resting edge reads the shared `--control-edge-*` tokens, so `--control-edge-
 
 Set `indicator="dot"` on the group to draw a radio ring on every card and a dot inside the chosen one, instead of the default check in a filled disc (`indicator="check"`). The ring and dot read `--radio-card-ring` (unselected ring), `--radio-card-ring-selected` and `--radio-card-dot`. A theme sets them from its yaml: `components.radio-card.ring`, `ring-selected` and `dot`, each a value or `{ light, dark }`.
 
+## Stepped variant
+
+`variant="stepped"` draws one row of equal tiles in a well, each an icon over a label of up to two
+lines, for a few ordered levels. Pass `icon` and `title` on each item, as for the card variant. The
+chosen tile takes a 12% key fill, a 35% key hairline and a lit top edge; its icon turns the key
+colour and its label full ink. Arrow keys move the choice and skip a disabled tile, which drops to
+35% opacity. `size="compact"` sets the labels at 10px instead of 11px.
+
+<ComponentPreview
+  title="Stepped Radio Group"
+  code={"<RadioGroup variant=\"stepped\" aria-label=\"Who can see\" defaultValue=\"industry\">\n  <RadioGroupItem value=\"you\" icon={<EyeSlashIcon />} title=\"Just You\" />\n  <RadioGroupItem value=\"industry\" icon={<KeyIcon />} title=\"Industry Only\" />\n  <RadioGroupItem value=\"verified\" icon={<SealCheckIcon />} title=\"Verified Bookers\" disabled />\n  <RadioGroupItem value=\"everyone\" icon={<GlobeIcon />} title=\"Everyone\" />\n</RadioGroup>"}
+>
+  <SteppedDisabledDemo />
+</ComponentPreview>
+
+Beside [Reach Rings](/docs/components/data-display/reach-rings), the chosen level's index is the
+rings' value:
+
+<ComponentPreview
+  title="Stepped, compact, driving Reach Rings"
+  code={"<ReachRings levels={4} value={reach} size=\"compact\" icon={<UserIcon />} />\n<RadioGroup variant=\"stepped\" size=\"compact\" aria-label=\"Who can see\" value={value} onValueChange={setValue}>…</RadioGroup>"}
+>
+  <ReachPickerDemo size="compact" />
+</ComponentPreview>
+
+Theme keys under `components.radio-step`: `key` (the chosen tile's tint, hairline and icon, and the
+focus ring), `well`, `well-radius` (the tiles take it minus the well padding, so corners stay
+concentric), `ink`, `icon-size`, `selected-bg` and `selected-border`, each also a
+`--radio-step-*` property. Unbound, the well is the page nudged 12% toward the ink; a dark app that
+wants it darker than its plane binds `--radio-step-well`, for example `rgb(0 0 0 / 0.65)`.
+
 ## Installation
 
 ```bash
@@ -124,4 +156,5 @@ import { Label } from '@/components/ui/label/label';
 - Wrap the group in a `<Fieldset>` with a `<FieldsetLegend>` to give the group an accessible name
 - Each item should have an associated `<Label>` via matching `htmlFor`/`id`
 - Keyboard: Arrow keys move selection within the group and skip disabled items; Tab moves focus to/from the group
+- Stepped variant: the title names the item (`aria-labelledby`); the icon is hidden from assistive tech, and focus draws a ring in the key colour
 - Card variant: the title names the item (`aria-labelledby`), the description and any `aria-describedby` id describe it, and the chosen card carries a check mark as well as a fill

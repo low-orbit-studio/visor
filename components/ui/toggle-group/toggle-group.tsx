@@ -38,10 +38,17 @@ function useSlidingIndicator(
       return
     }
 
+    // Fractional px from the rects: offset* round to whole pixels, which leaves the
+    // pill up to 1px off one end of the track, an uneven, non-concentric gap (VI-838).
+    // Dividing by the scale keeps a transformed (scaled) group in its own units.
+    const box = root.getBoundingClientRect()
+    const item = activeItem.getBoundingClientRect()
+    // offsetWidth is rounded, so under a 1px difference there is no transform.
+    const scale = Math.abs(box.width - root.offsetWidth) < 1 ? 1 : box.width / root.offsetWidth || 1
     indicator.style.opacity = "1"
-    indicator.style.width = `${activeItem.offsetWidth}px`
-    indicator.style.height = `${activeItem.offsetHeight}px`
-    indicator.style.transform = `translate(${activeItem.offsetLeft}px, ${activeItem.offsetTop}px)`
+    indicator.style.width = `${item.width / scale}px`
+    indicator.style.height = `${item.height / scale}px`
+    indicator.style.transform = `translate(${(item.left - box.left) / scale - root.clientLeft}px, ${(item.top - box.top) / scale - root.clientTop}px)`
   }, [rootRef, variant])
 
   // Update on mount and whenever children change state
@@ -60,7 +67,14 @@ function useSlidingIndicator(
       subtree: true,
     })
 
-    return () => observer.disconnect()
+    // Items change size after mount (web fonts landing, a container resize): follow them.
+    const resize = typeof ResizeObserver === "undefined" ? null : new ResizeObserver(updateIndicator)
+    for (const el of Array.from(root.children)) resize?.observe(el)
+
+    return () => {
+      observer.disconnect()
+      resize?.disconnect()
+    }
   }, [rootRef, variant, updateIndicator])
 
   return indicatorRef
