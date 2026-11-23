@@ -9,6 +9,12 @@
  * its radius clamped to half its height, which is what Chromium draws. A round
  * theme changes nothing in either engine. Focus rings stay outside the clip.
  *
+ * VI-841: the fallback is drawn with the force hook (`forceSquircleFallback`)
+ * in WebKit, and in Chromium next to its native corner, so the proof holds in
+ * a WebKit that draws `corner-shape` natively (Playwright 1.64+). The one test
+ * of the real `@supports` gate calls `requireNoCornerShape` first, so a
+ * Playwright upgrade that turns it native fails instead of passing silently.
+ *
  * Skips where Chromium, WebKit or esbuild is unavailable; CI's concentric
  * job installs both and sets VISOR_REQUIRE_BROWSER.
  */
@@ -19,9 +25,9 @@ import { FIXTURES } from "../../../packages/cli/src/commands/render"
 import { generateThemeData } from "../../../packages/theme-engine/src/pipeline"
 import { docsAdapter } from "../../../packages/theme-engine/src/adapters/docs"
 import { nextjsAdapter } from "../../../packages/theme-engine/src/adapters/nextjs"
-import { SQUIRCLE_FALLBACK } from "../../../packages/theme-engine/src/generate-css"
+import { SQUIRCLE_FALLBACK, forceSquircleFallback } from "../../../packages/theme-engine/src/generate-css"
 import { scanConcentric } from "../../../packages/tokens/src/test-utils/concentric-scan"
-import { bundle, close, launch, open, pixelDelta, type PageLike } from "./render-page"
+import { bundle, close, launch, open, pixelDelta, requireNoCornerShape, type PageLike } from "./render-page"
 
 type Engine = "chromium" | "webkit"
 type Theme = { css: string; className: string; mode: "light" | "dark" }
@@ -77,8 +83,8 @@ const READ = (targets: string[]) => `JSON.stringify(${JSON.stringify(targets)}.m
     squircle: parseFloat(cs.getPropertyValue("--squircle-r")) || 0, shape: cs.getPropertyValue("corner-top-left-shape") };
 }))`
 
-async function measure(component: string, fixture: string, targets: string[], t: Theme): Promise<Box[]> {
-  const page = await open(component, fixture, { theme: t })
+async function measure(component: string, fixture: string, targets: string[], t: Theme, forceSquircle = false): Promise<Box[]> {
+  const page = await open(component, fixture, { theme: t, forceSquircle })
   const boxes = JSON.parse((await page.evaluate(READ(targets))) as string) as Box[]
   await page.close()
   return boxes
@@ -97,9 +103,9 @@ function strip(css: string): string {
 }
 
 /** Pixel delta between a fixture drawn with the fallback and with it cut out. */
-async function unchanged(component: string, fixture: string, t: Theme): Promise<{ n: number; max: number }> {
+async function unchanged(component: string, fixture: string, t: Theme, forceSquircle = false): Promise<{ n: number; max: number }> {
   const shot = async (componentCss: string, themeCss: string) => {
-    const page = await open(component, fixture, { theme: { ...t, css: themeCss }, componentCss })
+    const page = await open(component, fixture, { theme: { ...t, css: themeCss }, componentCss, forceSquircle })
     // SegmentedControl places its pill after mount; shoot once it is placed in both loads.
     await page.evaluate(`new Promise(function (r) { requestAnimationFrame(function () { requestAnimationFrame(r); }); })`)
     const png = await page.screenshot({})
@@ -110,7 +116,8 @@ async function unchanged(component: string, fixture: string, t: Theme): Promise<
   return pixelDelta(await shot(css, t.css), await shot(strip(css), strip(t.css)))
 }
 
-const results: Record<Engine, Record<string, { squircle: Box[]; round: Box[] }>> = { chromium: {}, webkit: {} }
+/** `squircle` and `round` as the engine draws them (WebKit with the force hook); `forced`: Chromium with the hook. */
+const results: Record<Engine, Record<string, { squircle: Box[]; round: Box[]; forced: Box[] }>> = { chromium: {}, webkit: {} }
 /** WebKit, squircle theme: the boxes that must stay round. */
 const keptRound: Box[] = []
 /** Pixels the fallback changes where it must change none: Chromium in both themes, WebKit in the round one. */
@@ -137,20 +144,23 @@ async function ringOutside(page: PageLike, sel: string): Promise<{ band: Buffer;
 async function collect(engine: Engine): Promise<void> {
   if (!(await launch(engine))) return
   available[engine] = true
+  // WebKit stands in for Safari, so it always draws the fallback, natively supported corner-shape or not.
+  const forceSquircle = engine === "webkit"
   for (const [component, fixture, targets] of CASES) {
     results[engine][`${component}/${fixture}`] = {
-      squircle: await measure(component, fixture, targets, SQUIRCLE),
-      round: await measure(component, fixture, targets, ROUND),
+      squircle: await measure(component, fixture, targets, SQUIRCLE, forceSquircle),
+      round: await measure(component, fixture, targets, ROUND, forceSquircle),
+      forced: engine === "chromium" ? await measure(component, fixture, targets, SQUIRCLE, true) : [],
     }
     for (const t of engine === "chromium" ? [SQUIRCLE, ROUND] : [ROUND]) {
-      untouched.push({ key: `${engine} ${t.className} ${component}/${fixture}`, ...(await unchanged(component, fixture, t)) })
+      untouched.push({ key: `${engine} ${t.className} ${component}/${fixture}`, ...(await unchanged(component, fixture, t, forceSquircle)) })
     }
   }
   if (engine === "webkit") {
-    for (const [component, fixture, targets] of ROUND_IN_SAFARI) keptRound.push(...(await measure(component, fixture, targets, SQUIRCLE)))
-    drawn = await unchanged("button", "default", SQUIRCLE)
+    for (const [component, fixture, targets] of ROUND_IN_SAFARI) keptRound.push(...(await measure(component, fixture, targets, SQUIRCLE, true)))
+    drawn = await unchanged("button", "default", SQUIRCLE, true)
     const edgeLayer = async (component: string, fixture: string, sel: string, pseudo: string) => {
-      const page = await open(component, fixture, { theme: SQUIRCLE })
+      const page = await open(component, fixture, { theme: SQUIRCLE, forceSquircle: true })
       const read = JSON.parse((await page.evaluate(`JSON.stringify((function () {
         var el = document.querySelector(${JSON.stringify(sel)}), s = getComputedStyle(el, ${JSON.stringify(pseudo)});
         return { clip: s.clipPath, paint: s.outlineWidth, style: s.outlineStyle + "/" + getComputedStyle(el).outlineStyle };
@@ -163,7 +173,7 @@ async function collect(engine: Engine): Promise<void> {
     rings = { button: outline.clip, buttonPaint: outline.paint, track: track.style }
     // Focus rings: the input's halo and the button's outline sit outside the box, which the clip keeps.
     const shots = async (component: string, fixture: string, sel: string) => {
-      const page = await open(component, fixture, { theme: SQUIRCLE, scale: 2 })
+      const page = await open(component, fixture, { theme: SQUIRCLE, scale: 2, forceSquircle: true })
       const before = await ringOutside(page, sel)
       await page.evaluate(`document.querySelector(${JSON.stringify(sel)}).focus()`)
       const after = await ringOutside(page, sel)
@@ -175,7 +185,7 @@ async function collect(engine: Engine): Promise<void> {
     focus = { input: input.band, button: button.band, corner: input.corner }
     // Nested corners stay concentric where the fallback draws them.
     // The first segment is selected, so the pill sits in the track's corners.
-    const page = await open("segmented-control", "disabled-option", { theme: SQUIRCLE })
+    const page = await open("segmented-control", "disabled-option", { theme: SQUIRCLE, forceSquircle: true })
     // The pill is placed after mount; scan once it is.
     await page.evaluate(`new Promise(function (r) { requestAnimationFrame(function () { requestAnimationFrame(r); }); })`)
     // `__name`: the transform's keep-names helper, which the serialised function calls.
@@ -210,6 +220,24 @@ describe("VI-839 squircle fallback: theme engine", () => {
     expect(SQUIRCLE_FALLBACK).toContain("--squircle-radius: calc(var(--squircle-r) * 0.54);")
     expect(SQUIRCLE_FALLBACK).toMatch(/--squircle-ring: shape\(evenodd from /)
   })
+
+  it("VI-841: the force hook lifts every @supports gate, turns native corner-shape off, and never ships", () => {
+    const component = "@supports not (corner-shape:squircle){@container style(--corner-shape: squircle){.b{clip-path:var(--squircle-clip, none)}}}"
+    const forced = forceSquircleFallback(`${SQUIRCLE_FALLBACK}\n${component}`)
+    expect(forced).not.toMatch(/@supports\s+not\s*\(\s*corner-shape/)
+    expect(forced.match(/@media all/g)).toHaveLength(2)
+    expect(forced).toContain("@container style(--corner-shape: squircle)")
+    expect(forced).toContain("*, *::before, *::after { corner-shape: round !important; }")
+    const shipped = docsAdapter(generateThemeData(`name: probe\nversion: 1\ncolors:\n  primary: "#6b46ff"\ncorners: squircle`))
+    expect(shipped).not.toContain("@media all")
+    expect(shipped).not.toContain("corner-shape: round !important")
+  })
+
+  it("VI-841: the guard fails where corner-shape is native, and passes where it is missing", async () => {
+    const page = (supported: boolean) => ({ evaluate: async () => supported })
+    await expect(requireNoCornerShape(page(true))).rejects.toThrow("this WebKit draws corner-shape natively; the fallback is not being tested")
+    await expect(requireNoCornerShape(page(false))).resolves.toBeUndefined()
+  })
 })
 
 describe("VI-839 squircle fallback: Chromium and WebKit", () => {
@@ -218,18 +246,21 @@ describe("VI-839 squircle fallback: Chromium and WebKit", () => {
     for (const [key, { squircle }] of Object.entries(results.chromium)) {
       for (const b of squircle) {
         expect(b.clip, `${key} ${b.sel}`).toBe("none")
-        expect(b.shape, `${key} ${b.sel}`).toBe("squircle")
+        // Playwright 1.64's Chromium (156) serialises the keyword as superellipse(2).
+        expect(["squircle", "superellipse(2)"], `${key} ${b.sel}`).toContain(b.shape)
       }
     }
   })
 
-  it("WebKit clips each target with a shape() at its radius clamped to half its height", (ctx) => {
+  it("WebKit, and Chromium with the force hook, clip each target with a shape() at its radius clamped to half its height", (ctx) => {
     if (!available.chromium || !available.webkit) return ctx.skip()
-    for (const [key, { squircle }] of Object.entries(results.webkit)) {
-      squircle.forEach((b, i) => {
-        const native = results.chromium[key].squircle[i]
+    const drawnBy = (engine: Engine) => Object.entries(results[engine]).map(([key, r]) => [`${engine} ${key}`, engine === "webkit" ? r.squircle : r.forced, results.chromium[key].squircle] as const)
+    for (const [key, fallback, chromium] of [...drawnBy("webkit"), ...drawnBy("chromium")]) {
+      fallback.forEach((b, i) => {
+        const native = chromium[i]
         const expected = Math.min(native.radius, native.h / 2, native.w / 2)
         expect(b.clip, `${key} ${b.sel}`).toMatch(/^shape\(from /)
+        expect(b.shape, `${key} ${b.sel}: native corner-shape is off`).not.toBe("squircle")
         expect(b.squircle, `${key} ${b.sel}: --squircle-r vs Chromium's drawn radius`).toBeGreaterThan(0)
         expect(Math.abs(b.squircle - expected), `${key} ${b.sel}: --squircle-r ${b.squircle} vs ${expected}`).toBeLessThanOrEqual(1)
         expect(b.radius, `${key} ${b.sel}: the circle under the clip`).toBeCloseTo(b.squircle * 0.54, 1)
@@ -286,6 +317,20 @@ describe("VI-839 squircle fallback: Chromium and WebKit", () => {
     expect(concentric.filter((p) => p.innerShape === "squircle").length).toBeGreaterThan(0)
     expect(concentric.filter((p) => !p.ok)).toEqual([])
   })
+
+  // The real gate, unforced: a WebKit that draws corner-shape natively fails here instead of passing untested.
+  it("WebKit without the hook takes the @supports path", async (ctx) => {
+    if (!available.webkit || !(await launch("webkit"))) return ctx.skip()
+    try {
+      const page = await open("button", "default", { theme: SQUIRCLE })
+      await requireNoCornerShape(page)
+      const [b] = JSON.parse((await page.evaluate(READ(["#root button"]))) as string) as Box[]
+      expect(b.clip).toMatch(/^shape\(from /)
+      expect(b.squircle).toBeGreaterThan(0)
+    } finally {
+      await close()
+    }
+  }, 60_000)
 
   // CI installs Chromium and WebKit for this file and sets VISOR_REQUIRE_BROWSER, so the proof cannot silently skip there.
   it.runIf(process.env.VISOR_REQUIRE_BROWSER)("runs in Chromium and WebKit", () => {

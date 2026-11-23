@@ -162,6 +162,21 @@ Its limits:
 - Only the listed components draw it. Any other rounded element stays round in Safari until it opts in.
 - A browser with neither `corner-shape` nor style queries skips the fallback and draws round.
 
+### Testing the Fallback
+
+Newer Playwright WebKit builds (1.64 and up) draw `corner-shape` natively, unlike shipping Safari, so a test that relies on WebKit lacking it quietly stops testing the fallback. `forceSquircleFallback(css)` from `@loworbitstudio/visor-theme-engine` is a test-only hook: it lifts every `@supports not (corner-shape: squircle)` gate and turns the native corner off, so Chromium or any WebKit draws what Safari draws. Production CSS never contains it. In a Playwright spec, rewrite the app's stylesheets as they load:
+
+```ts
+import { forceSquircleFallback } from "@loworbitstudio/visor-theme-engine"
+
+await page.route("**/*.css", async (route) => {
+  const response = await route.fetch()
+  await route.fulfill({ response, body: forceSquircleFallback(await response.text()) })
+})
+```
+
+A test that checks the real, unforced gate should first assert `CSS.supports("corner-shape", "squircle")` is false and fail with "this WebKit draws corner-shape natively; the fallback is not being tested" when it is not.
+
 ## Motion Values (`motion`)
 
 The `motion` block sets the theme's curves and durations. Every key is optional:

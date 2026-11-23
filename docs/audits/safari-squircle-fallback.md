@@ -51,6 +51,16 @@ Measured in WebKit on the squircle theme, nested corners stay concentric (inner 
 
 The proof that runs in CI is `components/ui/__tests__/squircle-fallback.test.ts` (Chromium and WebKit, `VISOR_REQUIRE_BROWSER` in the concentric job) and the WebKit project of the concentric scan.
 
+## Testing the Fallback in Any Engine (VI-841)
+
+Playwright 1.64's WebKit (27.2, build 2370) draws `corner-shape` natively; shipping Safari 27.2 does not. A test that leans on Playwright's WebKit lacking the property stops testing the fallback after an upgrade, and still passes.
+
+- **Force hook.** `forceSquircleFallback(css)` (exported by `@loworbitstudio/visor-theme-engine`) returns the CSS with every `@supports not (corner-shape: squircle)` gate, the theme's and each component's, turned into `@media all`, and appends `*, *::before, *::after { corner-shape: round !important; }` so the native corner is off. The `@container style(--corner-shape: squircle)` gate stays, so round themes and round subtrees stay round. Chromium, or any WebKit, then draws exactly what Safari draws.
+- **Why a CSS transform, not a root attribute.** The gate lives in the theme's base layer and in seven component stylesheets. CSS cannot OR an `@supports` condition with a selector, so an attribute would mean shipping a second copy of every gated block to every user. The transform ships nothing: production CSS is byte-for-byte what it was, and a test applies it to the stylesheets it loads. Visor's harness takes `forceSquircle: true` (`components/ui/__tests__/render-page.ts`); a Playwright spec on a running app can rewrite its CSS responses: `page.route("**/*.css", async (r) => { const res = await r.fetch(); await r.fulfill({ response: res, body: forceSquircleFallback(await res.text()) }) })`.
+- **Guard.** A test of the real, unforced gate first calls `requireNoCornerShape(page)`, which fails with "this WebKit draws corner-shape natively; the fallback is not being tested" where `CSS.supports("corner-shape", "squircle")` is true. `squircle-fallback.test.ts` keeps one such test; every other WebKit check draws with the hook. Run against Playwright 1.64 locally, that one test fails with the message and the forced ones pass.
+
+With the hook on, Chromium's 4x corner matches WebKit's unforced fallback (Button and SegmentedControl, Paper with `corners: squircle`).
+
 ## Limits
 
 - Inputs, cards and tabs stay round in Safari. Focus rings and shadows follow the 0.54 R circle, so a shadow starts up to 1.6% of R (plus a quarter pixel) outside the squircle edge. On a shadow that hugs the box (Input's focus halo, Card's and the active tab's `--shadow-sm`) that showed as a hairline of page at the corner, visible at 4x. Safari cannot shape a box-shadow to a clip, and `filter: drop-shadow()` cannot stand in for it on the same element: filters run before `clip-path`, so the drop-shadow is cast by the circle and the seam stays. Round is what Safari draws today; a seam is not, so these three opt out. (`<input>` also has no pseudo-element to carry a ring.)
