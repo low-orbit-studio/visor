@@ -113,7 +113,7 @@ async function lookFrame(page: Page, id: string): Promise<Frame> {
 
 for (const width of [1440, 390]) {
   for (const docsMode of ["light", "dark"] as const) {
-    test(`Popover glass: five looks at ${width} with the docs in ${docsMode}`, async ({ page }) => {
+    test(`Popover glass: five looks at ${width} with the docs in ${docsMode}`, async ({ page, browserName }) => {
       await page.setViewportSize({ width, height: 900 });
       await openDocs(page, docsMode);
 
@@ -127,17 +127,13 @@ for (const width of [1440, 390]) {
           await expect(frame.locator('[data-slot="look-panel"]')).toHaveAttribute("data-mode", look.mode ?? docsMode);
           const panel = frame.locator('[data-slot="popover-content"]');
           await expect.poll(() => style(panel, "opacity")).toBe("1");
-          // Chromium has no -webkit-backdrop-filter, so read what that line's value,
-          // var(--glass-on-blur, none), resolves to on the panel (the Lightning CSS
-          // unit test proves both lines ship).
-          const webkitLine = await panel.evaluate(
-            (n) => getComputedStyle(n).getPropertyValue("--glass-on-blur").trim() || "none",
-          );
-          const filters = [await style(panel, "backdrop-filter"), webkitLine];
+          // Chromium has no -webkit-backdrop-filter; the WebKit project reads it for real.
+          const props = browserName === "webkit" ? ["backdrop-filter", "-webkit-backdrop-filter"] : ["backdrop-filter"];
+          const filters = await Promise.all(props.map((p) => style(panel, p)));
           if (look.photo) {
             for (const f of filters) expect(f).toContain("blur(");
           } else {
-            expect(filters).toEqual(["none", "none"]);
+            expect(filters).toEqual(props.map(() => "none"));
           }
           // Menu rows are a see-through tint, never a solid slab, and stacked rows never touch.
           const rows = [panel.getByRole("button", { name: "Change Email" }), panel.getByRole("button", { name: "Sign Out" })];
@@ -147,8 +143,8 @@ for (const width of [1440, 390]) {
         }).toPass({ timeout: 20_000 });
       }
 
-      // Ten frames: each look at 390 and 1440 (captured once, with the docs in light).
-      if (docsMode === "light") {
+      // Ten frames: each look at 390 and 1440 (captured once, in Chromium, with the docs in light).
+      if (docsMode === "light" && browserName === "chromium") {
         for (const look of LOOKS) {
           // The Next dev badge never reaches a capture.
           await (await lookFrame(page, look.id)).addStyleTag({ content: "nextjs-portal{display:none!important}" });

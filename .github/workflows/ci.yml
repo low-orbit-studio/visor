@@ -158,8 +158,9 @@ jobs:
       - name: Build workspace packages
         run: npm run build -w packages/theme-engine -w packages/tokens
 
-      - name: Install Playwright browsers (chromium only)
-        run: npx playwright install --with-deps chromium
+      # WebKit runs one popover look check: computed -webkit-backdrop-filter (VI-808).
+      - name: Install Playwright browsers (chromium, webkit)
+        run: npx playwright install --with-deps chromium webkit
 
       # Generate the theme overlay manifest BEFORE Playwright parses the test
       # files. The VR spec imports `lib/theme-config` at module-load time, so
