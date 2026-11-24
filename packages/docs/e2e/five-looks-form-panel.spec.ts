@@ -199,6 +199,7 @@ const HONCHO_GRIDS = [
   { path: "/docs/components/data-display/spinner", primary: false },
   { path: "/docs/components/typography/text", primary: false },
   { path: "/docs/components/data-display/status-dot", primary: false },
+  { path: "/docs/components/overlay/popover", primary: false },
 ];
 
 // Visor's default greys (Tailwind Gray 50-900 fallbacks). Honcho binds every role a component
@@ -357,7 +358,7 @@ for (const width of [1440, 390]) {
     await page.setViewportSize({ width, height: 900 });
     test.skip(!(await privateThemesInstalled(page)), "the private themes are not installed");
     const rows: Record<string, unknown>[] = [];
-    for (const specimen of [...SPECIMENS, "itinerary-labels", "spinner"]) {
+    for (const specimen of [...SPECIMENS, "itinerary-labels", "spinner", "popover"]) {
       for (const { theme, look, mode } of HONCHO_LOOKS) {
         await page.goto(`/looks/panel?theme=${theme}&look=${look}&mode=${mode}&specimen=${specimen}`);
         await expect(page.locator(`body.${theme}-theme`)).toHaveCount(1);

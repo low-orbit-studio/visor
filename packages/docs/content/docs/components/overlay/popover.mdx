@@ -7,6 +7,8 @@ import { ComponentPreview } from '@/components/preview';
 import { PropsTable } from '@/components/props-table';
 import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
 import { Button } from '@/components/ui/button';
+import { PopoverStayMountedDemo } from '@/components/looks/popover-specimen';
+import { FiveLooks } from '@/components/looks/five-looks';
 
 ## Basic Popover
 
@@ -166,6 +168,44 @@ export default function ControlledPopover() {
 }
 ```
 
+## Stay Mounted
+
+Pass `forceMount` to `PopoverContent` and the panel stays mounted: it renders in place, right after its trigger, and fades in and out instead of mounting on open. Focus stays on the trigger when it opens, so Tab walks into the panel. While closed, the panel is `inert`, so the keyboard and screen readers skip it. Escape and an outside click close it, and focus returns to the trigger when it was inside the panel.
+
+Menu rows are ghost Buttons. Inside a stay-mounted panel they draw a soft tint of the ink (the glass layer's control fill over a photo) instead of the theme's solid ghost fill, so they sit inside the panel. Stack them with a gap, as below, so the rows never touch.
+
+The panel renders in place, so `side`, `align` and `sideOffset` do nothing: place it with your own class (`top`, `right`, `width`) against a positioned ancestor. Because it is mounted with the page, images inside it load with the page even with `loading="lazy"`; set their `src` when the panel opens if that matters.
+
+<ComponentPreview
+  title="Account menu, stay mounted"
+  code={"import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover/popover';\nimport { Button } from '@/components/ui/button/button';\n\n<div style={{ position: 'relative' }}>\n  <Popover>\n    <PopoverTrigger asChild>\n      <Button variant=\"glass\" size=\"icon\" aria-label=\"Your account\">\n        <UserIcon />\n      </Button>\n    </PopoverTrigger>\n    <PopoverContent forceMount aria-label=\"Your account\" className={styles.menu}>\n      <Button variant=\"ghost\">Change Email</Button>\n      <Button variant=\"ghost\">Sign Out</Button>\n    </PopoverContent>\n  </Popover>\n</div>\n\n/* styles.menu */\n.menu { top: calc(100% + 8px); right: 0; width: 18rem; display: grid; gap: var(--spacing-2); }"}
+>
+  <PopoverStayMountedDemo />
+</ComponentPreview>
+
+## Skin and Glass
+
+A theme reshapes the panel through the `popover` hooks: corners, inset, fill and shadow, plus the stay-mounted fade's length, curve and rise, and the menu rows' fill at rest and on hover. Each falls back to the look above, so a theme that binds none of them draws Popover unchanged. The full list is on [Component Tokens](/docs/themes/component-tokens#popover).
+
+```yaml
+components:
+  popover:
+    radius: "24px"
+    padding: "10px"
+    duration: "250ms"
+    rise: "6px"
+```
+
+Glass is off by default. Inside `data-glass="on"` (see [Glass](/docs/themes/glass)), the panel takes the glass layer's fill, blur, shadow and ink. Everywhere else it is solid, with no blur. A bound `bg` or `shadow` wins in every look, so a theme can keep a denser menu fill over a photo. Only a stay-mounted panel can turn to glass: a portaled popover renders at the end of the page, outside the glass switch.
+
+Under `prefers-reduced-motion: reduce` the panel still fades but does not rise.
+
+### In Five Looks
+
+The account menu, open, in each look on the theme picked in the docs. The Photo looks turn glass on over a photo.
+
+<FiveLooks specimen="popover" height={360} />
+
 ## Installation
 
 ```bash
@@ -213,13 +253,13 @@ export default function Example() {
 |-----------|---------|---------|
 | `Popover` | Root | Context provider (wraps Radix Popover.Root) |
 | `PopoverTrigger` | `<button>` | The element that opens the popover; use `asChild` to wrap a custom trigger |
-| `PopoverContent` | Floating panel | The popover panel; accepts `side`, `align`, and `sideOffset` |
+| `PopoverContent` | Floating panel | The popover panel; accepts `side`, `align`, and `sideOffset`. `forceMount` keeps it mounted in place (see Stay Mounted) |
 | `PopoverAnchor` | Any element | Optional anchor to position the popover relative to a different element than the trigger |
 
 ## Accessibility
 
 - Built on [Radix UI Popover](https://www.radix-ui.com/docs/primitives/components/popover) — `role="dialog"` and `aria-expanded` are applied automatically.
-- Focus moves into the popover when it opens and returns to the trigger when it closes.
+- Focus moves into the popover when it opens and returns to the trigger when it closes. With `forceMount`, focus stays on the trigger when it opens, the closed panel is `inert`, and focus returns to the trigger on close when it was inside the panel.
 - Pressing `Escape` closes the popover.
 - Clicking outside the popover closes it.
 - For non-modal popovers containing only non-interactive content (e.g., tooltips), consider [HoverCard](/docs/components/overlay/hover-card) instead.

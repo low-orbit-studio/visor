@@ -157,6 +157,7 @@ const BILLING_SLIDER = "components/ui/billing-slider/billing-slider.module.css";
 const RESIZABLE_SPLIT = "components/ui/resizable-split/resizable-split.module.css";
 const SCROLL_HINT = "components/ui/scroll-hint/scroll-hint.module.css";
 const DIALOG = "components/ui/dialog/dialog.module.css";
+const POPOVER = "components/ui/popover/popover.module.css";
 const STAT_CARD = "components/ui/stat-card/stat-card.module.css";
 const KEY_VALUE_LIST = "components/ui/key-value-list/key-value-list.module.css";
 const CARD = "components/ui/card/card.module.css";
@@ -622,6 +623,29 @@ const dialogFamily: ComponentTokenFamily = {
     { key: "backdrop-filter", property: "backdrop-filter", description: "Filter on what shows through the panel, e.g. `blur(32px) saturate(110%)` for glass.", consumers: at(DIALOG, "none") },
     { key: "overlay-bg", property: "background-color", description: "The page scrim's colour.", consumers: at(DIALOG, "var(--overlay-bg, rgba(0, 0, 0, 0.8))") },
     { key: "overlay-blur", property: "backdrop-filter: blur()", description: "How much the scrim blurs the page, a length.", consumers: [{ file: DIALOG, fallback: "4px" }, { file: DIALOG, fallback: "2px" }] },
+  ],
+};
+
+// VI-808: Popover's panel and its stay-mounted fade, so a theme can draw the kit's
+// glass menu (corners, inset, fill, shadow, a 250ms fade with a small rise). Each key
+// falls back to what Popover drew before it. Under the glass switch (VI-795) the
+// panel reads the glass layer's fill, lift, blur, shadow and ink; a bound `bg` or
+// `shadow` still wins there, so a theme can keep its menu fill over a photo.
+const popoverFamily: ComponentTokenFamily = {
+  family: "popover",
+  prefix: "popover",
+  description:
+    "Popover's panel \u2014 corners, inset, fill and shadow \u2014 and the stay-mounted (`forceMount`) fade's timing, curve and rise. Under `data-glass=\"on\"` the panel reads the glass layer's fill, blur, shadow and ink; a bound `bg` or `shadow` wins in every look.",
+  tokens: [
+    { key: "radius", property: "border-radius", description: "Panel corners.", consumers: at(POPOVER, "var(--radius-lg, 0.5rem)") },
+    { key: "padding", property: "padding", description: "Panel inset, one length. PopoverFooter's rule spans it.", consumers: [{ file: POPOVER, fallback: "var(--spacing-4, 1rem)" }, { file: POPOVER, fallback: "var(--spacing-4, 1rem)" }, { file: POPOVER, fallback: "var(--spacing-4, 1rem)" }] },
+    { key: "bg", property: "background", description: "Panel fill, in every look. Unset, the glass layer's fill over a photo and `--surface-popover` elsewhere.", consumers: at(POPOVER, "var(--glass-on-fill, var(--surface-popover, var(--surface-card, #ffffff)))") },
+    { key: "shadow", property: "box-shadow", description: "Panel shadow (and any inset ring), in every look. Unset, the glass layer's shadow over a photo and `--shadow-lg` elsewhere.", consumers: at(POPOVER, "var(--glass-on-shadow, var(--shadow-lg))") },
+    { key: "duration", property: "transition-duration", description: "Stay-mounted fade length.", consumers: each([POPOVER, POPOVER, POPOVER], "var(--motion-duration-normal, 200ms)") },
+    { key: "easing", property: "transition-timing-function", description: "Stay-mounted fade curve.", consumers: each([POPOVER, POPOVER], "var(--motion-easing-enter, ease-out)") },
+    { key: "rise", property: "translate", description: "How far the stay-mounted panel rises as it fades in. None under reduced motion.", consumers: at(POPOVER, "6px") },
+    { key: "item-bg", property: "background-color", description: "Menu row fill (a ghost Button in a stay-mounted panel). Unset, the glass layer's control fill over a photo and a faint ink tint elsewhere.", consumers: at(POPOVER, "var(--glass-on-control-fill, color-mix(in srgb, var(--text-primary, #111827) 5%, transparent))") },
+    { key: "item-bg-hover", property: "background-color", description: "Menu row fill on hover. Unset, the glass layer's control hover fill over a photo and a stronger ink tint elsewhere.", consumers: at(POPOVER, "var(--glass-on-control-hover-fill, color-mix(in srgb, var(--text-primary, #111827) 10%, transparent))") },
   ],
 };
 
@@ -1899,6 +1923,7 @@ export const COMPONENT_TOKEN_FAMILIES: readonly ComponentTokenFamily[] = [
   billingSliderFamily,
   resizableSplitFamily,
   dialogFamily,
+  popoverFamily,
   glassFamily,
   scrollHintFamily,
   tabsFamily,
