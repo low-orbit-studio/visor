@@ -7,7 +7,7 @@ when_to_use:
   - Switching between mutually exclusive views or modes (grid/list, day/week/month)
   - Selecting one or multiple options from a small set of 2-5 choices
   - Toolbar-style option groups with icon or text items
-  - Tap-to-pick answer rows in a form, one or several (variant option)
+  - Tap-to-pick answer rows in a form, one or several (variant option), with an optional description line and, for one answer, a round mark (mark)
 
 when_not_to_use:
   - Navigation between pages or routes (use Tabs)
@@ -68,13 +68,17 @@ theme_hooks:
     description: >
       Option variant rows (VI-787): option-gap, option-inner-gap,
       option-min-height, option-padding, option-radius, option-bg,
-      option-hover-bg, option-selected-bg, option-selected-ring, option-blur,
-      option-text, option-font-size, option-font-weight; the letter key's
-      option-key-size, option-key-radius, option-key-border, option-key-text,
-      option-key-font-size; the picked key and check fill option-mark-bg and
-      option-mark-text; the multiple-mode check's option-check-size,
+      option-hover-bg, option-selected-bg, option-selected-ring,
+      option-text, option-font-size, option-font-weight; the description
+      line's option-description-text and option-description-font-size; the
+      letter key's option-key-size, option-key-radius, option-key-border,
+      option-key-text, option-key-font-size; the picked key, check and round
+      mark fill option-mark-bg and option-mark-text (the theme's key colour);
+      the multiple-mode check's option-check-size (also the round mark's size),
       option-check-radius, option-check-border. Each falls back to a Visor
-      token. Theme keys: components.toggle-group.option-*.
+      token. The row's blur is the glass layer's control blur
+      (--glass-on-control-blur), so it shows only under data-glass="on".
+      Theme keys: components.toggle-group.option-*.
 
 props:
   - name: type
@@ -94,6 +98,12 @@ props:
     type: boolean
     default: false
     description: Pressing A, B, C… while focus is in the group picks the item at that position.
+  - name: mark
+    type: boolean
+    default: false
+    description: >
+      Option variant, single only. A round mark on the right of each row that
+      fills with a check in the theme's key colour when the row is picked.
   - name: size
     type: "'xs' | 'sm' | 'md' | 'lg'"
     default: "md"
@@ -110,11 +120,16 @@ props:
 
 sub_components:
   - name: ToggleGroupItem
-    description: An individual toggle item. Accepts variant and size props to override the group defaults.
+    description: >
+      An individual toggle item. Accepts variant and size props to override the
+      group defaults. In the option variant, `description` adds a second line
+      under the label that becomes the row's accessible description (the label
+      alone stays its name).
 
 dependencies:
   - "@radix-ui/react-toggle-group"
   - "class-variance-authority"
+  - "@phosphor-icons/react"
 
 preview_url: "https://visor.loworbit.studio/docs/components/form/toggle-group"
 
