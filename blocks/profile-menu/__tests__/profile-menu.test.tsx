@@ -1,4 +1,4 @@
-import { render, screen, within } from "@testing-library/react"
+import { render, screen, waitFor, within } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { describe, it, expect, vi } from "vitest"
 import { BuildingsIcon } from "@phosphor-icons/react"
@@ -361,5 +361,118 @@ describe("defaultProfileMenuItems", () => {
       .find((i) => i.label === "Notifications")
     expect(notificationsZero?.badge).toBeUndefined()
     expect(notificationsUndef?.badge).toBeUndefined()
+  })
+})
+
+// ─── VI-802: the avatar trigger on Popover's skin ────────────────────
+
+describe("ProfileMenu trigger=\"avatar\"", () => {
+  function renderAvatarMenu() {
+    const onChangeEmail = vi.fn()
+    const onSignOut = vi.fn()
+    const items: ProfileMenuItem[] = [
+      { type: "item", label: "Change Email", onSelect: onChangeEmail },
+      { type: "item", label: "Sign Out", onSelect: onSignOut },
+    ]
+    render(
+      <ProfileMenu
+        trigger="avatar"
+        user={{ name: "Sam Rivera", email: "sam@example.com" }}
+        items={items}
+        onSignOut={onSignOut}
+      />
+    )
+    return { onChangeEmail, onSignOut, trigger: screen.getByRole("button", { name: "Account menu · Sam Rivera" }) }
+  }
+
+  it("is the avatar alone: no name, context or caret in the trigger", () => {
+    const { trigger } = renderAvatarMenu()
+    expect(trigger).toHaveAttribute("data-trigger", "avatar")
+    expect(trigger.textContent).not.toContain("Sam Rivera")
+    expect(trigger.querySelectorAll("[data-admin-shell-label]")).toHaveLength(0)
+  })
+
+  it("opens on click in place, on Popover's skin, with the name, email and both items", async () => {
+    const u = userEvent.setup()
+    const { trigger } = renderAvatarMenu()
+    await u.click(trigger)
+    const menu = await screen.findByRole("menu")
+    expect(menu).toHaveAttribute("data-skin", "popover")
+    // Rendered in the block's layer beside the trigger, not at the end of the page.
+    expect(menu.closest('[data-slot="profile-menu-layer"]')).not.toBeNull()
+    expect(within(menu).getByText("Sam Rivera")).toBeInTheDocument()
+    expect(within(menu).getByText("sam@example.com")).toBeInTheDocument()
+    expect(within(menu).queryByText("Signed in as")).not.toBeInTheDocument()
+    expect(within(menu).getByRole("menuitem", { name: "Change Email" })).toBeInTheDocument()
+    expect(within(menu).getByRole("menuitem", { name: "Sign Out" })).toBeInTheDocument()
+  })
+
+  it("Change Email and Sign Out each call their handler once and close the menu", async () => {
+    const u = userEvent.setup()
+    const { trigger, onChangeEmail, onSignOut } = renderAvatarMenu()
+
+    await u.click(trigger)
+    await u.click(await screen.findByRole("menuitem", { name: "Change Email" }))
+    expect(onChangeEmail).toHaveBeenCalledTimes(1)
+    expect(screen.queryByRole("menu")).not.toBeInTheDocument()
+
+    await u.click(trigger)
+    await u.click(await screen.findByRole("menuitem", { name: "Sign Out" }))
+    expect(onSignOut).toHaveBeenCalledTimes(1)
+    expect(screen.queryByRole("menu")).not.toBeInTheDocument()
+  })
+
+  it("keyboard walk: Tab, Enter, ArrowDown, Enter, then Escape returns focus to the trigger", async () => {
+    const u = userEvent.setup()
+    const { trigger, onSignOut } = renderAvatarMenu()
+
+    await u.tab()
+    expect(trigger).toHaveFocus()
+    await u.keyboard("{Enter}")
+    const first = await screen.findByRole("menuitem", { name: "Change Email" })
+    await waitFor(() => expect(first).toHaveFocus())
+    await u.keyboard("{ArrowDown}")
+    expect(screen.getByRole("menuitem", { name: "Sign Out" })).toHaveFocus()
+    await u.keyboard("{Enter}")
+    expect(onSignOut).toHaveBeenCalledTimes(1)
+    await waitFor(() => expect(trigger).toHaveFocus())
+
+    await u.keyboard("{Enter}")
+    await screen.findByRole("menu")
+    await u.keyboard("{Escape}")
+    expect(screen.queryByRole("menu")).not.toBeInTheDocument()
+    await waitFor(() => expect(trigger).toHaveFocus())
+  })
+
+  it("defaultOpen renders the menu open without moving focus into it", async () => {
+    render(
+      <ProfileMenu
+        trigger="avatar"
+        defaultOpen
+        user={{ name: "Sam Rivera", email: "sam@example.com" }}
+        items={[{ type: "item", label: "Sign Out" }]}
+      />
+    )
+    const menu = await screen.findByRole("menu")
+    expect(menu).toBeInTheDocument()
+    expect(document.activeElement).toBe(document.body)
+  })
+
+  it("the default row trigger still folds to its avatar in a collapsed AdminShell rail", () => {
+    const { container } = render(
+      <AdminShell
+        collapsible
+        defaultCollapsed
+        sidebarNav={<nav aria-label="Sidebar"><a href="/home">Home</a></nav>}
+        sidebarFooter={<ProfileMenu user={user} items={baselineItems} />}
+      >
+        <div>Main</div>
+      </AdminShell>
+    )
+    const trigger = container.querySelector('[data-slot="profile-menu-trigger"]')
+    expect(trigger).toHaveAttribute("data-trigger", "row")
+    // AdminShell hides every [data-admin-shell-label] under [data-collapsed="true"].
+    expect(trigger?.closest('[data-collapsed="true"]')).not.toBeNull()
+    expect(trigger?.querySelectorAll("[data-admin-shell-label]")).toHaveLength(2)
   })
 })
