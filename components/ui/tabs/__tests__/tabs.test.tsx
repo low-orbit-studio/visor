@@ -1,5 +1,6 @@
-import { render, screen } from "@testing-library/react"
-import { describe, it, expect } from "vitest"
+import { render, screen, waitFor } from "@testing-library/react"
+import userEvent from "@testing-library/user-event"
+import { describe, it, expect, vi, beforeAll, afterAll, afterEach } from "vitest"
 import { Tabs, TabsList, TabsTrigger, TabsContent, type TabsTriggerProps } from "../tabs"
 import { checkA11y } from "../../../../test-utils/a11y"
 
@@ -365,5 +366,100 @@ describe("TabsTrigger count slot", () => {
       </Tabs>
     )
     await checkA11y(container)
+  })
+})
+
+describe("TabsList keyed variant (VI-848)", () => {
+  // jsdom has no layout: each trigger reports the box its data-x/y/w attributes name.
+  const props = ["offsetLeft", "offsetTop", "offsetWidth"] as const
+  const attr = { offsetLeft: "x", offsetTop: "y", offsetWidth: "w" }
+  const originals = props.map((p) => Object.getOwnPropertyDescriptor(HTMLElement.prototype, p))
+  beforeAll(() => {
+    for (const p of props) {
+      Object.defineProperty(HTMLElement.prototype, p, {
+        configurable: true,
+        get(this: HTMLElement) {
+          return Number(this.dataset[attr[p]] ?? 0)
+        },
+      })
+    }
+  })
+  afterAll(() => {
+    props.forEach((p, i) => Object.defineProperty(HTMLElement.prototype, p, originals[i]!))
+  })
+  afterEach(() => vi.unstubAllGlobals())
+
+  const indicator = (container: HTMLElement) =>
+    container.querySelector<HTMLElement>('[data-slot="tabs-keyed-indicator"]')
+
+  function Keyed({ order = ["a", "b", "c"] }: { order?: string[] }) {
+    const box: Record<string, { x: number; y: number; w: number }> = {
+      a: { x: 0, y: 0, w: 60 },
+      b: { x: 64, y: 0, w: 80 },
+      c: { x: 0, y: 40, w: 70 },
+    }
+    return (
+      <Tabs defaultValue="a">
+        <TabsList variant="keyed" data-testid="list">
+          {order.map((v, i) => {
+            // Reordering moves a tab to the slot of the tab that was there.
+            const slot = box[["a", "b", "c"][i]!]!
+            return (
+              <TabsTrigger key={v} value={v} data-x={slot.x} data-y={slot.y} data-w={slot.w}>
+                {`Tab ${v}`}
+                {v === "a" && <span data-testid="lead">Lead</span>}
+              </TabsTrigger>
+            )
+          })}
+        </TabsList>
+      </Tabs>
+    )
+  }
+
+  it("should_followTheActiveTab_when_aTabIsClicked", async () => {
+    const { container } = render(<Keyed />)
+    await waitFor(() => expect(indicator(container)?.style.transform).toBe("translate(0px, 0px)"))
+    expect(indicator(container)?.style.width).toBe("60px")
+
+    await userEvent.click(screen.getByRole("tab", { name: /Tab c/ }))
+    await waitFor(() => expect(indicator(container)?.style.transform).toBe("translate(0px, 40px)"))
+    expect(indicator(container)?.style.width).toBe("70px")
+  })
+
+  it("should_followTheActiveTab_when_theTabListChanges", async () => {
+    const { container, rerender } = render(<Keyed />)
+    await waitFor(() => expect(indicator(container)?.style.transform).toBe("translate(0px, 0px)"))
+
+    rerender(<Keyed order={["b", "c", "a"]} />)
+    await waitFor(() => expect(indicator(container)?.style.transform).toBe("translate(0px, 40px)"))
+    expect(indicator(container)?.style.width).toBe("70px")
+  })
+
+  it("should_slide_when_motionIsAllowed", async () => {
+    const { container } = render(<Keyed />)
+    await waitFor(() => expect(indicator(container)?.style.transition).toBe(""))
+  })
+
+  it("should_haveNoTransition_when_reducedMotionIsPreferred", async () => {
+    vi.stubGlobal("matchMedia", (query: string) => ({
+      matches: query.includes("prefers-reduced-motion"),
+      media: query,
+      addEventListener() {},
+      removeEventListener() {},
+    }))
+    const { container } = render(<Keyed />)
+    await waitFor(() => expect(indicator(container)).not.toBeNull())
+    await new Promise((r) => requestAnimationFrame(() => r(null)))
+    await userEvent.click(screen.getByRole("tab", { name: /Tab b/ }))
+    await waitFor(() => expect(indicator(container)?.style.transform).toBe("translate(64px, 0px)"))
+    expect(indicator(container)?.style.transition).toBe("none")
+  })
+
+  it("should_renderExtraChildrenAfterTheLabel_and_keepTabSemantics", () => {
+    render(<Keyed />)
+    const tab = screen.getByRole("tab", { name: /Tab a/ })
+    expect(tab).toContainElement(screen.getByTestId("lead"))
+    expect(tab).toHaveAttribute("aria-selected", "true")
+    expect(screen.getByTestId("list")).toHaveAttribute("data-variant", "keyed")
   })
 })

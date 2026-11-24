@@ -1,6 +1,6 @@
 name: Tabs
-version: 1.1.0
-description: A tabs component for switching between content panels with default and line style variants.
+version: 1.2.0
+description: A tabs component for switching between content panels with default, line and keyed style variants.
 extends: HTMLDivElement
 category: navigation
 
@@ -18,12 +18,14 @@ when_not_to_use:
 
 why: >
   Tabs wraps Radix UI Tabs for full keyboard navigation and ARIA tab semantics.
-  Two list variants — default (pill-style background) and line (bottom border) —
-  cover the most common tab patterns. Active state styling and focus rings are
+  Three list variants — default (pill-style background), line (bottom border) and
+  keyed (a wrapping row with one key-coloured highlight that slides to the active
+  tab in x and y) — cover the most common tab patterns. Active state styling and focus rings are
   handled automatically.
 
 variants:
-  variant: [default, line]
+  variant: [default, line, keyed]
+  size: [default, compact]
 
 theme_hooks:
   - name: --tabs-list-radius
@@ -38,11 +40,32 @@ theme_hooks:
       var(--radius-md, 0.375rem)). Bound, it is an explicit override. Theme
       key: components.tabs.trigger-radius.
 
+  - name: --tabs-keyed-key
+    description: >
+      Keyed variant key colour: the highlight's 1px edge and the active tab's
+      icon. Default var(--surface-accent-default). Theme key: components.tabs.keyed-key.
+  - name: --tabs-keyed-fill
+    description: >
+      Keyed variant highlight fill. Default: the key colour at 10%. Theme key:
+      components.tabs.keyed-fill.
+  - name: --tabs-keyed-ink
+    description: >
+      Keyed variant label ink (full when active, 80% on hover, 55% at rest).
+      Default var(--text-primary). Theme key: components.tabs.keyed-ink.
+  - name: --tabs-keyed-radius
+    description: >
+      Keyed variant tab and highlight corners. Default var(--radius-md). Theme
+      key: components.tabs.keyed-radius.
+
 props:
   - name: variant
-    type: '"default" | "line"'
+    type: '"default" | "line" | "keyed"'
     default: '"default"'
     description: "Controls TabsList visual style"
+  - name: size
+    type: '"default" | "compact"'
+    default: '"default"'
+    description: "Keyed variant only: compact narrows the tab side padding from 12px to 10px"
   - name: defaultValue
     type: "string"
     description: "Initially active tab value (uncontrolled)"
@@ -55,7 +78,10 @@ props:
 
 sub_components:
   - name: TabsList
-    description: Horizontal container for tab triggers with variant styling.
+    description: >
+      Horizontal container for tab triggers with variant styling. The keyed
+      variant renders its highlight as data-slot="tabs-keyed-indicator" and sets
+      data-size.
   - name: TabsTrigger
     description: Clickable tab button tied to a content panel via matching value prop.
     props:

@@ -653,7 +653,7 @@
         },
         "tabs": {
           "type": "object",
-          "description": "Tab rail and trigger treatment, for both the segmented (`default`) and underlined (`line`) variants. Keys: list-radius, list-height, list-padding, list-color, list-bg, line-border-bottom, trigger-radius, trigger-padding, trigger-font-size, trigger-font-weight, trigger-letter-spacing, trigger-text-transform, trigger-color, trigger-active-bg, trigger-active-color, trigger-active-shadow, indicator-height, indicator-color.",
+          "description": "Tab rail and trigger treatment, for the segmented (`default`), underlined (`line`) and sliding-highlight (`keyed`) variants. Keys: list-radius, list-height, list-padding, list-color, list-bg, line-border-bottom, trigger-radius, trigger-padding, trigger-font-size, trigger-font-weight, trigger-letter-spacing, trigger-text-transform, trigger-color, trigger-active-bg, trigger-active-color, trigger-active-shadow, indicator-height, indicator-color, keyed-key, keyed-fill, keyed-ink, keyed-radius.",
           "additionalProperties": {
             "$ref": "#/$defs/componentTokenBinding"
           }

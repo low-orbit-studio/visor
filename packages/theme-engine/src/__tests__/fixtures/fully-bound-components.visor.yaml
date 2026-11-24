@@ -276,6 +276,10 @@ components:
     trigger-active-shadow: "0 0 0 3px #ff00aa"
     indicator-height: "37px"
     indicator-color: "#2b0a3d"
+    keyed-key: "#ff00aa"
+    keyed-fill: "#2b0a3d"
+    keyed-ink: "#00d5ff"
+    keyed-radius: "3px"
   skeleton:
     from: "#ff00aa"
     to: "#00d5ff"
