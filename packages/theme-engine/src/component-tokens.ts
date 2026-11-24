@@ -127,6 +127,7 @@ const SIDEBAR = "components/ui/sidebar/sidebar.module.css";
 const TABS = "components/ui/tabs/tabs.module.css";
 const SKELETON = "components/ui/skeleton/skeleton.module.css";
 const SPINNER = "components/ui/spinner/spinner.module.css";
+const STEPPER = "components/ui/stepper/stepper.module.css";
 const CHECKBOX = "components/ui/checkbox/checkbox.module.css";
 const INPUT = "components/ui/input/input.module.css";
 const SEPARATOR = "components/ui/separator/separator.module.css";
@@ -147,16 +148,20 @@ const LAYER_CHART = "components/ui/layer-chart/layer-chart.module.css";
 const PROPORTION_BAR = "components/ui/proportion-bar/proportion-bar.module.css";
 const TOGGLE_GROUP = "components/ui/toggle-group/toggle-group.module.css";
 const RADIO_GROUP = "components/ui/radio-group/radio-group.module.css";
+const REACH_RINGS = "components/ui/reach-rings/reach-rings.module.css";
 const TOOLTIP = "components/ui/tooltip/tooltip.module.css";
 const ACTION_ROW = "components/ui/action-row/action-row.module.css";
 const DIALOG_FIELD = "blocks/dialog-field/dialog-field.module.css";
 const ADMIN_SHELL = "blocks/admin-shell/admin-shell.module.css";
 const BILLING_SLIDER = "components/ui/billing-slider/billing-slider.module.css";
 const RESIZABLE_SPLIT = "components/ui/resizable-split/resizable-split.module.css";
+const SCROLL_HINT = "components/ui/scroll-hint/scroll-hint.module.css";
 const DIALOG = "components/ui/dialog/dialog.module.css";
 const POPOVER = "components/ui/popover/popover.module.css";
 const STAT_CARD = "components/ui/stat-card/stat-card.module.css";
 const KEY_VALUE_LIST = "components/ui/key-value-list/key-value-list.module.css";
+const CARD = "components/ui/card/card.module.css";
+const RICH_TEXT = "components/ui/rich-text/rich-text.module.css";
 
 /** Shorthand for the common single-consumer case. */
 function at(file: string, fallback: string | null): ComponentTokenConsumer[] {
@@ -653,7 +658,7 @@ const glassFamily: ComponentTokenFamily = {
   family: "glass",
   prefix: "glass",
   description:
-    "The glass layer over a photo: surface fill, blur, edge, lift, shadow and on-photo ink, plus the glass values controls read. Draws only inside `data-glass=\"on\"`; elsewhere components keep their solid surface and border.",
+    "The glass layer over a photo: surface fill, blur, edge, lift, shadow, on-photo ink, the scrim under white labels with its ink and shadow, plus the glass values controls read. Draws only inside `data-glass=\"on\"`; elsewhere components keep their solid surface and border.",
   tokens: [
     { key: "fill", property: "background", description: "Glass surface fill, see-through.", consumers: [], recommended: "color-mix(in srgb, var(--text-primary) 5%, transparent)" },
     { key: "blur", property: "backdrop-filter", description: "Filter on the photo behind a glass surface.", consumers: [], recommended: "blur(32px) saturate(110%)" },
@@ -661,11 +666,31 @@ const glassFamily: ComponentTokenFamily = {
     { key: "lift", property: "background", description: "White lift laid over the fill, e.g. `rgb(255 255 255 / 0.45)` in light.", consumers: [], recommended: "transparent" },
     { key: "shadow", property: "box-shadow", description: "Glass surface shadow.", consumers: [], recommended: "var(--shadow-xl)" },
     { key: "ink", property: "color", description: "Text colour on glass over a photo.", consumers: [], recommended: "var(--text-primary)" },
+    // VI-810: a dark scrim under white labels in the dark photo look: at 55% black, white clears 4.5:1 (4.95:1)
+    // even over pure white, so over any photo; and FormDeck's label shadow. Light + Photo keeps the light glass and its ink.
+    { key: "scrim", property: "background", description: "Dark glass laid under white labels on a photo in dark mode (e.g. Stepper's rail panel in Dark + Photo), dark enough that white clears 4.5:1 on a bright photo.", consumers: [], recommended: "rgb(0 0 0 / 0.55)" },
+    { key: "scrim-ink", property: "color", description: "Label colour on the scrim, in dark mode over a photo.", consumers: [], recommended: "#ffffff" },
+    { key: "ink-shadow", property: "text-shadow", description: "Shadow under the scrim ink in dark mode over a photo, seating the labels.", consumers: [], recommended: "0 0 10px rgb(0 0 0 / 0.55), 0 1px 3px rgb(0 0 0 / 0.5)" },
     { key: "control-fill", property: "background", description: "Glass control fill (icon buttons, toggles).", consumers: [], recommended: "color-mix(in srgb, var(--text-primary) 14%, transparent)" },
     { key: "control-hover-fill", property: "background", description: "Glass control fill on hover.", consumers: [], recommended: "color-mix(in srgb, var(--text-primary) 24%, transparent)" },
     { key: "control-ring", property: "box-shadow (inset ring)", description: "Glass control ring colour.", consumers: [], recommended: "color-mix(in srgb, var(--text-primary) 16%, transparent)" },
     { key: "control-ink", property: "color", description: "Glass control icon and label colour.", consumers: [], recommended: "var(--text-primary)" },
     { key: "control-blur", property: "backdrop-filter", description: "Filter on the photo behind a glass control.", consumers: [], recommended: "blur(16px)" },
+  ],
+};
+
+// VI-814: the "More Below" pill. A solid chip in plain looks; over a photo (data-glass="on") the glass fill.
+const scrollHintFamily: ComponentTokenFamily = {
+  family: "scroll-hint",
+  prefix: "scroll-hint",
+  description:
+    "ScrollHint — the \"More Below\" pill pinned to a scroll box's bottom edge: the solid chip's fill, edge and ink, the fill it takes over a photo, and the gap it undoes.",
+  tokens: [
+    { key: "bg", property: "background", description: "The chip's fill, glass off.", consumers: at(SCROLL_HINT, "var(--surface-card, #ffffff)") },
+    { key: "border", property: "box-shadow (inset ring)", description: "The chip's edge, glass off. Over a photo the pill has no edge.", consumers: at(SCROLL_HINT, "var(--border-default, #e5e7eb)") },
+    { key: "color", property: "color", description: "The pill's words and caret.", consumers: at(SCROLL_HINT, "var(--text-secondary, #4b5563)") },
+    { key: "glass-bg", property: "background", description: "The pill's fill inside `data-glass=\"on\"`, blurred with the glass layer's control blur.", consumers: at(SCROLL_HINT, "color-mix(in srgb, var(--surface-page, #ffffff) 70%, transparent)") },
+    { key: "gap", property: "margin-top (negated)", description: "The scroll box's row gap, which the zero-height hint row undoes so it adds no space.", consumers: at(SCROLL_HINT, "0px") },
   ],
 };
 
@@ -680,7 +705,7 @@ const tabsFamily: ComponentTokenFamily = {
     { key: "list-color", property: "color", description: "Tab-rail base text colour.", consumers: at(TABS, "var(--text-secondary, #6b7280)") },
     { key: "list-bg", property: "background-color", description: "Segmented-variant rail fill.", consumers: at(TABS, "var(--surface-muted, #f3f4f6)") },
     { key: "line-border-bottom", property: "border-bottom", description: "Underlined-variant rail rule (width, style and colour). Unbound, the rail rule is painted at `--hairline-width`; binding this draws your border instead.", consumers: at(TABS, "1px solid transparent") },
-    { key: "trigger-radius", property: "border-radius", description: "Trigger corner rounding.", consumers: at(TABS, "var(--radius-md, 0.375rem)") },
+    { key: "trigger-radius", property: "border-radius", description: "Trigger corner rounding. Leave unset: derived from the rail (rail radius minus rail padding minus the 1px trigger inset), so the corners stay concentric (VI-837); the line variant falls back to `--radius-md`. Bound, an explicit override.", consumers: at(TABS, "var(--_inner-radius)") },
     { key: "trigger-padding", property: "padding", description: "Trigger inset.", consumers: at(TABS, "var(--spacing-1, 0.25rem) var(--spacing-2, 0.5rem)") },
     { key: "trigger-font-size", property: "font-size", description: "Trigger type size.", consumers: at(TABS, "var(--font-size-sm, 0.875rem)") },
     { key: "trigger-font-weight", property: "font-weight", description: "Trigger weight.", consumers: at(TABS, "var(--font-weight-medium, 500)") },
@@ -742,6 +767,24 @@ const spinnerFamily: ComponentTokenFamily = {
     { key: "label-font-size", property: "font-size", description: "Visible words size (`showLabel`).", consumers: at(SPINNER, "var(--font-size-sm, 0.875rem)") },
     { key: "label-font-weight", property: "font-weight", description: "Visible words weight (`showLabel`).", consumers: at(SPINNER, "var(--font-weight-medium, 500)") },
     { key: "label-color", property: "color", description: "Visible words colour (`showLabel`).", consumers: at(SPINNER, "var(--text-secondary, #4b5563)") },
+  ],
+};
+
+// VI-810: Stepper's rail variant, the side list of form sections (FormDeck's section
+// rail). Sizes only: the ink is --text-primary, or over a photo the glass ink (light) or scrim ink (dark).
+const stepperFamily: ComponentTokenFamily = {
+  family: "stepper",
+  prefix: "stepper",
+  description: "Stepper's `rail` variant — row gap and inset, the space between mark and label, label size, weight and tracking, and the dot mark's size and current width.",
+  tokens: [
+    { key: "rail-gap", property: "gap", description: "Space between rail rows.", consumers: at(STEPPER, "0") },
+    { key: "rail-padding", property: "padding", description: "Rail row inset.", consumers: at(STEPPER, "var(--spacing-2, 0.5rem) var(--spacing-1, 0.25rem)") },
+    { key: "rail-mark-gap", property: "gap", description: "Space between the mark and the label.", consumers: at(STEPPER, "var(--spacing-3, 0.75rem)") },
+    { key: "rail-font-size", property: "font-size", description: "Rail label size.", consumers: at(STEPPER, "var(--font-size-sm, 0.875rem)") },
+    { key: "rail-font-weight", property: "font-weight", description: "Rail label weight.", consumers: at(STEPPER, "var(--font-weight-medium, 500)") },
+    { key: "rail-letter-spacing", property: "letter-spacing", description: "Rail label tracking.", consumers: at(STEPPER, "normal") },
+    { key: "rail-mark-size", property: "width / height", description: "Dot mark diameter.", consumers: at(STEPPER, "calc(var(--spacing-1, 0.25rem) * 1.5)") },
+    { key: "rail-mark-active-width", property: "width", description: "The current row's mark, stretched to a pill.", consumers: at(STEPPER, "var(--spacing-5, 1.25rem)") },
   ],
 };
 
@@ -1571,23 +1614,19 @@ const segmentedControlFamily: ComponentTokenFamily = {
     {
       key: "item-radius",
       property: "border-radius",
-      description: "Segment corners: the hover fill and the focus ring. Unset, each size keeps its ToggleGroup radius (xs reads `toggle-group.xs-item-radius`).",
+      description: "Segment corners: the hover fill and the focus ring. Leave unset: derived from the track (track radius minus track padding minus its 1px border), so the corners stay concentric (VI-837). Bound, an explicit override (xs reads `toggle-group.xs-item-radius` first).",
       consumers: [
-        { file: SEGMENTED_CONTROL, fallback: "var(--toggle-group-xs-item-radius, var(--radius-sm, 0.25rem))" },
-        { file: SEGMENTED_CONTROL, fallback: "var(--radius-md, 0.375rem)" },
-        { file: SEGMENTED_CONTROL, fallback: "var(--radius-md, 0.375rem)" },
-        { file: SEGMENTED_CONTROL, fallback: "var(--radius-lg, 0.5rem)" },
+        { file: SEGMENTED_CONTROL, fallback: "var(--_inner-radius)" },
+        { file: SEGMENTED_CONTROL, fallback: "var(--toggle-group-xs-item-radius, var(--_inner-radius))" },
       ],
     },
     {
       key: "indicator-radius",
       property: "border-radius",
-      description: "Sliding pill corners. Bind `999px` with `radius` for a fully round switch. Unset, each size keeps its ToggleGroup radius (xs reads `toggle-group.xs-item-radius`).",
+      description: "Sliding pill corners. Leave unset: derived from the track, so binding `radius: 999px` alone gives a fully round switch (VI-837). Bound, an explicit override (xs reads `toggle-group.xs-item-radius` first).",
       consumers: [
-        { file: SEGMENTED_CONTROL, fallback: "var(--toggle-group-xs-item-radius, var(--radius-sm, 0.25rem))" },
-        { file: SEGMENTED_CONTROL, fallback: "var(--radius-md, 0.375rem)" },
-        { file: SEGMENTED_CONTROL, fallback: "var(--radius-md, 0.375rem)" },
-        { file: SEGMENTED_CONTROL, fallback: "var(--radius-lg, 0.5rem)" },
+        { file: SEGMENTED_CONTROL, fallback: "var(--_inner-radius)" },
+        { file: SEGMENTED_CONTROL, fallback: "var(--toggle-group-xs-item-radius, var(--_inner-radius))" },
       ],
     },
     { key: "indicator-bg", property: "background-color", description: "Sliding active pill. Bind a lifted dark fill where the theme wants one.", consumers: at(SEGMENTED_CONTROL, "var(--interactive-primary-bg, var(--primary, #111827))") },
@@ -1619,7 +1658,16 @@ const toggleGroupFamily: ComponentTokenFamily = {
     { key: "xs-font-size", property: "font-size", description: "Compact (`xs`) label size.", consumers: at(TOGGLE_GROUP, "var(--font-size-xs, 0.75rem)") },
     { key: "xs-padding-x", property: "padding-inline", description: "Compact (`xs`) option sides.", consumers: at(TOGGLE_GROUP, "var(--spacing-2, 0.5rem)") },
     { key: "xs-track-radius", property: "border-radius", description: "Compact (`xs`) outline track corner radius.", consumers: at(TOGGLE_GROUP, "var(--radius-md, 0.375rem)") },
-    { key: "xs-item-radius", property: "border-radius", description: "Compact (`xs`) option and indicator corner radius. Concentric with the track is the track radius minus its 2px inset.", consumers: at(TOGGLE_GROUP, "var(--radius-sm, 0.25rem)") },
+    {
+      key: "xs-item-radius",
+      property: "border-radius",
+      description: "Compact (`xs`) option and indicator corner radius. Leave unset: in the outline track it is derived from the track (track radius minus padding minus its 1px border), so the corners stay concentric (VI-837). Bound, an explicit override. The default variant has no track and falls back to `--radius-sm`.",
+      consumers: [
+        { file: TOGGLE_GROUP, fallback: "var(--radius-sm, 0.25rem)" },
+        { file: TOGGLE_GROUP, fallback: "var(--_inner-radius)" },
+        { file: TOGGLE_GROUP, fallback: "var(--_inner-radius)" },
+      ],
+    },
     { key: "option-gap", property: "gap", description: "Option variant (VI-787): the space between rows.", consumers: at(TOGGLE_GROUP, "var(--spacing-2, 0.5rem)") },
     { key: "option-inner-gap", property: "gap", description: "Option row: the space between key, label and check.", consumers: at(TOGGLE_GROUP, "var(--spacing-3_5, 0.875rem)") },
     { key: "option-min-height", property: "min-height", description: "Option row height; a wrapped label grows past it.", consumers: at(TOGGLE_GROUP, "3.375rem") },
@@ -1668,6 +1716,36 @@ const radioCardFamily: ComponentTokenFamily = {
   ],
 };
 
+// VI-840: the stepped RadioGroup and ReachRings (Blacklight's Who Can See picker).
+const radioStepFamily: ComponentTokenFamily = {
+  family: "radio-step",
+  prefix: "radio-step",
+  description:
+    "RadioGroup `variant=\"stepped\"` \u2014 the key colour, the well and its radius, the resting ink, the icon size, and the chosen tile's fill and hairline.",
+  tokens: [
+    { key: "key", property: "background-color", description: "The key colour: the chosen tile's fill tint, hairline and icon, and the focus ring.", consumers: at(RADIO_GROUP, "var(--interactive-primary-bg, var(--primary, #111827))") },
+    { key: "well", property: "background-color", description: "The well the tiles sit in. Default is the page nudged 12% toward the ink; a dark app binds it darker than its plane (Blacklight: `rgb(0 0 0 / 0.65)`).", consumers: at(RADIO_GROUP, "color-mix(in srgb, var(--text-primary, #111827) 12%, var(--surface-page, #ffffff))") },
+    { key: "well-radius", property: "border-radius", description: "Well corner radius. The tiles take it minus the well padding, so the corners stay concentric.", consumers: at(RADIO_GROUP, "var(--radius-xl, 0.75rem)") },
+    { key: "ink", property: "color", description: "Icon and label ink on a tile that is not chosen.", consumers: at(RADIO_GROUP, "var(--text-tertiary, #9ca3af)") },
+    { key: "icon-size", property: "font-size", description: "Tile icon size.", consumers: at(RADIO_GROUP, "1.25rem") },
+    { key: "selected-bg", property: "background-color", description: "Chosen tile fill. Default is 12% key over `--surface-elev-2`.", consumers: at(RADIO_GROUP, "color-mix(in srgb, var(--_key) 12%, var(--surface-elev-2, #f3f4f6))") },
+    { key: "selected-border", property: "box-shadow", description: "Chosen tile hairline. Default is 35% key.", consumers: at(RADIO_GROUP, "color-mix(in srgb, var(--_key) 35%, transparent)") },
+  ],
+};
+
+const reachRingsFamily: ComponentTokenFamily = {
+  family: "reach-rings",
+  prefix: "reach-rings",
+  description:
+    "ReachRings \u2014 the key colour of lit rings and the core, the unlit ring stroke, and the core icon lit and unlit.",
+  tokens: [
+    { key: "key", property: "background-color", description: "The key colour: a lit ring's stroke, halo and wash, and the filled core.", consumers: at(REACH_RINGS, "var(--interactive-primary-bg, var(--primary, #111827))") },
+    { key: "ring", property: "box-shadow", description: "An unlit ring's stroke.", consumers: at(REACH_RINGS, "color-mix(in srgb, var(--text-primary, #111827) 12%, transparent)") },
+    { key: "glyph", property: "color", description: "The core icon while the core is unlit.", consumers: at(REACH_RINGS, "color-mix(in srgb, var(--text-primary, #111827) 50%, transparent)") },
+    { key: "core-ink", property: "color", description: "The core icon on the lit core.", consumers: at(REACH_RINGS, "var(--interactive-primary-text, #f9fafb)") },
+  ],
+};
+
 const adminUiFamily: ComponentTokenFamily = {
   family: "admin-ui",
   prefix: "admin-ui",
@@ -1708,6 +1786,38 @@ const layerChartFamily: ComponentTokenFamily = {
     { key: "duration", property: "transition-duration", description: "How long a block takes to open (none under reduced motion).", consumers: at(LAYER_CHART, "480ms") },
     { key: "easing", property: "transition-timing-function", description: "The opening ease.", consumers: at(LAYER_CHART, "cubic-bezier(0.2, 0.8, 0.2, 1)") },
     { key: "ground", property: "background (mixes)", description: "The ground blocks are mixed toward (covered, today, the palest layer) and the span lanes' track.", consumers: at(LAYER_CHART, "var(--surface-page, #ffffff)") },
+  ],
+};
+
+// VI-804: Card's corner, its glass variant's layers and its editable state. The glass
+// keys are the hooks honcho-planning's GlassCard consumers already set, so a surface
+// with its own glass maps onto them one for one. Each falls back to what Card drew
+// before; the glass layers fall back to the glass switch (VI-795), so glass shows
+// only under data-glass="on".
+const cardFamily: ComponentTokenFamily = {
+  family: "card",
+  prefix: "card",
+  description:
+    "Card \u2014 the corner radius, the glass variant's fill, blur, shadow and layers, and the editable state's hover fill and shadow and its pen's size and inset.",
+  tokens: [
+    { key: "radius", property: "border-radius", description: "Card corner radius.", consumers: at(CARD, "var(--radius-xl, 1rem)") },
+    { key: "glass-bg", property: "background", description: "Glass layer fill. Unset, the glass switch's lift over its fill, or the card surface where glass is off.", consumers: at(CARD, "linear-gradient(var(--glass-on-lift, transparent) 0 0), var(--glass-on-fill, var(--surface-card, #ffffff))") },
+    { key: "glass-filter", property: "backdrop-filter", description: "Filter on the photo behind the glass layer. Unset, the glass switch's blur; none where glass is off. A bound value applies with glass off too.", consumers: at(CARD, "var(--glass-on-blur, none)") },
+    { key: "glass-shadow", property: "box-shadow", description: "Glass layer shadow. Unset, the glass switch's shadow, or Card's own where glass is off.", consumers: at(CARD, "var(--glass-on-shadow, var(--shadow-sm))") },
+    { key: "glass-display", property: "display", description: "`none` drops the glass layer and its edge.", consumers: at(CARD, "block") },
+    { key: "edge-display", property: "display", description: "`none` drops the edge layer only (a surface that draws its own edge).", consumers: at(CARD, "var(--card-glass-display, block)") },
+    {
+      key: "editable-hover-bg",
+      property: "background",
+      description: "Editable card fill on hover. Unset, the interactive hover surface; on glass, the fill moved 40% toward the card surface.",
+      consumers: [
+        { file: CARD, fallback: "var(--surface-interactive-hover, #f3f4f6)" },
+        { file: CARD, fallback: "linear-gradient(var(--glass-on-lift, transparent) 0 0), color-mix(in srgb, var(--glass-on-fill, var(--surface-interactive-hover, #f3f4f6)), var(--surface-card, #ffffff) 40%)" },
+      ],
+    },
+    { key: "editable-hover-shadow", property: "box-shadow", description: "Editable card shadow on hover.", consumers: at(CARD, "var(--shadow-lg)") },
+    { key: "pen-size", property: "width / height", description: "Pen badge size.", consumers: at(CARD, "var(--spacing-8, 2rem)") },
+    { key: "pen-inset", property: "top / right", description: "Pen distance from the top and right edges.", consumers: at(CARD, "var(--spacing-4, 1rem)") },
   ],
 };
 
@@ -1780,6 +1890,22 @@ const keyValueListFamily: ComponentTokenFamily = {
   ],
 };
 
+// VI-813: RichText's link underline. Link text inherits the host's ink; the underline is
+// the theme's (the Honcho kit draws it at ink-40). Unbound, it is the host's ink at 40%.
+const richTextFamily: ComponentTokenFamily = {
+  family: "rich-text",
+  prefix: "rich-text",
+  description: "RichText link underline colour. Link text inherits the surrounding ink.",
+  tokens: [
+    {
+      key: "link-underline",
+      property: "text-decoration-color",
+      description: "Link underline colour at rest; on hover it turns the link's own ink.",
+      consumers: at(RICH_TEXT, "color-mix(in srgb, currentColor 40%, transparent)"),
+    },
+  ],
+};
+
 export const COMPONENT_TOKEN_FAMILIES: readonly ComponentTokenFamily[] = [
   tableFamily,
   dataTableFamily,
@@ -1798,9 +1924,11 @@ export const COMPONENT_TOKEN_FAMILIES: readonly ComponentTokenFamily[] = [
   dialogFamily,
   popoverFamily,
   glassFamily,
+  scrollHintFamily,
   tabsFamily,
   skeletonFamily,
   spinnerFamily,
+  stepperFamily,
   checkboxFamily,
   inputFamily,
   textareaFamily,
@@ -1817,6 +1945,8 @@ export const COMPONENT_TOKEN_FAMILIES: readonly ComponentTokenFamily[] = [
   segmentedControlFamily,
   toggleGroupFamily,
   radioCardFamily,
+  radioStepFamily,
+  reachRingsFamily,
   tooltipFamily,
   actionRowFamily,
   inputAffixFamily,
@@ -1827,6 +1957,8 @@ export const COMPONENT_TOKEN_FAMILIES: readonly ComponentTokenFamily[] = [
   layerChartFamily,
   statCardFamily,
   keyValueListFamily,
+  cardFamily,
+  richTextFamily,
   adminUiFamily,
 ];
 

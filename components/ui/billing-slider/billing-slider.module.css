@@ -58,11 +58,17 @@
   position: absolute;
 }
 
-/* One hairline per whole unit along the top edge. */
-.ruler {
+/* The ruler (one hairline per whole unit along the top edge) and the colour
+   layers each clip to the rail, so they follow its rounded ends (VI-838). */
+.ruler,
+.paint {
   inset: 0;
   border-radius: var(--_rail-r);
   overflow: hidden;
+}
+
+.paint > * {
+  position: absolute;
 }
 
 .ruler i {

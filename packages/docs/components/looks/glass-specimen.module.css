@@ -32,6 +32,12 @@
   box-shadow: var(--glass-on-shadow, none);
 }
 
+/* Stepper's rail panel (VI-810): in Dark + Photo its glass is the glass layer's
+ * scrim, under the rail's white scrim ink. Light + Photo keeps the light glass. */
+:global(:where(.dark)) .scrim {
+  background: var(--glass-on-scrim, transparent);
+}
+
 /* The edge blends with the photo only because nothing between them forms a stacking context. */
 .edge {
   border: var(--stroke-width-thin, 1px) solid var(--glass-on-edge, transparent);

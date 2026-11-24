@@ -227,3 +227,60 @@ describe("RadioGroup card indicator", () => {
     }
   })
 })
+
+describe("RadioGroup stepped variant", () => {
+  function SteppedGroup(props: Partial<React.ComponentProps<typeof RadioGroup>>) {
+    return (
+      <RadioGroup variant="stepped" aria-label="Who can see" defaultValue="team" {...props}>
+        <RadioGroupItem value="you" icon={<svg />} title="Just You" />
+        <RadioGroupItem value="team" icon={<svg />} title="Your Team" />
+        <RadioGroupItem value="bookers" icon={<svg />} title="Verified Bookers" disabled />
+        <RadioGroupItem value="public" icon={<svg />} title="Public" />
+      </RadioGroup>
+    )
+  }
+
+  it("should_draw_a_tile_per_item_named_by_its_title_when_stepped", () => {
+    const { container } = render(<SteppedGroup />)
+    const root = container.querySelector('[data-slot="radio-group"]')
+    expect(root).toHaveAttribute("data-variant", "stepped")
+    expect(root).toHaveAttribute("data-size", "default")
+    expect(root?.className).toMatch(/rootStepped/)
+    expect(screen.getAllByRole("radio")).toHaveLength(4)
+    expect(screen.getByRole("radio", { name: "Your Team" })).toHaveAttribute("aria-checked", "true")
+    expect(container.querySelectorAll('[data-slot="radio-group-step-icon"][aria-hidden="true"]')).toHaveLength(4)
+  })
+
+  it("should_set_the_compact_size_when_given", () => {
+    const { container } = render(<SteppedGroup size="compact" />)
+    expect(container.querySelector('[data-slot="radio-group"]')).toHaveAttribute("data-size", "compact")
+  })
+
+  it("should_move_the_choice_with_arrow_keys_and_skip_the_disabled_tile_when_stepped", async () => {
+    const user = userEvent.setup()
+    render(<SteppedGroup />)
+    screen.getByRole("radio", { name: "Your Team" }).focus()
+    await user.keyboard("{ArrowRight>}")
+    await waitFor(() => expect(screen.getByRole("radio", { name: "Public" })).toHaveFocus())
+    await user.keyboard("{/ArrowRight}")
+    expect(screen.getByRole("radio", { name: "Public" })).toHaveAttribute("aria-checked", "true")
+    expect(screen.getByRole("radio", { name: "Verified Bookers" })).toHaveAttribute("aria-checked", "false")
+    await user.keyboard("{ArrowLeft>}")
+    await waitFor(() => expect(screen.getByRole("radio", { name: "Your Team" })).toHaveFocus())
+    await user.keyboard("{/ArrowLeft}")
+    expect(screen.getByRole("radio", { name: "Your Team" })).toHaveAttribute("aria-checked", "true")
+  })
+
+  it("should_not_select_a_disabled_tile_when_clicked", async () => {
+    const user = userEvent.setup()
+    const onValueChange = vi.fn()
+    render(<SteppedGroup onValueChange={onValueChange} />)
+    await user.click(screen.getByRole("radio", { name: "Verified Bookers" }))
+    expect(onValueChange).not.toHaveBeenCalled()
+  })
+
+  it("should_have_no_accessibility_violations_when_stepped", async () => {
+    const { container } = render(<SteppedGroup />)
+    await checkA11y(container)
+  })
+})

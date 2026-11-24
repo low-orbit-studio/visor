@@ -124,12 +124,11 @@ describe("SegmentedControl type and radius tokens (real browser)", () => {
     expect(e.inactiveColor).toBe("rgb(26, 26, 31)")
   })
 
-  it("--segmented-control-radius sets the track radius and leaves the segments", async (ctx) => {
+  it("--segmented-control-radius sets the track radius and the segments follow, concentric (VI-837)", async (ctx) => {
     if (!ready()) return ctx.skip()
-    const base = await run()
-    const e = await run("--segmented-control-radius: 5px;")
-    expect(e.track).toBe("5px")
-    expect(e.segment).toBe(base.segment)
+    const e = await run("--segmented-control-radius: 7px;")
+    expect(e.track).toBe("7px")
+    expect(e.segment).toBe("2px") // 7px - 4px padding - 1px border
   })
 
   it("--segmented-control-active-weight and -inactive-text bind the label type", async (ctx) => {
@@ -160,9 +159,9 @@ describe("SegmentedControl segment size tokens (real browser)", () => {
     return out
   }
 
-  it("unbound: md keeps its ToggleGroup segment box", async (ctx) => {
+  it("unbound: md keeps its ToggleGroup segment box, with concentric corners (VI-837: 8px - 4px - 1px)", async (ctx) => {
     if (!ready()) return ctx.skip()
-    expect(await run()).toEqual({ item: 36, pill: 36, root: 46, padX: "12px", padY: "0px", font: "14px", inset: "4px", itemRadius: "6px", pillRadius: "6px" })
+    expect(await run()).toEqual({ item: 36, pill: 36, root: 46, padX: "12px", padY: "0px", font: "14px", inset: "4px", itemRadius: "3px", pillRadius: "3px" })
   })
 
   it("item-height, track-padding, item-padding-x, font-size and the radii set the segment box and the pill follows", async (ctx) => {

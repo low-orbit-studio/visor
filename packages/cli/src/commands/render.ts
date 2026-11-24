@@ -50,7 +50,25 @@ interface Fixture {
    * action row renders a real Button rather than a bare `<button>`.
    */
   with?: string[]
+  /**
+   * JS source that evaluates to the element to render, in place of the export
+   * with `props`. For parts a hook drives (`ScrollHint` and `useKeepGoing`), so the
+   * fixture can mount the hook and its scroll box. `__mod` and `React` are in scope.
+   */
+  element?: string
 }
+
+/**
+ * VI-816: JS source that turns the glass switch on over a busy synthetic photograph
+ * (turbulence, one light half and one dark half), for a component's `glass` fixture.
+ * It runs as the fixture's props are read, so the component mounts under `data-glass="on"`.
+ */
+const GLASS_SCOPE = `(function () {
+  var svg = "<svg xmlns='http://www.w3.org/2000/svg' width='480' height='300'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.06' numOctaves='4' seed='7'/><feColorMatrix values='1.4 0 0 0 0.05 0 1.2 0 0 0.05 0 0 1.1 0 0.05 0 0 0 1 0'/></filter><rect width='480' height='300' fill='#d9c8a6'/><rect width='480' height='300' filter='url(#n)'/><rect x='0' y='0' width='240' height='300' fill='#f4efe4' opacity='0.55'/><rect x='240' y='0' width='240' height='300' fill='#0b0b14' opacity='0.6'/></svg>";
+  var scope = document.getElementById("theme-scope");
+  scope.setAttribute("data-glass", "on");
+  scope.style.background = "url('data:image/svg+xml;utf8," + encodeURIComponent(svg).replace(/'/g, "%27") + "') center / cover";
+})()`
 
 /** A 1em Phosphor "X" glyph, inline so icon fixtures need no icon package. */
 const ICON_X = `React.createElement("svg", { viewBox: "0 0 256 256", width: "1em", height: "1em", fill: "currentColor", "aria-hidden": true }, React.createElement("path", { d: "M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z" }))`
@@ -455,6 +473,23 @@ export const FIXTURES: Record<string, Record<string, Fixture>> = {
       props: `{ "aria-label": "Hours Website embeds bills", value: 12.5, savedValue: 8, min: 8, max: 16.75, hue: 339, size: "lg", marks: [{ value: 10, label: "High", hatchPast: true }], evidence: { value: 10.5, agent: 3, proposed: 1.25 }, minLabel: "Low", maxLabel: "Ceiling allows", formatValue: (h) => h + " h", onValueChange: () => {}, style: { width: 640 } }`,
     },
   },
+  // VI-814: a 320px scroll box of twelve fields, the hint as its last child, f7 still to fill.
+  // The hook's result is left on window.__keepGoing so a browser test can call go().
+  "scroll-hint": {
+    default: {
+      export: "ScrollHint",
+      props: `{}`,
+      element: `React.createElement(function KeepGoingBox() {
+        var box = React.useRef(null);
+        var kg = __mod.useKeepGoing(box, ["f7"]);
+        window.__keepGoing = kg;
+        var fields = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map(function (n) {
+          return React.createElement("label", { key: n, "data-field": "f" + n, style: { display: "grid", gap: 4 } }, "Field " + n, React.createElement("input", { "aria-label": "Field " + n, style: { height: 40, padding: "0 12px", border: "1px solid var(--border-default)", borderRadius: 8, background: "var(--surface-card)", color: "var(--text-primary)", font: "inherit" } }));
+        });
+        return React.createElement("div", { ref: box, "data-slot": "scroll-box", style: { width: 320, height: 320, overflowY: "auto", display: "grid", gap: 16, padding: 16, boxSizing: "border-box", "--scroll-hint-gap": "16px", background: "var(--surface-page)", color: "var(--text-primary)", border: "1px solid var(--border-default)", borderRadius: 12 } }, fields, React.createElement(__mod.ScrollHint, { boxRef: box, keepGoing: kg }));
+      })`,
+    },
+  },
   // VI-778: an editor and a preview pane, the editor at 280px.
   "resizable-split": {
     default: {
@@ -475,6 +510,12 @@ export const FIXTURES: Record<string, Record<string, Fixture>> = {
     empty: { export: "ProportionBar", props: `{ style: { width: 360 }, parts: [] }` },
   },
   // VI-767: a row meter past its heads-up tick, and a contract meter with zones and mark text.
+  // VI-840: four rings at reach 2 (three lit), the compact size at reach 0, and none lit.
+  "reach-rings": {
+    default: { export: "ReachRings", props: `(function () { var h = React.createElement; return { levels: 4, value: 2, icon: h("svg", { width: "1em", height: "1em", viewBox: "0 0 24 24", fill: "currentColor" }, [h("circle", { key: 1, cx: 12, cy: 8, r: 4 }), h("path", { key: 2, d: "M4 21a8 8 0 0 1 16 0Z" })]) }; })()` },
+    compact: { export: "ReachRings", props: `(function () { var h = React.createElement; return { levels: 4, value: 0, size: "compact", icon: h("svg", { width: "1em", height: "1em", viewBox: "0 0 24 24", fill: "currentColor" }, [h("circle", { key: 1, cx: 12, cy: 8, r: 4 }), h("path", { key: 2, d: "M4 21a8 8 0 0 1 16 0Z" })]) }; })()` },
+    full: { export: "ReachRings", props: `(function () { var h = React.createElement; return { levels: 4, value: 3, icon: h("svg", { width: "1em", height: "1em", viewBox: "0 0 24 24", fill: "currentColor" }, [h("circle", { key: 1, cx: 12, cy: 8, r: 4 }), h("path", { key: 2, d: "M4 21a8 8 0 0 1 16 0Z" })]) }; })()` },
+  },
   meter: {
     default: {
       export: "Meter",
@@ -483,6 +524,17 @@ export const FIXTURES: Record<string, Record<string, Fixture>> = {
     contract: {
       export: "Meter",
       props: `{ value: 118, max: 200, hue: 219, size: "contract", style: { width: 560 }, zones: [{ to: 190, variant: "hatched" }, { to: 166 }], marks: [{ value: 160, label: "160 h", caption: "heads-up", align: "end", threshold: true }, { value: 166, label: "166 h", caption: "the low", align: "start" }, { value: 200, label: "200 h", caption: "ceiling", align: "end", variant: "limit" }], children: [React.createElement("strong", { key: "s" }, "118 h"), " used of 200 h"] }`,
+    },
+  },
+  // VI-813: a paragraph with bold, italic, a link and en dashes, then a list with a mailto link.
+  "rich-text": {
+    default: {
+      export: "RichText",
+      props: `{ dashes: true, text: "Doors open at *6 PM* \u2013 bring _your_ ticket and read the [guide](https://example.com).\\nGates close at 11 PM.\\n\\n- Parking opens Fri \u2013 Sun\\n- Questions? Write to [the crew](mailto:help@example.com)" }`,
+    },
+    elements: {
+      export: "RichText",
+      props: `{ elements: true, text: "Plain elements for a host that styles them: *bold*, _italic_ and a [link](https://example.com).\\n\\n- one\\n- two" }`,
     },
   },
   // VI-713: labelled steps, one in every state, at both sizes.
@@ -538,6 +590,28 @@ export const FIXTURES: Record<string, Record<string, Fixture>> = {
     invalid: { export: "OTPInput", interactiveTarget: "input", props: `{ value: "428519", invalid: true, errorMessage: "That code didn't work. Check it and try again." }` },
     trailing: { export: "OTPInput", interactiveTarget: "input", props: `{ value: "428519", trailing: React.createElement("button", { type: "button" }, "Resend") }` },
   },
+  // VI-812: every state of the tile. Filled states use a gradient stand-in photo
+  // (the public repo ships no photos); file mode draws a plain document glyph.
+  "photo-drop": (() => {
+    const photo = `"data:image/svg+xml;utf8," + encodeURIComponent("<svg xmlns='http://www.w3.org/2000/svg' width='440' height='440'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='#fbbf24'/><stop offset='1' stop-color='#7c2d12'/></linearGradient></defs><rect width='440' height='440' fill='url(#g)'/><circle cx='220' cy='170' r='80' fill='#fde68a'/><rect x='90' y='280' width='260' height='200' rx='120' fill='#fde68a'/></svg>")`
+    const icon = `React.createElement("svg", { viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 1.5 }, React.createElement("path", { d: "M6 3h8l4 4v14H6z M14 3v4h4" }))`
+    const file = (rest: string) => `{ id: "doc", src: "insurance.pdf", file: { icon: ${icon}, accept: "application/pdf", onFile: function () {}, onClear: function () {} }${rest} }`
+    const tile = (rest: string) => ({ export: "PhotoDrop", interactiveTarget: "input", props: `{ id: "photo", alt: "Your photo"${rest} }` })
+    return {
+      default: tile(`, src: ""`),
+      filled: tile(`, src: ${photo}`),
+      uploading: tile(`, src: ${photo}, progress: 0.4`),
+      "uploading-indeterminate": tile(`, src: ${photo}, progress: "indeterminate"`),
+      failed: tile(`, src: ${photo}, failed: true, onRetry: function () {}`),
+      invalid: tile(`, src: "", invalid: true`),
+      locked: tile(`, src: ${photo}, locked: true, lockedReason: "Check-in has started."`),
+      readonly: tile(`, src: ${photo}, readOnly: true`),
+      file: { export: "PhotoDrop", interactiveTarget: "input", props: `{ id: "doc", src: "", file: { icon: ${icon}, onFile: function () {}, onClear: function () {} } }` },
+      "file-filled": { export: "PhotoDrop", interactiveTarget: "input", props: file("") },
+      "file-uploading": { export: "PhotoDrop", interactiveTarget: "input", props: file(`, progress: 0.65`) },
+      small: tile(`, src: ${photo}, size: 96`),
+    }
+  })(),
   // VI-793: ten gradient stand-in photos, one chosen, loaded, in a 600px frame
   // (Backstage's menu width) so the five-column grid renders at its real size.
   "photo-picker": {
@@ -558,6 +632,9 @@ export const FIXTURES: Record<string, Record<string, Fixture>> = {
         };
       })()`,
     },
+    // VI-816: the same grid under the glass switch, over a photograph. The grid draws no
+    // surface of its own, so only the rings show against the photo.
+    glass: { export: "PhotoPicker", interactiveTarget: "button", props: `(${GLASS_SCOPE}, { "aria-label": "Pick Your Background", value: "p1", play: false, style: { width: 600 }, photos: [0, 1, 2, 3, 4].map(function (i) { return { key: "p" + i, thumb: "data:image/svg+xml;utf8," + encodeURIComponent("<svg xmlns='http://www.w3.org/2000/svg' width='480' height='360'><rect width='480' height='360' fill='#" + ["7c2d12", "1e3a8a", "14532d", "4c1d95", "4b5563"][i] + "'/></svg>") }; }) })` },
   },
   // VI-672: `default` is the grid on its own ground; `on-image` draws it over a busy
   // synthetic photograph (turbulence, one light half and one dark half) so each
@@ -584,6 +661,8 @@ export const FIXTURES: Record<string, Record<string, Fixture>> = {
   "theme-toggle": {
     default: { export: "ThemeToggle", interactiveTarget: "button", props: `{ value: "light" }` },
     dark: { export: "ThemeToggle", interactiveTarget: "button", props: `{ value: "dark" }` },
+    // VI-816: under the glass switch over a photograph, the toggle takes the glass layer's control values.
+    glass: { export: "ThemeToggle", interactiveTarget: "button", props: `(${GLASS_SCOPE}, { value: "dark" })` },
   },
   // VI-624: `default` is the closed field; the popover fixtures render open so the
   // two-column (24-hour) and three-column (12-hour) anatomy can be inspected.
@@ -708,6 +787,30 @@ export const FIXTURES: Record<string, Record<string, Fixture>> = {
               disabled: i === 2, "aria-describedby": i === 2 ? "radio-reason" : undefined,
             });
           }).concat([h("p", { key: "r", id: "radio-reason", style: { margin: 0, fontSize: 12 } }, "Public needs a verified booking.")]),
+        };
+      })()`,
+    },
+    // VI-840: four ordered levels as tiles, the third disabled.
+    stepped: {
+      export: "RadioGroup",
+      interactiveTarget: "[role=\"radio\"]",
+      props: `(function () {
+        var h = React.createElement;
+        var icon = function (d) { return h("svg", { width: "1em", height: "1em", viewBox: "0 0 24 24", fill: "currentColor" }, h("path", { d: d })); };
+        var levels = [
+          ["you", "Just You", "M12 4a4 4 0 1 1 0 8 4 4 0 0 1 0-8ZM4 21a8 8 0 0 1 16 0Z"],
+          ["team", "Your Team", "M8 6a3.5 3.5 0 1 1 0 7 3.5 3.5 0 0 1 0-7Zm8 0a3.5 3.5 0 1 1 0 7 3.5 3.5 0 0 1 0-7ZM1 20a7 7 0 0 1 14 0Zm8 0a7 7 0 0 1 14 0Z"],
+          ["bookers", "Verified Bookers", "M12 2l3 3h4v4l3 3-3 3v4h-4l-3 3-3-3H5v-4l-3-3 3-3V5h4Z"],
+          ["public", "Public", "M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm0 3a7 7 0 0 1 0 14 7 7 0 0 1 0-14Z"],
+        ];
+        return {
+          variant: "stepped",
+          "aria-label": "Who can see",
+          defaultValue: "team",
+          style: { width: 400 },
+          children: levels.map(function (l, i) {
+            return h(__mod.RadioGroupItem, { key: l[0], value: l[0], icon: icon(l[2]), title: l[1], disabled: i === 2 });
+          }),
         };
       })()`,
     },
@@ -1212,7 +1315,7 @@ function __resolveComponent(mod, preferred) {
 var __Component = __resolveComponent(__mod, ${JSON.stringify(exportName)});
 var __props = ${fixture.props};
 createRoot(document.getElementById("root")).render(
-  React.createElement(__Component, __props)
+  ${fixture.element ?? "React.createElement(__Component, __props)"}
 );`
 }
 

@@ -321,7 +321,7 @@ export const ui: Registry = [
     type: "registry:ui",
     description:
       "A compound card component with header, title, description, content, and footer sub-components.",
-    dependencies: ["@loworbitstudio/visor-core"],
+    dependencies: ["@loworbitstudio/visor-core", "@phosphor-icons/react"],
     registryDependencies: ["utils"],
     files: [
       {
@@ -662,6 +662,24 @@ export const ui: Registry = [
       },
       {
         path: "components/ui/proportion-bar/proportion-bar.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
+    name: "reach-rings",
+    type: "registry:ui",
+    description:
+      "Concentric rings, the innermost a filled core holding an icon, lit from the centre out to show how far something reaches. Decorative (aria-hidden), in a 148px and a 112px (compact) size.",
+    dependencies: ["@loworbitstudio/visor-core"],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/reach-rings/reach-rings.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/reach-rings/reach-rings.module.css",
         type: "registry:ui",
       },
     ],
@@ -1700,6 +1718,28 @@ export const ui: Registry = [
     ],
   },
   {
+    name: "rich-text",
+    type: "registry:ui",
+    description:
+      "Safe, tiny markup for text that comes from a database: *bold*, _italic_, [links](https://…), blank-line paragraphs and \"- \" lists. Only http, https and mailto links render; raw HTML shows as plain text. Exports RichText and dashes.",
+    dependencies: ["@loworbitstudio/visor-core"],
+    registryDependencies: [],
+    files: [
+      {
+        path: "components/ui/rich-text/rich-text.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/rich-text/dashes.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/rich-text/rich-text.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
     name: "offline-banner",
     type: "registry:ui",
     description:
@@ -1782,6 +1822,25 @@ export const ui: Registry = [
       },
       {
         path: "components/ui/otp-input/otp-input.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
+    name: "photo-drop",
+    type: "registry:ui",
+    category: "form",
+    description:
+      "A squircle drop tile for one photo or file: a marching-ants edge, an upload ring along the edge, failed with Try Again, locked and read-only. The real file input covers it, so click, drop and keyboard go through the browser's picker.",
+    dependencies: ["@phosphor-icons/react", "@loworbitstudio/visor-core"],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/photo-drop/photo-drop.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/photo-drop/photo-drop.module.css",
         type: "registry:ui",
       },
     ],
@@ -2702,6 +2761,24 @@ export const ui: Registry = [
     ],
   },
   {
+    name: "animated-title",
+    type: "registry:ui",
+    description:
+      "A title drawn word by word in CSS: each word rises, unblurs or settles its weight in turn, and screen readers read the whole title once.",
+    dependencies: ["@loworbitstudio/visor-core"],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/animated-title/animated-title.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/animated-title/animated-title.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
     name: "theme-toggle",
     type: "registry:ui",
     category: "general",
@@ -2814,6 +2891,25 @@ export const ui: Registry = [
       },
       {
         path: "components/ui/resizable-split/resizable-split.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
+    name: "scroll-hint",
+    type: "registry:ui",
+    category: "form",
+    description:
+      "A \"More Below\" pill pinned to a scroll box's bottom edge while there is more to scroll, and a useKeepGoing hook that scrolls to the next unanswered field and focuses it. A solid chip, or glass over a photo.",
+    dependencies: ["@phosphor-icons/react", "@loworbitstudio/visor-core"],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/scroll-hint/scroll-hint.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/scroll-hint/scroll-hint.module.css",
         type: "registry:ui",
       },
     ],

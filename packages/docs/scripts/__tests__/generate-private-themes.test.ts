@@ -51,6 +51,16 @@ function runGenerator(privatePath?: string) {
 }
 
 describe("generate-private-themes.mjs", () => {
+  // The generator overwrites the real manifest and CSS. Put back what was there, or a running docs
+  // server keeps serving the fixture themes (VI-804: the photo looks lost their photos to a 404).
+  let saved: (readonly [string, string | null])[] = [];
+  beforeAll(() => {
+    saved = [CSS_PATH, TS_PATH].map((p) => [p, existsSync(p) ? readFileSync(p, "utf-8") : null] as const);
+  });
+  afterAll(() => {
+    for (const [p, s] of saved) if (s === null) rmSync(p, { force: true }); else writeFileSync(p, s, "utf-8");
+  });
+
   describe("local checkout resolves (Low Orbit dev/CI path — VI-474)", () => {
     let fixtureRoot: string;
 

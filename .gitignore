@@ -133,3 +133,6 @@ packages/docs/public/themes/*.visor.yaml
 # VI-808: the popover five-look frames are written on every run (and show a private
 # theme's real photo where the private themes are installed), so they are never committed.
 packages/docs/e2e/__snapshots__/popover-glass.spec.ts/
+
+# VI-813 review photos are private Honcho client photos (ruling VI-829 q-4)
+packages/docs/public/vi-813-photos/

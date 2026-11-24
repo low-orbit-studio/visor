@@ -1,0 +1,69 @@
+/* ScrollHint: the "More Below" pill (VI-814). An overlay, not a fade: a mask on the
+   scroll box would make it a backdrop root, and glass fields inside would stop
+   blurring the photo behind it.
+
+   Plain looks get a solid chip. Over a photo, inside the glass layer's
+   data-glass="on" switch (VI-795), the pill is the page colour at 70% with the
+   glass layer's control blur and no edge. */
+
+/* A zero-height row pinned to the scroll box's bottom; the negative margin undoes the box's gap. */
+.root {
+  position: sticky;
+  bottom: 0;
+  grid-column: 1 / -1;
+  height: 0;
+  margin-top: calc(-1 * var(--scroll-hint-gap, 0px));
+  pointer-events: none;
+}
+
+.pill {
+  /* Valid only under the glass switch, where --glass-on-clear is transparent: the
+     100%/0% mix returns the glass fill. Off the switch it is invalid and the solid chip shows. */
+  --_glass-bg: color-mix(
+    in srgb,
+    var(--scroll-hint-glass-bg, color-mix(in srgb, var(--surface-page, #ffffff) 70%, transparent)) 100%,
+    var(--glass-on-clear)
+  );
+  position: absolute;
+  left: 50%;
+  bottom: var(--spacing-1, 0.25rem);
+  display: inline-flex;
+  align-items: center;
+  gap: calc(var(--spacing-1, 0.25rem) * 1.5);
+  height: var(--spacing-8, 2rem);
+  /* 14px: spacing-3 plus half a step, the kit pill's side inset. */
+  padding: 0 calc(var(--spacing-3, 0.75rem) + var(--spacing-1, 0.25rem) / 2);
+  border: 0;
+  /* The chip's edge as an inset ring, so it takes no room and the glass pill sizes the same. */
+  box-shadow: inset 0 0 0 var(--stroke-width-thin, 1px)
+    var(--glass-on-clear, var(--scroll-hint-border, var(--border-default, #e5e7eb)));
+  border-radius: var(--radius-full, 9999px);
+  background: var(--_glass-bg, var(--scroll-hint-bg, var(--surface-card, #ffffff)));
+  /* -webkit- first: Lightning CSS keeps only the last of the pair (VI-788). */
+  -webkit-backdrop-filter: var(--glass-on-control-blur, none);
+  backdrop-filter: var(--glass-on-control-blur, none);
+  color: var(--scroll-hint-color, var(--text-secondary, #4b5563));
+  /* 13px at 560: the kit pill's type, kept for zero-pixel parity (no token sits between xs and sm). */
+  font-size: 13px;
+  font-weight: 560;
+  white-space: nowrap;
+  cursor: pointer;
+  opacity: 0;
+  /* 6px rise-in, the kit's. */
+  transform: translate(-50%, 6px);
+  transition:
+    opacity var(--motion-duration-500, 500ms) var(--motion-easing-enter, cubic-bezier(0, 0, 0.2, 1)),
+    transform var(--motion-duration-500, 500ms) var(--motion-easing-enter, cubic-bezier(0, 0, 0.2, 1));
+}
+
+.root[data-show] .pill {
+  opacity: 1;
+  transform: translate(-50%, 0);
+  pointer-events: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pill {
+    transition: none;
+  }
+}

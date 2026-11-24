@@ -623,6 +623,13 @@
             "$ref": "#/$defs/componentTokenBinding"
           }
         },
+        "scroll-hint": {
+          "type": "object",
+          "description": "ScrollHint — the \"More Below\" pill pinned to a scroll box's bottom edge: the solid chip's fill, edge and ink, the fill it takes over a photo, and the gap it undoes. Keys: bg, border, color, glass-bg, gap.",
+          "additionalProperties": {
+            "$ref": "#/$defs/componentTokenBinding"
+          }
+        },
         "dialog": {
           "type": "object",
           "description": "Dialog's panel and page scrim — width, corners, fill, inset, shadow, a backdrop filter for glass, and the scrim's colour and blur. ConfirmDialog shares them. Keys: max-width, radius, bg, padding, shadow, backdrop-filter, overlay-bg, overlay-blur.",
@@ -639,7 +646,7 @@
         },
         "glass": {
           "type": "object",
-          "description": "The glass layer over a photo: surface fill, blur, edge, lift, shadow and on-photo ink, plus the glass values controls read. Draws only inside `data-glass=\"on\"`; elsewhere components keep their solid surface and border. Keys: fill, blur, edge, lift, shadow, ink, control-fill, control-hover-fill, control-ring, control-ink, control-blur.",
+          "description": "The glass layer over a photo: surface fill, blur, edge, lift, shadow, on-photo ink, the scrim under white labels with its ink and shadow, plus the glass values controls read. Draws only inside `data-glass=\"on\"`; elsewhere components keep their solid surface and border. Keys: fill, blur, edge, lift, shadow, ink, scrim, scrim-ink, ink-shadow, control-fill, control-hover-fill, control-ring, control-ink, control-blur.",
           "additionalProperties": {
             "$ref": "#/$defs/componentTokenBinding"
           }
@@ -665,6 +672,13 @@
             "$ref": "#/$defs/componentTokenBinding"
           }
         },
+        "stepper": {
+          "type": "object",
+          "description": "Stepper's `rail` variant — row gap and inset, the space between mark and label, label size, weight and tracking, and the dot mark's size and current width. Keys: rail-gap, rail-padding, rail-mark-gap, rail-font-size, rail-font-weight, rail-letter-spacing, rail-mark-size, rail-mark-active-width.",
+          "additionalProperties": {
+            "$ref": "#/$defs/componentTokenBinding"
+          }
+        },
         "checkbox": {
           "type": "object",
           "description": "Control sizing — the D3 Tier-2 `--checkbox-size` / `-radius` / `-bg` / `-border` set, promoted from the admin-ui audit to a bindable contract. Keys: size, radius, bg, border, edgeless-bg, bg-checked, border-checked.",
@@ -686,6 +700,13 @@
             "$ref": "#/$defs/componentTokenBinding"
           }
         },
+        "card": {
+          "type": "object",
+          "description": "Card \u2014 the corner radius, the glass variant's fill, blur, shadow and layers, and the editable state's hover fill and shadow and its pen's size and inset. Keys: radius, glass-bg, glass-filter, glass-shadow, glass-display, edge-display, editable-hover-bg, editable-hover-shadow, pen-size, pen-inset.",
+          "additionalProperties": {
+            "$ref": "#/$defs/componentTokenBinding"
+          }
+        },
         "stat-card": {
           "type": "object",
           "description": "StatCard \u2014 the card's edge, corners, elevation and inset, the rule above the footer, and the label, value and footer type. Keys: border, radius, shadow, padding, footer-border, footer-font-size, footer-font-weight, footer-line-height, footer-color, value-font-family, value-font-size, value-font-weight, value-line-height, value-letter-spacing, label-font-size, label-font-weight, label-line-height, label-letter-spacing, label-color.",
@@ -696,6 +717,13 @@
         "key-value-list": {
           "type": "object",
           "description": "KeyValueList \u2014 label and value type and ink, the horizontal columns, item gap and alignment, row spacing, padding and divider, and the `surface=\"panel\"` fill, edge colour, corners and inset. Under `data-glass=\"on\"` the panel reads the glass layer instead. Keys: label-font-size, label-font-weight, label-line-height, label-letter-spacing, label-text-transform, label-color, label-padding-top, value-font-size, value-font-weight, value-line-height, value-color, value-text-wrap, value-overflow-wrap, value-font-variant-numeric, columns, item-gap, item-align, item-padding, row-gap, divider, panel-bg, panel-border-color, panel-radius, panel-padding.",
+          "additionalProperties": {
+            "$ref": "#/$defs/componentTokenBinding"
+          }
+        },
+        "rich-text": {
+          "type": "object",
+          "description": "RichText link underline colour. Link text inherits the surrounding ink. Keys: link-underline.",
           "additionalProperties": {
             "$ref": "#/$defs/componentTokenBinding"
           }
@@ -801,6 +829,20 @@
         "radio-card": {
           "type": "object",
           "description": "RadioGroup card \u2014 its surface, edge, radius, icon and mark, plus the ring and dot of `indicator=\"dot\"`. Keys: bg, border, radius, hover-bg, selected-bg, selected-border, icon-size, mark-bg, mark-text, ring, ring-selected, dot.",
+          "additionalProperties": {
+            "$ref": "#/$defs/componentTokenBinding"
+          }
+        },
+        "radio-step": {
+          "type": "object",
+          "description": "RadioGroup `variant=\"stepped\"` \u2014 the key colour, the well and its radius, the resting ink, the icon size, and the chosen tile's fill and hairline. Keys: key, well, well-radius, ink, icon-size, selected-bg, selected-border.",
+          "additionalProperties": {
+            "$ref": "#/$defs/componentTokenBinding"
+          }
+        },
+        "reach-rings": {
+          "type": "object",
+          "description": "ReachRings \u2014 the key colour of lit rings and the core, the unlit ring stroke, and the core icon lit and unlit. Keys: key, ring, glyph, core-ink.",
           "additionalProperties": {
             "$ref": "#/$defs/componentTokenBinding"
           }

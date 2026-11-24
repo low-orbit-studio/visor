@@ -1,0 +1,110 @@
+---
+title: Scroll Hint
+description: A "More Below" pill pinned to a scroll box's bottom edge while there is more to scroll, with a Keep Going hook that jumps to the next unanswered field.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { ScrollHintDemo } from '@/components/ui/scroll-hint-demo';
+import { FiveLooks } from '@/components/looks/five-looks';
+import { PRIVATE_THEMES } from '@/lib/private-themes';
+
+export const HONCHO_BACKSTAGE = PRIVATE_THEMES.some((t) => t.slug === 'honcho-backstage');
+
+## Default
+
+A long form in a fixed-height box. The pill shows while there is more to scroll and hides at the end. The button
+reads Keep Going while an empty field sits below the fold, and jumps to it. Tapping the pill does the same, or pages
+the box down when every field below is filled.
+
+<ComponentPreview
+  title="Default"
+  code={"import { useRef } from 'react';\nimport { ScrollHint, useKeepGoing } from '@/components/ui/scroll-hint/scroll-hint';\n\nconst box = useRef<HTMLDivElement>(null);\nconst keepGoing = useKeepGoing(box, unanswered);\n\n<div ref={box} style={{ display: 'grid', gap: 16, height: 240, overflowY: 'auto', '--scroll-hint-gap': '16px' }}>\n  {fields}\n  <ScrollHint boxRef={box} keepGoing={keepGoing} />\n</div>\n<Button onClick={() => keepGoing.go() || submit()}>\n  {keepGoing.below ? 'Keep Going' : 'Continue'}\n</Button>"}
+>
+  <ScrollHintDemo />
+</ComponentPreview>
+
+## Installation
+
+```bash
+npx visor add scroll-hint
+```
+
+This copies `scroll-hint.tsx` (the component and the `useKeepGoing` hook) and `scroll-hint.module.css` into your project.
+
+## Usage
+
+- Render `ScrollHint` as the scroll box's **last child**. It is a zero-height sticky row, so it pins to the box's
+  bottom edge and takes no room.
+- Mark each field with `data-field="<id>"` (or pass another attribute as `useKeepGoing`'s third argument), and pass
+  the ids still to fill or fix, in order, as `pending`.
+- When the box lays its children out with a row gap, set `--scroll-hint-gap` to that gap. The hint row's negative top
+  margin undoes it, so the hint adds no space. FormDeck's slide uses 40px and the edit sheet 20px.
+- The pill is an overlay, not a fade. A mask on the scroll box would make it a backdrop root, and glass fields inside
+  would stop blurring the photo behind them.
+
+## useKeepGoing
+
+```ts
+const keepGoing = useKeepGoing(boxRef, pending, attr = 'data-field', watch?)
+// → { more, below, go }
+```
+
+| Returns | Meaning |
+|---|---|
+| `more` | There is more to read below the box's bottom edge. `ScrollHint` shows while it is true. |
+| `below` | A pending field sits below the fold, so the main button can read "Keep Going". |
+| `go()` | Scrolls the next pending field below the fold to a fifth of the way down the box and focuses its first control. Returns `false` when there is none. |
+
+`go()` focuses only on a fine pointer (mouse and keyboard). On touch it scrolls without focusing, because focusing a
+field throws up the keyboard. Under `prefers-reduced-motion: reduce` it jumps instead of smoothing. Pass `watch` when
+the box mounts later or swaps its fields (a dialog), so the hook re-attaches.
+
+## API Reference
+
+<PropsTable component="scroll-hint" />
+
+## Theming
+
+| Token | Binds | Falls back to |
+|---|---|---|
+| `--scroll-hint-bg` | The chip's fill, glass off. | `var(--surface-card)` |
+| `--scroll-hint-border` | The chip's edge, glass off (an inset ring). | `var(--border-default)` |
+| `--scroll-hint-color` | The pill's words and caret. | `var(--text-secondary)` |
+| `--scroll-hint-glass-bg` | The pill's fill over a photo. | `color-mix(in srgb, var(--surface-page) 70%, transparent)` |
+| `--scroll-hint-gap` | The scroll box's row gap, which the hint undoes. | `0px` |
+
+The pill shows and hides in CSS: opacity and a 6px rise over `--motion-duration-500` on `--motion-easing-enter`, and
+no transition under reduced motion. Visor gains no animation dependency.
+
+### Glass
+
+Glass is off by default. In plain looks the pill is a solid chip: the card fill, a hairline ring and no
+`backdrop-filter`. Inside `data-glass="on"` (see [Glass](/docs/themes/glass)) it turns to the page colour at 70%,
+blurred with the glass layer's control blur, with no ring.
+
+### In Five Looks
+
+ScrollHint on a long form in each look, on the theme picked in the docs. The Photo looks turn glass on over a photo,
+with the form on a glass form panel.
+
+<FiveLooks specimen="scroll-hint" height={420} />
+
+{HONCHO_BACKSTAGE && (
+  <section data-slot="honcho-backstage-looks" aria-label="Honcho Backstage">
+    <h3>Honcho Backstage</h3>
+    <p>
+      The Honcho kit's "More Below" pill from the theme alone: a solid chip in Today (the <code>honcho</code> theme),
+      Dark and Light, and the paper colour at 70% with the glass blur in Dark + Photo and Light + Photo, where the form
+      sits on a glass form panel.
+    </p>
+    <FiveLooks specimen="scroll-hint" theme="honcho-backstage" todayTheme="honcho" height={420} />
+  </section>
+)}
+
+## Accessibility
+
+- The pill is `aria-hidden` and out of the tab order (`tabIndex={-1}`). Keyboard and screen-reader users reach the
+  next field through the form's own Keep Going button, which calls the same `go()`
+- `go()` moves focus to the field's first control on a fine pointer, so a keyboard user lands in the field
+- Under `prefers-reduced-motion: reduce` the pill appears without a transition and `go()` jumps without smoothing

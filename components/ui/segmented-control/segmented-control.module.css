@@ -30,71 +30,69 @@
 
 /* Track corner radius and padding: ToggleGroup's per-size values unless a theme
    binds --segmented-control-radius (a theme that wants 8px, say) or
-   --segmented-control-track-padding. Each size carries its own fallback, so an
-   unbound theme renders exactly as before. */
+   --segmented-control-track-padding. ToggleGroup draws them and derives the
+   concentric inner radius from them (VI-837), so the segments and the pill follow. */
 .root[data-variant="outline"][data-size="xs"] {
-  border-radius: var(--segmented-control-radius, var(--radius-md, 0.375rem));
-  padding: var(--segmented-control-track-padding, calc(var(--spacing-1, 0.25rem) / 2));
+  --_track-radius: var(--segmented-control-radius, var(--radius-md, 0.375rem));
+  --_track-padding: var(--segmented-control-track-padding, calc(var(--spacing-1, 0.25rem) / 2));
 }
 
 .root[data-variant="outline"][data-size="sm"],
 .root[data-variant="outline"][data-size="md"] {
-  border-radius: var(--segmented-control-radius, var(--radius-lg, 0.5rem));
-  padding: var(--segmented-control-track-padding, var(--spacing-1, 0.25rem));
+  --_track-radius: var(--segmented-control-radius, var(--radius-lg, 0.5rem));
+  --_track-padding: var(--segmented-control-track-padding, var(--spacing-1, 0.25rem));
 }
 
 .root[data-variant="outline"][data-size="lg"] {
-  border-radius: var(--segmented-control-radius, var(--radius-xl, 0.75rem));
-  padding: var(--segmented-control-track-padding, var(--spacing-1, 0.25rem));
+  --_track-radius: var(--segmented-control-radius, var(--radius-xl, 0.75rem));
+  --_track-padding: var(--segmented-control-track-padding, var(--spacing-1, 0.25rem));
 }
 
 /* Segment size (VI-785): item height, horizontal padding and label size, each
    falling back to ToggleGroup's value for the size, so an unbound theme renders
    exactly as before. Height goes through --label-box-height, which also feeds
-   the label's baseline correction. The item radius shapes the hover fill and
-   focus ring; the indicator radius shapes the sliding pill. */
+   the label's baseline correction. */
 .root[data-size="xs"] [data-slot="toggle-group-item"] {
   --label-box-height: var(--segmented-control-item-height, 1.5rem);
   padding-inline: var(--segmented-control-item-padding-x, var(--toggle-group-xs-padding-x, var(--spacing-2, 0.5rem)));
   font-size: var(--segmented-control-font-size, var(--toggle-group-xs-font-size, var(--font-size-xs, 0.75rem)));
-  border-radius: var(--segmented-control-item-radius, var(--toggle-group-xs-item-radius, var(--radius-sm, 0.25rem)));
 }
 
 .root[data-size="sm"] [data-slot="toggle-group-item"] {
   --label-box-height: var(--segmented-control-item-height, 1.75rem);
   padding-inline: var(--segmented-control-item-padding-x, var(--spacing-2, 0.5rem));
   font-size: var(--segmented-control-font-size, var(--font-size-xs, 0.75rem));
-  border-radius: var(--segmented-control-item-radius, var(--radius-md, 0.375rem));
 }
 
 .root[data-size="md"] [data-slot="toggle-group-item"] {
   --label-box-height: var(--segmented-control-item-height, 2.25rem);
   padding-inline: var(--segmented-control-item-padding-x, var(--spacing-3, 0.75rem));
   font-size: var(--segmented-control-font-size, var(--font-size-sm, 0.875rem));
-  border-radius: var(--segmented-control-item-radius, var(--radius-md, 0.375rem));
 }
 
 .root[data-size="lg"] [data-slot="toggle-group-item"] {
   --label-box-height: var(--segmented-control-item-height, 2.75rem);
   padding-inline: var(--segmented-control-item-padding-x, var(--spacing-4, 1rem));
   font-size: var(--segmented-control-font-size, var(--font-size-base, 1rem));
-  border-radius: var(--segmented-control-item-radius, var(--radius-lg, 0.5rem));
 }
 
-.root[data-size="xs"] > [aria-hidden="true"] {
-  border-radius: var(--segmented-control-indicator-radius, var(--toggle-group-xs-item-radius, var(--radius-sm, 0.25rem)));
+/* Corners (VI-837): concentric with the track by default, ToggleGroup's derived
+   inner radius. The item radius shapes the hover fill and focus ring, the
+   indicator radius the sliding pill; bound, each is an explicit override. */
+.root[data-variant="outline"] [data-slot="toggle-group-item"] {
+  border-radius: var(--segmented-control-item-radius, var(--_inner-radius));
 }
 
-.root[data-size="sm"] > [aria-hidden="true"] {
-  border-radius: var(--segmented-control-indicator-radius, var(--radius-md, 0.375rem));
+.root[data-variant="outline"][data-size="xs"] [data-slot="toggle-group-item"] {
+  border-radius: var(--segmented-control-item-radius, var(--toggle-group-xs-item-radius, var(--_inner-radius)));
 }
 
-.root[data-size="md"] > [aria-hidden="true"] {
-  border-radius: var(--segmented-control-indicator-radius, var(--radius-md, 0.375rem));
+.root[data-variant="outline"] > [aria-hidden="true"] {
+  border-radius: var(--segmented-control-indicator-radius, var(--_inner-radius));
 }
 
-.root[data-size="lg"] > [aria-hidden="true"] {
-  border-radius: var(--segmented-control-indicator-radius, var(--radius-lg, 0.5rem));
+.root[data-variant="outline"][data-size="xs"] > [aria-hidden="true"] {
+  border-radius: var(--segmented-control-indicator-radius, var(--toggle-group-xs-item-radius, var(--_inner-radius)));
 }
 
 /* The sliding pill. A theme can set a lifted dark fill (and the ink on it).
@@ -189,4 +187,82 @@
 
 .reserveInactive {
   font-weight: var(--font-weight-medium, 500);
+}
+
+/* Squircle fallback (VI-839). ToggleGroup draws the track, pill and segments
+   as the theme's squircle where the browser has no corner-shape (Safari); this
+   feeds it the segment height and the indicator and item radius overrides, so
+   each --squircle-r stays its radius clamped to half its height. Chromium and
+   round themes skip this. */
+@supports not (corner-shape: squircle) {
+  @container style(--corner-shape: squircle) {
+    .root[data-variant="outline"][data-size="xs"] { --_sq-track-h: calc(var(--segmented-control-item-height, 1.5rem) + 2 * var(--_track-padding) + 2px); }
+    .root[data-variant="outline"][data-size="sm"] { --_sq-track-h: calc(var(--segmented-control-item-height, 1.75rem) + 2 * var(--_track-padding) + 2px); }
+    .root[data-variant="outline"][data-size="md"] { --_sq-track-h: calc(var(--segmented-control-item-height, 2.25rem) + 2 * var(--_track-padding) + 2px); }
+    .root[data-variant="outline"][data-size="lg"] { --_sq-track-h: calc(var(--segmented-control-item-height, 2.75rem) + 2 * var(--_track-padding) + 2px); }
+
+    /* The track's edge is the inset outline; the pill's an inset ring. */
+    .root[data-variant="outline"] {
+      --squircle-edge: var(--control-edge-width, 1px);
+    }
+
+    .root[data-variant="outline"][data-size] > [aria-hidden="true"] {
+      --squircle-edge: var(--control-state-edge-width, 1px);
+    }
+
+    .root[data-variant="outline"] > [aria-hidden="true"] {
+      --squircle-r: min(var(--segmented-control-indicator-radius, var(--_inner-radius)), calc(var(--_sq-track-h) / 2 - var(--_track-padding) - 1px));
+    }
+
+    .root[data-variant="outline"][data-size="xs"] > [aria-hidden="true"] {
+      --squircle-r: min(var(--segmented-control-indicator-radius, var(--toggle-group-xs-item-radius, var(--_inner-radius))), calc(var(--_sq-track-h) / 2 - var(--_track-padding) - 1px));
+    }
+
+    .root[data-variant="outline"] [data-slot="toggle-group-item"] {
+      --squircle-r: min(var(--segmented-control-item-radius, var(--_inner-radius)), calc(var(--label-box-height) / 2));
+    }
+
+    .root[data-variant="outline"][data-size="xs"] [data-slot="toggle-group-item"] {
+      --squircle-r: min(var(--segmented-control-item-radius, var(--toggle-group-xs-item-radius, var(--_inner-radius))), calc(var(--label-box-height) / 2));
+    }
+
+    .root[data-variant="outline"][data-size] > [aria-hidden="true"],
+    .root[data-variant="outline"][data-size] [data-slot="toggle-group-item"] {
+      border-radius: var(--squircle-radius, var(--squircle-r));
+      clip-path: var(--squircle-clip, none);
+    }
+
+    /* The track's edge and the pill's ring are redrawn on ::before as squircle
+       rings; the element's own edge goes transparent. */
+    .root[data-variant="outline"] {
+      outline-color: var(--squircle-edge-off, var(--control-edge-color, var(--border-default, #e5e7eb)));
+    }
+
+    /* An outline in the track's own outline style, not a fill, so anything that
+       turns the track's edge off (an edge style of none, Radix's inline
+       outline: none on the focus group) turns the ring off too. */
+    .root[data-variant="outline"]::before {
+      background-color: transparent;
+      border-radius: var(--squircle-ring-radius, var(--squircle-r));
+      outline-width: var(--squircle-ring-paint, var(--control-edge-width, 1px));
+      outline-style: inherit;
+      outline-color: var(--control-edge-color, var(--border-default, #e5e7eb));
+      outline-offset: calc(-1 * var(--squircle-ring-paint, var(--control-edge-width, 1px)));
+    }
+
+    .root[data-variant="outline"][data-size] > [aria-hidden="true"] {
+      box-shadow: inset 0 0 0 var(--control-state-edge-width, 1px) var(--squircle-edge-off, var(--segmented-control-indicator-edge, var(--text-primary, #111827)));
+    }
+
+    .root[data-variant="outline"][data-size] > [aria-hidden="true"]::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      --squircle-r: inherit;
+      --squircle-edge: inherit;
+      background-color: var(--segmented-control-indicator-edge, var(--text-primary, #111827));
+      clip-path: var(--squircle-ring, inset(50%));
+      pointer-events: none;
+    }
+  }
 }

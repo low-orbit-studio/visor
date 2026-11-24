@@ -320,3 +320,22 @@
     animation: fadeOut var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
   }
 }
+
+/* Squircle fallback (VI-839). Where the browser has no corner-shape (Safari)
+   and the theme draws squircles, the centred panel draws the theme's squircle
+   from --squircle-radius and --squircle-clip. A panel is always taller than
+   twice its radius, so the radius needs no clamp. The bottom sheet rounds its
+   top corners only and keeps them round. Chromium and round themes skip this. */
+@supports not (corner-shape: squircle) {
+  @container style(--corner-shape: squircle) {
+    .content:not(.presentationSheet) {
+      --squircle-r: var(--dialog-radius, var(--radius-lg, 0.5rem));
+      border-radius: var(--squircle-radius, var(--squircle-r));
+      clip-path: var(--squircle-clip, none);
+    }
+
+    :global([data-density="editorial"]) .content:not(.presentationSheet) {
+      --squircle-r: var(--dialog-radius, var(--radius-xl));
+    }
+  }
+}

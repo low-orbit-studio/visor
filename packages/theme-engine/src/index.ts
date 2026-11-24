@@ -101,6 +101,7 @@ export {
   generateLightCss,
   generateDarkCss,
   generateFullBundleCss,
+  forceSquircleFallback,
 } from "./generate-css.js";
 export {
   WEIGHT_RAMP_TARGETS,

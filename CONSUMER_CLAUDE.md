@@ -59,7 +59,7 @@ npx visor add <component-name> --overwrite
 
 ---
 
-## Component Catalog (82)
+## Component Catalog (83)
 
 ### Data Display (7)
 
@@ -82,11 +82,12 @@ npx visor add <component-name> --overwrite
 | `popover` | Floating content panel anchored to a trigger |
 | `progress` | Horizontal bar indicating completion |
 | `proportion-bar` | One total split into parts by value, with a legend |
+| `reach-rings` | Concentric rings lit from the centre out to show how far something reaches |
 | `skeleton` | Placeholder shimmer for loading states |
 | `toast` | Non-blocking notification that auto-dismisses |
 | `tooltip` | Small label shown on hover/focus |
 
-### Form (25)
+### Form (26)
 
 | Component | Description |
 | --- | --- |
@@ -105,9 +106,11 @@ npx visor add <component-name> --overwrite
 | `otp-input` | Multi-digit one-time-password input |
 | `password-input` | Masked input with show/hide toggle and strength meter |
 | `phone-input` | Phone number input with country code selector |
+| `photo-drop` | Squircle photo or file drop tile: marching-ants edge, upload ring, Try Again, locked, read-only |
 | `photo-picker` | Photo thumbnail grid, one chosen; draw wave on open; thumbnails load on first open |
 | `position-picker` | 3x3 anchor grid; value is a { y, x } pair; on its own or over an image |
 | `radio-group` | Single-select from a group of options |
+| `scroll-hint` | "More Below" pill on a scroll box, with a Keep Going hook that jumps to the next unanswered field |
 | `search-input` | Input with search icon and clear button |
 | `select` | Dropdown single-select (sizes: sm, md, lg) |
 | `slider` | Range input with track and thumb |
@@ -174,10 +177,11 @@ npx visor add <component-name> --overwrite
 | `surface-row` | Surface token color demonstration |
 | `type-specimen` | Typography scale demonstration |
 
-### Typography (3)
+### Typography (4)
 
 | Component | Description |
 | --- | --- |
+| `animated-title` | Title drawn word by word in CSS; screen readers read it once |
 | `code-block` | Syntax-highlighted code display |
 | `heading` | Semantic heading (h1–h6) with visual size override |
 | `text` | General-purpose text element with size variants |
@@ -410,6 +414,16 @@ The `missing-visor-base-layer` warning fires when a project renders Visor form c
 - **CSS custom properties** — Always use tokens, never hard-coded values.
 - **CVA** — Variants use `class-variance-authority` with CSS Module class references.
 - **`cn()`** — Import from `@/lib/utils` to merge class names.
+- **Nested corners are concentric** — a rounded box inside a rounded box takes inner radius = outer radius − the gap between them, with the same gap on both axes. Derive it in CSS (`calc(var(--_outer-radius) - var(--_padding))`), never type the second radius. Check a page with the scan from `@loworbitstudio/visor-core/test-utils`:
+
+  ```ts
+  import { scanConcentric } from "@loworbitstudio/visor-core/test-utils"
+
+  const pairs = await page.evaluate(scanConcentric, { root: "main" }) // run it per frame for iframes
+  expect(pairs.filter((p) => !p.ok)).toEqual([])
+  ```
+
+  It walks open shadow roots, so hand-built web components are covered. Pass `{ mark: true }` to tag failing boxes with `data-concentric-outer` / `data-concentric-inner` for a screenshot.
 
 ---
 
