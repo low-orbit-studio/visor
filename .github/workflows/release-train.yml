@@ -15,10 +15,6 @@ name: Release Train
 # nothing can fail before the train's own checks (W033).
 
 on:
-  # TEMPORARY (VI-852): measures the train's CI minutes on its own PR. Dry run only
-  # (read-only GITHUB_TOKEN, --dry-run forced, and the script never merges outside
-  # schedule/workflow_dispatch). Removed before merge.
-  pull_request:
   workflow_dispatch:
     inputs:
       dry_run:
@@ -43,9 +39,6 @@ jobs:
     timeout-minutes: 5
     permissions:
       contents: read
-      pull-requests: read
-      checks: read
-      statuses: read
 
     steps:
       - name: Checkout
@@ -64,10 +57,10 @@ jobs:
         env:
           # A PAT, not GITHUB_TOKEN: a merge made with the built-in token does not
           # trigger release.yml (GitHub's loop prevention), so nothing would publish.
-          GITHUB_TOKEN: ${{ github.event_name == 'pull_request' && secrets.GITHUB_TOKEN || secrets.CHANGESETS_PAT }}
+          GITHUB_TOKEN: ${{ secrets.CHANGESETS_PAT }}
           GITHUB_REPOSITORY: ${{ github.repository }}
           # Null on a schedule trigger, which reads as "not true" below.
-          DRY_RUN: ${{ github.event_name == 'pull_request' || inputs.dry_run }}
+          DRY_RUN: ${{ inputs.dry_run }}
         # Explicit `shell: bash` adds pipefail, so a refusal still fails the step through tee.
         shell: bash
         run: |
