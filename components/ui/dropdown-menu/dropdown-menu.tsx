@@ -24,13 +24,15 @@ DropdownMenuTrigger.displayName = "DropdownMenuTrigger"
 export interface DropdownMenuContentProps
   extends React.ComponentProps<typeof DropdownMenuPrimitive.Content> {
   variant?: "default" | "breakout"
+  /** Where the menu portals to. Default: the end of the page. Pass an element to render the menu in place, inside it. */
+  container?: HTMLElement | null
 }
 
 const DropdownMenuContent = React.forwardRef<
   React.ComponentRef<typeof DropdownMenuPrimitive.Content>,
   DropdownMenuContentProps
->(({ className, align = "start", sideOffset = 4, variant = "default", ...props }, ref) => (
-  <DropdownMenuPrimitive.Portal>
+>(({ className, align = "start", sideOffset = 4, variant = "default", container, ...props }, ref) => (
+  <DropdownMenuPrimitive.Portal container={container}>
     <DropdownMenuPrimitive.Content
       ref={ref}
       data-slot="dropdown-menu-content"
