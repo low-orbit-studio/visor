@@ -476,33 +476,28 @@ describe('element-defaults-owned-by-base — fixtures', () => {
   });
 });
 
-describe('no-webkit-in-ci', async () => {
-  const { findWebkitInCi, noWebkitInCi } = await import('../rules/no-webkit-in-ci.js');
+describe('no-browsers-in-ci', async () => {
+  const { findBrowsersInCi, noBrowsersInCi } = await import('../rules/no-browsers-in-ci.js');
   const wf = (text: string) => [{ file: 'ci.yml', text }];
 
   it('passes on current codebase', async () => {
-    expect((await noWebkitInCi.run()).filter((r) => !r.pass)).toEqual([]);
+    expect((await noBrowsersInCi.run()).filter((r) => !r.pass)).toEqual([]);
   });
 
-  it('flags webkit in a workflow, any case', () => {
-    expect(findWebkitInCi(wf('run: npx playwright install WebKit'), [], {})).toHaveLength(1);
+  it.each([
+    'run: npx playwright install WebKit',
+    'run: npx playwright install --with-deps chromium',
+    'run: npx playwright install --with-deps',
+    'run: npx playwright test',
+    'run: npx puppeteer browsers install firefox',
+    'container: mcr.microsoft.com/playwright:v1.59.0',
+  ])('flags %s', (line) => {
+    expect(findBrowsersInCi(wf(line), {})).toHaveLength(1);
   });
 
-  it('flags playwright install without chromium, allows chromium only', () => {
-    expect(findWebkitInCi(wf('run: npx playwright install --with-deps'), [], {})).toHaveLength(1);
-    expect(findWebkitInCi(wf('run: npx playwright install --with-deps chromium'), [], {})).toEqual([]);
-  });
-
-  it('flags a workflow running a webkit config by script name, and a webkit default config', () => {
-    const configs = [
-      { file: 'packages/docs/playwright.concentric.config.ts', text: 'devices["Desktop Safari"]' },
-      { file: 'packages/docs/playwright.config.ts', text: 'webkit' },
-    ];
-    const scripts = { 'test:concentric': 'playwright test -c playwright.concentric.config.ts' };
-    const fails = findWebkitInCi(wf('run: npm run test:concentric -w packages/docs'), configs, scripts);
-    expect(fails.map((f) => f.message)).toEqual([
-      'Default Playwright config uses webkit, and CI runs it',
-      'Workflow runs test:concentric, which uses webkit',
-    ]);
+  it('flags a workflow running an npm script that launches a browser', () => {
+    const scripts = { 'test:vr': 'playwright test', build: 'tsc' };
+    expect(findBrowsersInCi(wf('run: npm run test:vr -w packages/docs'), scripts)).toHaveLength(1);
+    expect(findBrowsersInCi(wf('run: npm run build'), scripts)).toEqual([]);
   });
 });
