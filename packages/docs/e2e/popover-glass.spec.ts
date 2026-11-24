@@ -127,7 +127,7 @@ for (const width of [1440, 390]) {
           await expect(frame.locator('[data-slot="look-panel"]')).toHaveAttribute("data-mode", look.mode ?? docsMode);
           const panel = frame.locator('[data-slot="popover-content"]');
           await expect.poll(() => style(panel, "opacity")).toBe("1");
-          // Chromium has no -webkit-backdrop-filter; the WebKit project reads it for real.
+          // Chromium has no -webkit-backdrop-filter; playwright.webkit.config.ts (local only) reads it in WebKit.
           const props = browserName === "webkit" ? ["backdrop-filter", "-webkit-backdrop-filter"] : ["backdrop-filter"];
           const filters = await Promise.all(props.map((p) => style(panel, p)));
           if (look.photo) {
@@ -140,6 +140,8 @@ for (const width of [1440, 390]) {
           for (const row of rows) expect(alpha(await style(row, "background-color"))).toBeLessThan(1);
           const [a, b] = await Promise.all(rows.map((r) => r.boundingBox()));
           expect(b!.y - (a!.y + a!.height)).toBeGreaterThanOrEqual(8);
+          // One line per look for the PR body's local WebKit result.
+          if (browserName === "webkit") console.log(`pass ${docsMode} docs, ${look.label}: ${props.map((p, i) => `${p}=${filters[i]}`).join(", ")}`);
         }).toPass({ timeout: 20_000 });
       }
 

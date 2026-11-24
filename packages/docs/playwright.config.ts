@@ -35,13 +35,6 @@ export default defineConfig({
       name: "chromium",
       use: { ...devices["Desktop Chrome"], viewport: { width: 1440, height: 900 } },
     },
-    {
-      // VI-808: reads the computed -webkit-backdrop-filter, which Chromium does not have.
-      name: "webkit",
-      testMatch: "popover-glass.spec.ts",
-      grep: /Popover glass: five looks at 1440/,
-      use: { ...devices["Desktop Safari"], viewport: { width: 1440, height: 900 } },
-    },
   ],
   webServer: {
     command: "npm run dev -w packages/docs",
