@@ -6,6 +6,7 @@ description: Switch between content panels with default and line style variants.
 import { ComponentPreview } from '@/components/preview';
 import { PropsTable } from '@/components/props-table';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import { Headphones, Microphone, PersonSimpleRun, VinylRecord, Waveform } from '@phosphor-icons/react';
 
 ## Default
 
@@ -45,6 +46,32 @@ Underline-style tabs with a bottom border indicator.
     <TabsContent value="tab2">Security settings.</TabsContent>
     <TabsContent value="tab3">Notification preferences.</TabsContent>
   </Tabs>
+</ComponentPreview>
+
+## Keyed Variant
+
+A row of compact tabs that wraps onto as many lines as it needs. One highlight (a 1px key-colour edge over a 10% key fill) slides to the active tab in both directions, so it crosses a wrapped line too. It re-measures on resize, on font load and when tabs are added, removed or reordered; with `prefers-reduced-motion` it jumps. An icon placed before the label sits at 16px and takes the key colour when its tab is active. Extra children after the label (a small tag, say) render inside the trigger. `size="compact"` narrows the side padding from 12px to 10px. Theme it with `--tabs-keyed-key`, `--tabs-keyed-fill`, `--tabs-keyed-ink` and `--tabs-keyed-radius`.
+
+<ComponentPreview
+  title="Keyed Tabs"
+  code={"import { Headphones, Microphone, PersonSimpleRun, VinylRecord, Waveform } from '@phosphor-icons/react';\n\n<div style={{ maxWidth: 360 }}>\n  <Tabs defaultValue=\"dj\">\n    <TabsList variant=\"keyed\" aria-label=\"Disciplines\">\n      <TabsTrigger value=\"dj\"><Headphones />DJ</TabsTrigger>\n      <TabsTrigger value=\"producer\"><Waveform />Producer</TabsTrigger>\n      <TabsTrigger value=\"vocalist\"><Microphone />Vocalist</TabsTrigger>\n      <TabsTrigger value=\"dancer\"><PersonSimpleRun />Dancer</TabsTrigger>\n      <TabsTrigger value=\"selector\"><VinylRecord />Selector</TabsTrigger>\n    </TabsList>\n    <TabsContent value=\"dj\">DJ details.</TabsContent>\n    <TabsContent value=\"producer\">Producer details.</TabsContent>\n    <TabsContent value=\"vocalist\">Vocalist details.</TabsContent>\n    <TabsContent value=\"dancer\">Dancer details.</TabsContent>\n    <TabsContent value=\"selector\">Selector details.</TabsContent>\n  </Tabs>\n</div>"}
+>
+<div style={{ maxWidth: 360 }}>
+  <Tabs defaultValue="dj">
+    <TabsList variant="keyed" aria-label="Disciplines">
+      <TabsTrigger value="dj"><Headphones />DJ</TabsTrigger>
+      <TabsTrigger value="producer"><Waveform />Producer</TabsTrigger>
+      <TabsTrigger value="vocalist"><Microphone />Vocalist</TabsTrigger>
+      <TabsTrigger value="dancer"><PersonSimpleRun />Dancer</TabsTrigger>
+      <TabsTrigger value="selector"><VinylRecord />Selector</TabsTrigger>
+    </TabsList>
+    <TabsContent value="dj">DJ details.</TabsContent>
+    <TabsContent value="producer">Producer details.</TabsContent>
+    <TabsContent value="vocalist">Vocalist details.</TabsContent>
+    <TabsContent value="dancer">Dancer details.</TabsContent>
+    <TabsContent value="selector">Selector details.</TabsContent>
+  </Tabs>
+</div>
 </ComponentPreview>
 
 ## Disabled Tab
@@ -104,7 +131,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs/t
 | Component | Element | Purpose |
 |-----------|---------|---------|
 | `Tabs` | `<div>` (Radix Root) | Root container. Requires `defaultValue` or controlled `value`. |
-| `TabsList` | `<div>` | Horizontal container for tab triggers. Accepts `variant` prop. |
+| `TabsList` | `<div>` | Horizontal container for tab triggers. Accepts `variant` (`default`, `line`, `keyed`) and, for `keyed`, `size` (`default`, `compact`). |
 | `TabsTrigger` | `<button>` | Clickable tab button tied to content via matching `value` prop. |
 | `TabsContent` | `<div>` | Content panel that displays when its matching trigger is active. |
 

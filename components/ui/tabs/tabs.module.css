@@ -59,6 +59,78 @@
   --label-box-height: calc(1lh + var(--spacing-2, 0.5rem) * 2 + 2px);
 }
 
+/* Keyed variant (VI-848): a wrapping row of compact tabs with ONE highlight
+   (key edge + key-tinted fill) that slides in x and y to the active tab. The
+   55/80/45% inks are the approved design's values, not tokens. */
+.listVariantKeyed {
+  --_keyed-key: var(--tabs-keyed-key, var(--surface-accent-default));
+  --_keyed-fill: var(--tabs-keyed-fill, color-mix(in srgb, var(--_keyed-key) 10%, transparent));
+  --_keyed-ink: var(--tabs-keyed-ink, var(--text-primary));
+  --_keyed-height: calc(var(--spacing-1, 0.25rem) * 9);
+  --_keyed-radius: var(--tabs-keyed-radius, var(--radius-md, 0.375rem));
+  --_keyed-duration: 450ms;
+  --_keyed-easing: cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  gap: var(--spacing-1, 0.25rem);
+  height: auto;
+  width: 100%;
+  padding: 0;
+  border-radius: 0;
+  background-color: transparent;
+}
+
+.listVariantKeyed .trigger {
+  flex: 0 0 auto;
+  height: var(--_keyed-height);
+  padding: 0 var(--spacing-3, 0.75rem);
+  border-radius: var(--_keyed-radius);
+  color: color-mix(in srgb, var(--_keyed-ink) 55%, transparent);
+  --label-box-height: var(--_keyed-height);
+}
+
+.listVariantKeyed.listSizeCompact .trigger {
+  padding: 0 calc(var(--spacing-1, 0.25rem) * 2.5);
+}
+
+.listVariantKeyed .trigger > svg {
+  flex-shrink: 0;
+  width: var(--spacing-4, 1rem);
+  height: var(--spacing-4, 1rem);
+  opacity: 0.45;
+  transition: color var(--motion-duration-300, 300ms) var(--motion-easing-default, ease-in-out), opacity var(--motion-duration-300, 300ms) var(--motion-easing-default, ease-in-out);
+}
+
+@media (hover: hover) {
+  .listVariantKeyed .trigger:hover {
+    color: color-mix(in srgb, var(--_keyed-ink) 80%, transparent);
+  }
+}
+
+.listVariantKeyed .trigger[data-state="active"] {
+  color: var(--_keyed-ink);
+  background-color: transparent;
+  box-shadow: none;
+}
+
+.listVariantKeyed .trigger[data-state="active"] > svg {
+  color: var(--_keyed-key);
+  opacity: 1;
+}
+
+.keyedIndicator {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: var(--_keyed-height);
+  border: var(--stroke-width-thin, 1px) solid var(--_keyed-key);
+  border-radius: var(--_keyed-radius);
+  background-color: var(--_keyed-fill);
+  pointer-events: none;
+  transition: transform var(--_keyed-duration) var(--_keyed-easing), width var(--_keyed-duration) var(--_keyed-easing);
+}
+
 /* Tabs trigger */
 .trigger {
   position: relative;
