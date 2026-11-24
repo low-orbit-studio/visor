@@ -32,6 +32,7 @@ jobs:
               - '!packages/docs/content/**'
             docs:
               - 'packages/docs/**'
+              - '.github/workflows/ci.yml'
               - 'components/**'
               - 'packages/theme-engine/**'
               - 'packages/tokens/**'
@@ -219,8 +220,12 @@ jobs:
     name: Concentric corners
     needs: changes
     if: needs.changes.outputs.docs == 'true'
-    # shortcut: Playwright 1.59 has no chromium for ubuntu-26.04 (now ubuntu-latest); unpin after a Playwright upgrade that supports it.
     runs-on: ubuntu-24.04
+    # VI-846: browsers and their system packages come preinstalled; installing WebKit's took 18-30 min.
+    # Keep the tag equal to the locked @playwright/test version.
+    container:
+      image: mcr.microsoft.com/playwright:v1.59.0-noble
+      options: --user 1001
 
     steps:
       - name: Checkout
@@ -240,10 +245,6 @@ jobs:
 
       - name: Build docs site
         run: npm run docs:build
-
-      # WebKit stands in for Safari, which has no corner-shape (VI-839).
-      - name: Install Playwright browsers (chromium and webkit)
-        run: npx playwright install --with-deps chromium webkit
 
       - name: Concentric corner scan (production build)
         run: npm run test:concentric -w packages/docs
