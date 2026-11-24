@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.48.0
+
+### Minor Changes
+
+- 76bf5ae: Field gains `FieldControl`, the box a control sits in: an Input, Textarea or Select trigger inside fills it and goes bare, and the box draws the fill, the shared control edge, the focus ring (2px on keyboard focus, valid or invalid) and the invalid look from the control's `aria-invalid`. `tall` lets the box grow with a Textarea. Glass is off by default; inside `data-glass="on"` the box takes the glass layer's control fill, hover fill, ring, ink and blur. `FieldLabel` takes `optional`, which adds an "optional" mark inside the label. The error colour is now a theme value, `field.error-color` (unset, `--text-error`); under glass the error line and the invalid edge take the glass layer's on-photo ink. The theme engine's `field` family gains `gap`, `text-inset`, the label's weight, line height and optional mark, the hint's size, colour and line height, the error line's colour, weight, line height, icon gap and size, the invalid fill, line and width, and the box's height, corners, fill, hover fill, focus ring colour and width, padding, type, placeholder colour and tall heights and padding. Each falls back to what Field drew before, so a theme that binds none of them renders unchanged.
+
 ## 0.47.0
 
 ### Minor Changes
