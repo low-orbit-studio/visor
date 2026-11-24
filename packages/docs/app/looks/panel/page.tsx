@@ -4,7 +4,7 @@ import { useSearchParams } from 'next/navigation';
 import { Suspense, useEffect } from 'react';
 import { ALL_THEMES } from '@/lib/theme-config';
 import { PRIVATE_THEMES } from '@/lib/private-themes';
-import { LOOKS, PHOTO_SCRIM, STAND_IN_PHOTO, type LookMode } from '@/components/looks/looks';
+import { LOOKS, PHOTO_SCRIM, STAND_IN_PHOTO, STAND_IN_PHOTO_ALT, type LookMode } from '@/components/looks/looks';
 import { LOOK_SPECIMENS } from '@/components/looks/specimens';
 
 const VALID_THEMES = new Set<string>([...ALL_THEMES, ...PRIVATE_THEMES.map((t) => t.slug)]);
@@ -30,10 +30,11 @@ function LookPanel() {
   const look = LOOKS.find((l) => l.id === params.get('look')) ?? LOOKS[0];
   const mode: LookMode = look.mode ?? (params.get('mode') === 'dark' ? 'dark' : 'light');
   const Specimen = LOOK_SPECIMENS[params.get('specimen') ?? ''] ?? LOOK_SPECIMENS.glass;
-  const photoParam = params.get('photo') ?? '';
-  const photo = PHOTO_PATH.test(photoParam) && !photoParam.startsWith('//')
-    ? photoParam
-    : (lookPhotos(theme)?.[mode] ?? STAND_IN_PHOTO);
+  // `photo-dark` / `photo-light` pick each tone's photos (a night shot in dark, a day shot in light).
+  const given = (params.get(`photo-${mode}`) ?? params.get('photo') ?? '').split(',').filter((p) => PHOTO_PATH.test(p) && !p.startsWith('//'));
+  const real = lookPhotos(theme)?.[mode];
+  const photos = given.length ? given : real ? [real] : [STAND_IN_PHOTO, STAND_IN_PHOTO_ALT];
+  const photo = photos[0];
 
   useEffect(() => {
     const body = document.body;
@@ -65,7 +66,7 @@ function LookPanel() {
           : 'var(--surface-page)',
       }}
     >
-      <Specimen />
+      <Specimen look={look} mode={mode} photos={photos} />
     </div>
   );
 }

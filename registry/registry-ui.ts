@@ -1828,6 +1828,25 @@ export const ui: Registry = [
     ],
   },
   {
+    name: "photo-backdrop",
+    type: "registry:ui",
+    category: "media",
+    description:
+      "The photo behind a surface: each new background crossfades in once it has loaded, the next ones preload at low priority, a focal point keeps the subject in frame and a solid colour shows until the first photo loads. Its presence turns the glass layer on; with no photo it renders nothing.",
+    dependencies: ["@loworbitstudio/visor-core"],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/photo-backdrop/photo-backdrop.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/photo-backdrop/photo-backdrop.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
     name: "photo-drop",
     type: "registry:ui",
     category: "form",

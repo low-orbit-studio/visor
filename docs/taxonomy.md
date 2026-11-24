@@ -26,6 +26,7 @@ Components that present information to the user without accepting input.
 | code-block | ✅ Documented | Syntax-highlighted code display |
 | collapsible | ✅ Documented | Single expandable section |
 | image | ✅ Documented | Image with loading states |
+| photo-backdrop | ✅ Documented | Crossfading background photo behind a surface; turns glass on |
 | table | ✅ Documented | Tabular data display |
 | timeline | ✅ Documented | Vertical timeline with status indicators |
 
