@@ -321,7 +321,7 @@ export const ui: Registry = [
     type: "registry:ui",
     description:
       "A compound card component with header, title, description, content, and footer sub-components.",
-    dependencies: ["@loworbitstudio/visor-core"],
+    dependencies: ["@loworbitstudio/visor-core", "@phosphor-icons/react"],
     registryDependencies: ["utils"],
     files: [
       {

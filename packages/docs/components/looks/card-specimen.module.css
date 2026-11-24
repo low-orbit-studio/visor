@@ -1,0 +1,46 @@
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-4, 1rem);
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.stack {
+  display: grid;
+  gap: var(--spacing-3, 0.75rem);
+  justify-items: start;
+  width: min(100%, 18rem);
+}
+
+/* A button sizes to its content; the tile fills the column like a div card. */
+.tileCard {
+  justify-self: stretch;
+}
+
+.card {
+  width: min(100%, 18rem);
+}
+
+.tile {
+  display: grid;
+  gap: var(--spacing-1, 0.25rem);
+  padding-inline: var(--spacing-6, 1.5rem);
+}
+
+.eyebrow {
+  font-size: var(--font-size-xs, 0.75rem);
+  font-weight: var(--font-weight-semibold, 600);
+  letter-spacing: var(--letter-spacing-wide, 0.025em);
+  text-transform: uppercase;
+  color: var(--text-secondary, #6b7280);
+}
+
+.value {
+  font-size: var(--font-size-2xl, 1.5rem);
+  font-weight: var(--font-weight-medium, 500);
+}
+
+.sub {
+  color: var(--text-secondary, #6b7280);
+}

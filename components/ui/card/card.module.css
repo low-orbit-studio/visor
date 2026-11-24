@@ -4,7 +4,7 @@
   flex-direction: column;
   gap: var(--spacing-6, 1.5rem);
   overflow: hidden;
-  border-radius: var(--radius-xl, 1rem);
+  border-radius: var(--card-radius, var(--radius-xl, 1rem));
   background-color: var(--surface-card, #ffffff);
   color: var(--text-primary, #111827);
   font-size: var(--font-size-sm, 0.875rem);
@@ -17,6 +17,176 @@
   gap: var(--spacing-4, 1rem);
   padding-top: var(--spacing-4, 1rem);
   padding-bottom: var(--spacing-4, 1rem);
+}
+
+/* Glass (VI-804). The card draws itself on two sibling layers placed before its
+   content, never on an ancestor of it: an ancestor with a backdrop-filter would
+   become the backdrop root of a blurred field inside, which would then blur only the
+   card. The layers read the glass switch (VI-795): under data-glass="on" a glass
+   fill, blur and soft-light edge; everywhere else the card surface and a border.
+   Lifted from honcho-planning's GlassCard; its consumers' --card-* hooks carry over. */
+.glass {
+  position: relative;
+  overflow: visible;
+  background-color: transparent;
+  box-shadow: none;
+  color: var(--glass-on-ink, var(--text-primary, #111827));
+}
+
+/* Content paints above the layers without forming a stacking context. :where keeps
+   the specificity at one class, so a child's own position still wins. */
+.glass > :where(:not(.glassLayer, .edgeLayer, .pen)) {
+  position: relative;
+}
+
+.glassLayer,
+.edgeLayer {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+/* Prefixed line first, so Lightning CSS keeps both (VI-788). */
+.glassLayer {
+  display: var(--card-glass-display, block);
+  background: var(--card-glass-bg, linear-gradient(var(--glass-on-lift, transparent) 0 0), var(--glass-on-fill, var(--surface-card, #ffffff)));
+  -webkit-backdrop-filter: var(--card-glass-filter, var(--glass-on-blur, none));
+  backdrop-filter: var(--card-glass-filter, var(--glass-on-blur, none));
+  box-shadow: var(--card-glass-shadow, var(--glass-on-shadow, var(--shadow-sm)));
+}
+
+/* The edge on its own layer, so it can blend: soft-light over a photo, where it
+   reaches the photo only because nothing between them forms a stacking context. */
+.edgeLayer {
+  display: var(--card-edge-display, var(--card-glass-display, block));
+  border: var(--stroke-width-thin, 1px) solid var(--glass-on-edge, var(--border-default, #e5e7eb));
+  mix-blend-mode: normal;
+}
+
+/* shortcut: the nearest switch wins for "off inside on", not for "on inside off";
+   move the blend into the glass switch's variables if that nesting turns up. */
+:global([data-glass="on"]) .edgeLayer {
+  mix-blend-mode: soft-light;
+}
+
+:global([data-glass="off"]) .edgeLayer {
+  mix-blend-mode: normal;
+}
+
+/* Editable (VI-804): the whole card is a button, lifted from Backstage's itinerary
+   tile (its ed, pen and flash rules). The lift steps the fill up and deepens the shadow; the
+   card never moves on hover, since a transform would form a stacking context and
+   the edge would blend with the glass instead of the photo. */
+.editable {
+  position: relative;
+  /* Margin, border and font come from the visor-base reset. */
+  appearance: none;
+  padding-inline: 0;
+  text-align: start;
+  cursor: pointer;
+  transition: background-color var(--motion-duration-300, 300ms) var(--motion-easing-default, ease-in-out),
+    box-shadow var(--motion-duration-300, 300ms) var(--motion-easing-default, ease-in-out),
+    transform var(--motion-duration-300, 300ms) var(--motion-easing-default, ease-in-out);
+}
+
+.editable .glassLayer {
+  transition: background var(--motion-duration-300, 300ms) var(--motion-easing-default, ease-in-out);
+}
+
+@media (hover: hover) {
+  .editable:hover {
+    background-color: var(--card-editable-hover-bg, var(--surface-interactive-hover, #f3f4f6));
+    box-shadow: var(--card-editable-hover-shadow, var(--shadow-lg));
+  }
+
+  .glass.editable:hover {
+    background-color: transparent;
+  }
+
+  /* Over a photo the fill moves 40% toward the solid card, the kit tile's hover step. */
+  .glass.editable:hover .glassLayer {
+    background: var(--card-editable-hover-bg, linear-gradient(var(--glass-on-lift, transparent) 0 0), color-mix(in srgb, var(--glass-on-fill, var(--surface-interactive-hover, #f3f4f6)), var(--surface-card, #ffffff) 40%));
+  }
+
+  .editable:hover .pen {
+    background-color: var(--interactive-primary-bg, #111827);
+    color: var(--interactive-primary-text, #ffffff);
+  }
+}
+
+.editable:focus-visible {
+  outline: var(--focus-ring-width, 2px) solid var(--interactive-primary-bg, #111827);
+  outline-offset: var(--focus-ring-offset, 2px);
+}
+
+/* The kit's press, kept as an intentional value. */
+.editable:active {
+  transform: scale(0.985);
+}
+
+/* The pen: a round badge in the corner, filled with the key colour on hover. */
+.pen {
+  position: absolute;
+  top: var(--card-pen-inset, var(--spacing-4, 1rem));
+  right: var(--card-pen-inset, var(--spacing-4, 1rem));
+  display: grid;
+  place-items: center;
+  width: var(--card-pen-size, var(--spacing-8, 2rem));
+  height: var(--card-pen-size, var(--spacing-8, 2rem));
+  border-radius: var(--radius-full, 9999px);
+  color: var(--text-tertiary, #9ca3af);
+  /* A circle even when the theme draws squircle corners (VI-796). */
+  --corner-shape: round;
+  transition: color var(--motion-duration-300, 300ms) var(--motion-easing-default, ease-in-out),
+    background-color var(--motion-duration-300, 300ms) var(--motion-easing-default, ease-in-out);
+}
+
+.pen svg {
+  width: 0.875rem;
+  height: 0.875rem;
+}
+
+/* The save flash: the app sets data-flash after a save, and removes and re-adds it
+   to replay. The kit's 1.6s (twice the 800ms step), and its 6px halo and 25% key
+   tint, kept as intentional values. On glass the inset ring sits on the edge layer, since the
+   glass layer covers the card's own inset shadow. */
+.editable[data-flash] {
+  animation: card-flash calc(2 * var(--motion-duration-800, 800ms)) var(--motion-easing-enter, ease-out);
+}
+
+.glass.editable[data-flash] .edgeLayer {
+  animation: card-flash-edge calc(2 * var(--motion-duration-800, 800ms)) var(--motion-easing-enter, ease-out);
+}
+
+@keyframes card-flash {
+  from {
+    box-shadow: inset 0 0 0 var(--stroke-width-medium, 2px) var(--interactive-primary-bg, #111827),
+      0 0 0 6px color-mix(in srgb, var(--interactive-primary-bg, #111827) 25%, transparent);
+  }
+  to {
+    box-shadow: inset 0 0 0 var(--stroke-width-thin, 1px) transparent, 0 0 0 0 transparent;
+  }
+}
+
+@keyframes card-flash-edge {
+  from {
+    border-color: var(--interactive-primary-bg, #111827);
+    box-shadow: inset 0 0 0 var(--stroke-width-thin, 1px) var(--interactive-primary-bg, #111827);
+  }
+}
+
+/* Reduced motion: no press and no eased colour changes. The flash stays: it is a colour cue. */
+@media (prefers-reduced-motion: reduce) {
+  .editable,
+  .editable .glassLayer,
+  .pen {
+    transition-duration: 0s;
+  }
+
+  .editable:active {
+    transform: none;
+  }
 }
 
 /* CardHeader */
