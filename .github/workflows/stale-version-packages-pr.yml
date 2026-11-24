@@ -26,6 +26,10 @@ name: Stale Version Packages PR Alert
 # See: VI-365, VI-852
 
 on:
+  # TEMPORARY (VI-852): measures both jobs' CI minutes on their own PR, then removed
+  # before merge. Dry run: check-drift never alerts or saves its cache, and the
+  # train-alert job sees a "dry-run" conclusion, so it opens, comments on and closes nothing.
+  pull_request:
   workflow_dispatch:
   schedule:
     # Hourly at :00
@@ -159,6 +163,7 @@ jobs:
           DRIFT_COUNT: ${{ steps.drift.outputs.drift_count }}
           FINGERPRINT: ${{ steps.drift.outputs.fingerprint }}
           LAST_FINGERPRINT: ${{ steps.last_state.outputs.last_fingerprint }}
+          EVENT: ${{ github.event_name }}
         run: |
           THRESHOLD=2
           SHOULD_ALERT=false
@@ -180,6 +185,7 @@ jobs:
             echo "Drift within threshold (count=$DRIFT_COUNT ≤ $THRESHOLD) — no action."
           fi
 
+          if [ "$EVENT" = "pull_request" ]; then SHOULD_ALERT=false; echo "Dry run (pull_request): no alert."; fi
           echo "should_alert=$SHOULD_ALERT" >> "$GITHUB_OUTPUT"
 
       - name: Look up Version Packages PR number
@@ -280,7 +286,7 @@ jobs:
   train-alert:
     name: Release Train alert
     # Only runs of the train on main; a branch run says nothing about the 5PM train.
-    if: github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main'
+    if: (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main') || github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     timeout-minutes: 5
     permissions:
@@ -292,9 +298,10 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           REPO: ${{ github.repository }}
-          RUN_ID: ${{ github.event.workflow_run.id }}
-          RUN_URL: ${{ github.event.workflow_run.html_url }}
-          CONCLUSION: ${{ github.event.workflow_run.conclusion }}
+          # Temporary fallbacks: the PR's own Release Train dry run (45499436226), and a conclusion no branch acts on.
+          RUN_ID: ${{ github.event.workflow_run.id || '45499436226' }}
+          RUN_URL: ${{ github.event.workflow_run.html_url || 'https://github.com/low-orbit-studio/visor/actions/runs/45499436226' }}
+          CONCLUSION: ${{ github.event_name == 'pull_request' && 'dry-run' || github.event.workflow_run.conclusion }}
         run: |
           MARKER='<!-- release-train-alert -->'
           ISSUE=$(gh api "repos/$REPO/issues?state=open&labels=ci-watch&per_page=100" \
