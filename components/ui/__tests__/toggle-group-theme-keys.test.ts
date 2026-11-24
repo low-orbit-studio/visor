@@ -14,22 +14,27 @@
  * Skips where Chromium is unavailable (playwright is an optional dep).
  */
 
-import { readFileSync } from "node:fs"
+import { existsSync, readFileSync } from "node:fs"
 import { join } from "node:path"
 import { afterAll, beforeAll, describe, expect, it } from "vitest"
 import { parse, stringify } from "yaml"
 import { generateThemeData } from "../../../packages/theme-engine/src/pipeline"
 import { docsAdapter } from "../../../packages/theme-engine/src/adapters/docs"
+import { findMainRepoRoot, scanParentForPrivateThemes } from "../../../packages/cli/src/utils/theme-helpers"
 import { close, launch, open, ready } from "./render-page"
 
 const GROUP = "#root [data-slot=toggle-group]"
 const INDICATOR = `${GROUP} > [aria-hidden="true"]`
 const ON = "#root [data-slot=toggle-group-item][data-state=on]"
 const OFF = "#root [data-slot=toggle-group-item][data-state=off]"
+// VI-806: the option-mark fixture's picked row, its round mark and its description line.
+const ROW_ON = "#root [data-slot=toggle-group-item][data-state=on]"
+const MARK_ON = `${ROW_ON} [data-slot=toggle-group-mark]`
+const DESCRIPTION = `${ROW_ON} [data-slot=toggle-group-description]`
 
 interface Case {
   token: string
-  fixture: "default" | "outline" | "compact"
+  fixture: "default" | "outline" | "compact" | "option-mark"
   target: string
   prop: string
   value: string
@@ -50,6 +55,12 @@ const CASES: Case[] = [
   { token: "--toggle-group-xs-track-radius", fixture: "compact", target: GROUP, prop: "borderTopLeftRadius", value: "8px", expected: "8px", unset: "6px" },
   { token: "--toggle-group-xs-item-radius", fixture: "compact", target: ON, prop: "borderTopLeftRadius", value: "6px", expected: "6px", unset: "3px" }, // VI-837: concentric, 6px - 2px - 1px
   { token: "--toggle-group-xs-item-radius", fixture: "compact", target: INDICATOR, prop: "borderTopLeftRadius", value: "6px", expected: "6px", unset: "3px" }, // VI-837: concentric, 6px - 2px - 1px
+  // VI-806: the description line and the round single-choice mark.
+  { token: "--toggle-group-option-description-text", fixture: "option-mark", target: DESCRIPTION, prop: "color", value: "#ff8800", expected: "rgb(255, 136, 0)", unset: "UNSET_SECONDARY" },
+  { token: "--toggle-group-option-description-font-size", fixture: "option-mark", target: DESCRIPTION, prop: "fontSize", value: "13px", expected: "13px", unset: "14px" },
+  { token: "--toggle-group-option-mark-bg", fixture: "option-mark", target: MARK_ON, prop: "backgroundColor", value: "#33ccaa", expected: "rgb(51, 204, 170)", unset: "UNSET_PRIMARY" },
+  { token: "--toggle-group-option-mark-text", fixture: "option-mark", target: MARK_ON, prop: "color", value: "#aa33cc", expected: "rgb(170, 51, 204)", unset: "UNSET_PRIMARY_TEXT" },
+  { token: "--toggle-group-option-check-size", fixture: "option-mark", target: MARK_ON, prop: "width", value: "24px", expected: "24px", unset: "20px" },
 ]
 
 const style = (selector: string, prop: string) =>
@@ -80,6 +91,7 @@ beforeAll(async () => {
   resolved.UNSET_PRIMARY = await semantic("--interactive-primary-bg")
   resolved.UNSET_PRIMARY_TEXT = await semantic("--interactive-primary-text")
   resolved.UNSET_TEXT = await semantic("--text-primary")
+  resolved.UNSET_SECONDARY = await semantic("--text-secondary")
 }, 60_000)
 
 afterAll(close)
@@ -161,5 +173,78 @@ describe("VI-709 — blacklight-app compact group, keys emitted by the engine", 
     expect([onSize, onSide, onRadius]).toEqual(["10px", "11px", "6px"])
     // 24px option + 2px inset each side + the 1px (transparent) edge each side.
     expect(height).toBe("30px")
+  }, 30_000)
+})
+
+// ── VI-806: the round mark's colour and the row's blur, per theme ──────────
+
+/** A private theme's CSS through the engine, when a local visor-themes-private checkout exists. */
+function privateThemeCss(slug: string): string | null {
+  const env = process.env.VISOR_THEMES_PRIVATE_PATH
+  const main = findMainRepoRoot(process.cwd()) ?? process.cwd()
+  const dirs = [env && join(env, "themes"), env, join(main, "..", "visor-themes-private", "themes"), ...scanParentForPrivateThemes(join(main, ".."))]
+  const file = dirs.filter(Boolean).map((d) => join(d as string, slug, "theme.visor.yaml")).find(existsSync)
+  return file ? docsAdapter(generateThemeData(readFileSync(file, "utf-8")), { includeFontImports: false }) : null
+}
+
+/** The picked mark's fill, the theme's --interactive-primary-bg, and each row's backdrop-filter, with glass on or not. */
+async function readMarkAndBlur(opts: Parameters<typeof open>[2], glass?: "on" | "off" | "off-in-on") {
+  const page = await open("toggle-group", "option-mark", opts)
+  const out = (await page.evaluate(`(function () {
+    var scope = document.getElementById("theme-scope"), root = document.getElementById("root");
+    if (${JSON.stringify(glass ?? "")} === "on") scope.setAttribute("data-glass", "on");
+    if (${JSON.stringify(glass ?? "")} === "off-in-on") { scope.setAttribute("data-glass", "on"); root.setAttribute("data-glass", "off"); }
+    var probe = document.createElement("i"); probe.style.color = "var(--interactive-primary-bg)"; root.appendChild(probe);
+    var key = getComputedStyle(probe).color; probe.remove();
+    var rows = Array.prototype.map.call(document.querySelectorAll("#root [data-slot=toggle-group-item]"), function (r) { return getComputedStyle(r).backdropFilter; });
+    var mark = getComputedStyle(document.querySelector(${JSON.stringify(MARK_ON)}));
+    return { mark: mark.backgroundColor, shape: mark.getPropertyValue("corner-shape"), key: key, rows: rows };
+  })()`)) as { mark: string; shape: string; key: string; rows: string[] }
+  await page.close()
+  return out
+}
+
+describe("VI-806 — round mark colour and glass-gated blur (real browser)", () => {
+  // The "Verify docs build" job installs Chromium and sets VISOR_REQUIRE_BROWSER, so this proof cannot silently skip there.
+  it.runIf(process.env.VISOR_REQUIRE_BROWSER)("runs in Chromium", () => {
+    expect(ready(), "playwright's chromium is not installed").toBe(true)
+  })
+
+  it("neutral light: the mark takes --interactive-primary-bg, and the rows have no blur", async (ctx) => {
+    if (!ready()) return ctx.skip()
+    const r = await readMarkAndBlur({})
+    expect(r.mark).toBe(r.key)
+    expect(r.rows).toEqual(["none", "none"])
+  }, 30_000)
+
+  it("neutral: glass on gives the glass layer's control blur; off inside on clears it", async (ctx) => {
+    if (!ready()) return ctx.skip()
+    expect((await readMarkAndBlur({}, "on")).rows).toEqual(["blur(16px)", "blur(16px)"])
+    expect((await readMarkAndBlur({}, "off-in-on")).rows).toEqual(["none", "none"])
+  }, 30_000)
+
+  const backstage = privateThemeCss("honcho-backstage")
+  const honcho = privateThemeCss("honcho")
+  // CI has no private themes; these run wherever a visor-themes-private checkout sits beside Visor.
+  it.skipIf(!backstage)("honcho-backstage light and dark: the mark is the theme's key, no blur with glass off, its control blur with glass on", async (ctx) => {
+    if (!ready()) return ctx.skip()
+    for (const mode of ["light", "dark"] as const) {
+      const theme = { css: backstage!, className: "honcho-backstage-theme", mode }
+      const off = await readMarkAndBlur({ theme })
+      expect(off.mark, mode).toBe(off.key)
+      expect(off.key, mode).toBe("rgb(255, 45, 138)")
+      expect(off.rows, mode).toEqual(["none", "none"])
+      // The theme draws squircle corners; the mark stays a circle.
+      expect(off.shape, mode).toBe("round")
+      const on = await readMarkAndBlur({ theme }, "on")
+      expect(on.rows, mode).toEqual(["blur(24px) saturate(1.15)", "blur(24px) saturate(1.15)"])
+    }
+  }, 60_000)
+
+  it.skipIf(!honcho)("honcho (Today): the mark is the theme's key and the rows are solid", async (ctx) => {
+    if (!ready()) return ctx.skip()
+    const r = await readMarkAndBlur({ theme: { css: honcho!, className: "honcho-theme", mode: "light" } })
+    expect(r.mark).toBe(r.key)
+    expect(r.rows).toEqual(["none", "none"])
   }, 30_000)
 })

@@ -18,6 +18,7 @@ import { SpinnerSpecimen } from './spinner-specimen';
 import { StepperRailSpecimen } from './stepper-rail-specimen';
 import { ThemeSpecimen } from './theme-specimen';
 import { ThemeToggleSpecimen } from './theme-toggle-specimen';
+import { ToggleGroupSpecimen } from './toggle-group-specimen';
 
 /**
  * What a five-look frame can draw, by `specimen` key. Part tickets add theirs here. A specimen's
@@ -43,4 +44,5 @@ export const LOOK_SPECIMENS: Record<string, ComponentType> = {
   'stepper-rail': StepperRailSpecimen,
   theme: ThemeSpecimen,
   'theme-toggle': ThemeToggleSpecimen,
+  'toggle-group': ToggleGroupSpecimen,
 };

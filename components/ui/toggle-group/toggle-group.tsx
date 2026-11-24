@@ -3,6 +3,7 @@
 import * as React from "react"
 import * as ToggleGroupPrimitive from "@radix-ui/react-toggle-group"
 import { cva, type VariantProps } from "class-variance-authority"
+import { CheckIcon } from "@phosphor-icons/react"
 import { cn } from "../../../lib/utils"
 import styles from "./toggle-group.module.css"
 
@@ -12,6 +13,7 @@ type ToggleGroupContextValue = {
   variant?: "default" | "outline" | "option" | null
   size?: "xs" | "sm" | "md" | "lg" | null
   type?: "single" | "multiple"
+  mark?: boolean
 }
 
 const ToggleGroupContext = React.createContext<ToggleGroupContextValue>({})
@@ -110,15 +112,17 @@ export type ToggleGroupProps = React.ComponentPropsWithoutRef<
     columns?: 1 | 2
     /** Pressing A, B, C… while focus is in the group picks the item at that position. */
     shortcuts?: boolean
+    /** Option variant, single only: a round mark on each row that fills with a check when picked. */
+    mark?: boolean
   }
 
 const ToggleGroup = React.forwardRef<
   React.ElementRef<typeof ToggleGroupPrimitive.Root>,
   ToggleGroupProps
->(({ className, variant, size, columns, shortcuts, onKeyDown, ...props }, ref) => {
+>(({ className, variant, size, columns, shortcuts, mark, onKeyDown, ...props }, ref) => {
   const contextValue = React.useMemo(
-    () => ({ variant, size, type: props.type }),
-    [variant, size, props.type]
+    () => ({ variant, size, type: props.type, mark }),
+    [variant, size, props.type, mark]
   )
   const isOption = variant === "option"
   const internalRef = React.useRef<HTMLDivElement>(null)
@@ -205,7 +209,14 @@ const toggleGroupItemVariants = cva(styles.item, {
 
 export interface ToggleGroupItemProps
   extends React.ComponentPropsWithoutRef<typeof ToggleGroupPrimitive.Item>,
-    VariantProps<typeof toggleGroupItemVariants> {}
+    VariantProps<typeof toggleGroupItemVariants> {
+  /** Option variant: a second line under the label. It becomes the row's accessible description. */
+  description?: React.ReactNode
+}
+
+function joinIds(...ids: Array<string | undefined>): string | undefined {
+  return ids.filter(Boolean).join(" ") || undefined
+}
 
 /**
  * Wrap bare text in a block label so the stylesheet can trim its line box to the
@@ -227,11 +238,20 @@ function wrapLabel(children: React.ReactNode): React.ReactNode {
 const ToggleGroupItem = React.forwardRef<
   React.ElementRef<typeof ToggleGroupPrimitive.Item>,
   ToggleGroupItemProps
->(({ className, variant, size, children, ...props }, ref) => {
+>(({ className, variant, size, description, children, ...props }, ref) => {
   const ctx = React.useContext(ToggleGroupContext)
   const resolvedVariant = variant ?? ctx.variant
   const resolvedSize = size ?? ctx.size
   const isOption = resolvedVariant === "option"
+  const uid = React.useId()
+  const hasDescription = isOption && description !== undefined && description !== null
+  // The row is named by its title alone and described by the second line (RadioGroup card pattern).
+  const describedProps = hasDescription
+    ? {
+        "aria-labelledby": props["aria-labelledby"] ?? `${uid}-title`,
+        "aria-describedby": joinIds(`${uid}-description`, props["aria-describedby"]),
+      }
+    : {}
   return (
     <ToggleGroupPrimitive.Item
       data-slot="toggle-group-item"
@@ -241,27 +261,35 @@ const ToggleGroupItem = React.forwardRef<
       )}
       ref={ref}
       {...props}
+      {...describedProps}
     >
       {isOption ? (
         <>
           {/* The letter comes from a CSS counter, so it follows the item's position. */}
           <span className={styles.optionKey} data-slot="toggle-group-key" aria-hidden="true" />
           <span className={styles.optionLabel} data-slot="toggle-group-label">
-            {children}
+            {hasDescription ? (
+              <>
+                <span className={styles.optionTitle} data-slot="toggle-group-title" id={`${uid}-title`}>
+                  {children}
+                </span>
+                <span className={styles.optionDescription} data-slot="toggle-group-description" id={`${uid}-description`}>
+                  {description}
+                </span>
+              </>
+            ) : (
+              children
+            )}
           </span>
-          {ctx.type === "multiple" && (
+          {ctx.type === "multiple" ? (
             <span className={styles.optionCheck} data-slot="toggle-group-check" aria-hidden="true">
-              <svg viewBox="0 0 16 16" fill="none">
-                <path
-                  d="M3.5 8.5 6.5 11.5 12.5 4.5"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
+              <CheckIcon weight="bold" />
             </span>
-          )}
+          ) : ctx.mark ? (
+            <span className={styles.optionMark} data-slot="toggle-group-mark" aria-hidden="true">
+              <CheckIcon weight="bold" />
+            </span>
+          ) : null}
         </>
       ) : (
         wrapLabel(children)
