@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.61.0
+
+### Minor Changes
+
+- d1b2ebf: Profile Menu takes `trigger="avatar"` for a top bar's account menu: the round avatar alone, ringed in the theme's key colour (`--primary`) on hover and while open, opening downward and aligned to the end, with the name and email in the menu header. The avatar menu renders in place beside its trigger and draws on Popover's skin: the `popover` hooks (corners, inset, fill, shadow, row fill) and, inside `data-glass="on"`, the glass layer's fill, lift, blur, shadow and ink; on a plain page it stays solid with no blur. Over a photo the avatar itself takes the glass control fill, blur and ink. Its rows sit softly in the panel with a gap between them. Profile Menu also takes `defaultOpen` (its first open leaves focus where it is) and `modal` (default true). `DropdownMenuContent` gains an optional `container`, the element it portals into (default: the end of the page). The default `"row"` trigger is unchanged.
+- 503a779: `npx visor add photo-backdrop` ships PhotoBackdrop, the photo behind a surface, lifted from the Honcho kit's backdrop without its `motion` dependency. Changing `current` fades the new background in over the last once its photo has loaded, settling from a 1.06 zoom, as CSS animations (`--photo-backdrop-*` variables, defaulting to the theme's `--motion-duration-page` and in-out curve); reduced motion drops the zoom and makes the fade near-instant. Upcoming photos preload one at a time at low priority after the photo on screen, `focal` keeps the subject in frame, `--photo-backdrop-fallback` shows until the first photo loads, and a `srcSet` builder prop replaces Honcho's file naming. With no `current` it renders nothing.
+  
+  visor-core's glass switch now also matches any element holding a PhotoBackdrop as a direct child (`:has(> [data-slot="photo-backdrop"])`), so glass is on exactly where a photo is drawn.
+
 ## 1.60.0
 
 ### Minor Changes
