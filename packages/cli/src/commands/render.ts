@@ -188,6 +188,24 @@ export const FIXTURES: Record<string, Record<string, Fixture>> = {
     },
   },
   tabs: {
+    // VI-848: a wrapped keyed row, active tab on the second line.
+    keyed: {
+      export: "Tabs",
+      props: `(function () {
+        var h = React.createElement;
+        var icon = function () { return ${ICON_X}; };
+        var names = ["DJ", "Producer", "Vocalist", "Dancer", "Selector"];
+        return {
+          defaultValue: "Dancer",
+          style: { maxWidth: 320 },
+          children: [
+            h(__mod.TabsList, { key: "l", variant: "keyed" }, names.map(function (n) {
+              return h(__mod.TabsTrigger, { key: n, value: n }, [icon(), n]);
+            })),
+          ],
+        };
+      })()`,
+    },
     line: {
       export: "Tabs",
       props: `(function () {

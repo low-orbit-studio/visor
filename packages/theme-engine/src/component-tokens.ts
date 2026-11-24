@@ -697,7 +697,7 @@ const scrollHintFamily: ComponentTokenFamily = {
 const tabsFamily: ComponentTokenFamily = {
   family: "tabs",
   prefix: "tabs",
-  description: "Tab rail and trigger treatment, for both the segmented (`default`) and underlined (`line`) variants.",
+  description: "Tab rail and trigger treatment, for the segmented (`default`), underlined (`line`) and sliding-highlight (`keyed`) variants.",
   tokens: [
     { key: "list-radius", property: "border-radius", description: "Tab-rail corner rounding.", consumers: at(TABS, "var(--radius-full, 9999px)") },
     { key: "list-height", property: "height", description: "Tab-rail height.", consumers: at(TABS, "2.25rem") },
@@ -717,6 +717,10 @@ const tabsFamily: ComponentTokenFamily = {
     { key: "trigger-active-shadow", property: "box-shadow", description: "Active trigger elevation.", consumers: at(TABS, "var(--shadow-sm)") },
     { key: "indicator-height", property: "height", description: "Underline indicator thickness.", consumers: at(TABS, "2px") },
     { key: "indicator-color", property: "background-color", description: "Underline indicator colour.", consumers: at(TABS, "var(--text-primary, #111827)") },
+    { key: "keyed-key", property: "border-color, color", description: "Keyed variant key colour: the sliding highlight's 1px edge and the active tab's icon.", consumers: at(TABS, "var(--surface-accent-default)") },
+    { key: "keyed-fill", property: "background-color", description: "Keyed variant highlight fill. Unbound, the key colour at 10%.", consumers: at(TABS, "color-mix(in srgb, var(--_keyed-key) 10%, transparent)") },
+    { key: "keyed-ink", property: "color", description: "Keyed variant label ink: full on the active tab, 80% on hover, 55% at rest.", consumers: at(TABS, "var(--text-primary)") },
+    { key: "keyed-radius", property: "border-radius", description: "Keyed variant tab and highlight corners.", consumers: at(TABS, "var(--radius-md, 0.375rem)") },
   ],
 };
 

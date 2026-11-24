@@ -24,10 +24,16 @@ const tabsListVariants = cva(styles.list, {
     variant: {
       default: styles.listVariantDefault,
       line: styles.listVariantLine,
+      keyed: styles.listVariantKeyed,
+    },
+    size: {
+      default: null,
+      compact: styles.listSizeCompact,
     },
   },
   defaultVariants: {
     variant: "default",
+    size: "default",
   },
 })
 
@@ -38,12 +44,16 @@ export interface TabsListProps
 const TabsList = React.forwardRef<
   React.ComponentRef<typeof TabsPrimitive.List>,
   TabsListProps
->(({ className, variant = "default", children, ...props }, ref) => {
+>(({ className, variant = "default", size = "default", children, ...props }, ref) => {
   const internalRef = React.useRef<HTMLDivElement>(null)
   const [indicatorStyle, setIndicatorStyle] = React.useState<{
     left: number
+    top: number
     width: number
   } | null>(null)
+  // Keyed: the first placement jumps; only later moves slide.
+  const [placed, setPlaced] = React.useState(false)
+  const measured = variant === "line" || variant === "keyed"
 
   // Merge forwarded ref with internal ref
   const mergedRef = React.useCallback(
@@ -59,44 +69,87 @@ const TabsList = React.forwardRef<
   )
 
   const updateIndicator = React.useCallback(() => {
-    if (variant !== "line" || !internalRef.current) return
+    if (!measured || !internalRef.current) return
     const activeTab = internalRef.current.querySelector<HTMLElement>(
-      '[data-state="active"]'
+      '[role="tab"][data-state="active"]'
     )
-    if (activeTab) {
-      setIndicatorStyle({
-        left: activeTab.offsetLeft,
-        width: activeTab.offsetWidth,
-      })
+    if (!activeTab) return
+    const next = {
+      left: activeTab.offsetLeft,
+      top: activeTab.offsetTop,
+      width: activeTab.offsetWidth,
     }
-  }, [variant])
+    setIndicatorStyle((prev) =>
+      prev && prev.left === next.left && prev.top === next.top && prev.width === next.width
+        ? prev
+        : next
+    )
+  }, [measured])
 
   React.useEffect(() => {
-    if (variant !== "line" || !internalRef.current) return
+    const list = internalRef.current
+    if (!measured || !list) return
     updateIndicator()
 
+    // Active tab changes, and tabs added, removed, reordered or relabelled.
     const observer = new MutationObserver(updateIndicator)
-    observer.observe(internalRef.current, {
+    observer.observe(list, {
       attributes: true,
       attributeFilter: ["data-state"],
+      childList: true,
+      characterData: true,
       subtree: true,
     })
+
+    // The row re-wraps when the list resizes; label widths change on font load.
+    const resizeObserver =
+      typeof ResizeObserver === "undefined" ? null : new ResizeObserver(updateIndicator)
+    resizeObserver?.observe(list)
+    const fonts = typeof document !== "undefined" ? document.fonts : undefined
+    fonts?.ready.then(updateIndicator)
+    fonts?.addEventListener?.("loadingdone", updateIndicator)
 
     window.addEventListener("resize", updateIndicator)
     return () => {
       observer.disconnect()
+      resizeObserver?.disconnect()
+      fonts?.removeEventListener?.("loadingdone", updateIndicator)
       window.removeEventListener("resize", updateIndicator)
     }
-  }, [variant, updateIndicator])
+  }, [measured, updateIndicator])
+
+  React.useEffect(() => {
+    if (variant !== "keyed" || !indicatorStyle || placed) return
+    const frame = requestAnimationFrame(() => setPlaced(true))
+    return () => cancelAnimationFrame(frame)
+  }, [variant, indicatorStyle, placed])
+
+  const reducedMotion =
+    typeof window !== "undefined" &&
+    window.matchMedia?.("(prefers-reduced-motion: reduce)").matches
 
   return (
     <TabsPrimitive.List
       ref={mergedRef}
       data-slot="tabs-list"
       data-variant={variant}
-      className={cn(tabsListVariants({ variant }), className)}
+      data-size={variant === "keyed" ? size : undefined}
+      className={cn(tabsListVariants({ variant, size }), className)}
       {...props}
     >
+      {/* Before the triggers, so they paint over the highlight's fill. */}
+      {variant === "keyed" && indicatorStyle && (
+        <span
+          aria-hidden="true"
+          data-slot="tabs-keyed-indicator"
+          className={styles.keyedIndicator}
+          style={{
+            width: indicatorStyle.width,
+            transform: `translate(${indicatorStyle.left}px, ${indicatorStyle.top}px)`,
+            transition: placed && !reducedMotion ? undefined : "none",
+          }}
+        />
+      )}
       {children}
       {variant === "line" && indicatorStyle && (
         <span
