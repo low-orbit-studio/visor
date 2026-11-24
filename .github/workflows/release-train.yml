@@ -1,0 +1,71 @@
+name: Release Train
+
+# VI-852. Visor releases once a day instead of once per change. Kit PRs merge to
+# main as fast as ever and refresh the "Version Packages" PR (release.yml). At
+# 5PM New York time this workflow merges that PR when its CI is green; the merge
+# pushes to main and release.yml publishes. No open PR means nothing is pending,
+# and the run does nothing.
+#
+# Release early (Justin's call only): `gh workflow run release-train.yml`.
+#
+# A failed run (red CI, CI still running at 5PM, a refused PR) opens a GitHub
+# issue through stale-version-packages-pr.yml, and the next good train closes it.
+#
+# Like scheduled-workflow-watch: no `npm ci`, no build. Checkout, then node, so
+# nothing can fail before the train's own checks (W033).
+
+on:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Verify and print the plan without merging"
+        type: boolean
+        default: false
+  schedule:
+    # GitHub cron is UTC. 21:00 UTC is 5PM in New York during daylight saving
+    # (EDT), 22:00 UTC is 5PM in standard time (EST). The gate step keeps the
+    # one that is 5PM today and skips the other.
+    - cron: "0 21 * * *"
+    - cron: "0 22 * * *"
+
+concurrency:
+  group: release-train
+  cancel-in-progress: false
+
+jobs:
+  train:
+    name: Merge the Version Packages PR
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Gate on 5PM New York
+        id: gate
+        env:
+          SCHEDULE: ${{ github.event.schedule }}
+        run: node scripts/release-train.mjs --gate >> "$GITHUB_OUTPUT"
+
+      # stale-version-packages-pr.yml reads this step's conclusion by name: success
+      # closes the train-failure issue, skipped (the off-hour cron) leaves it alone.
+      - name: Run the train
+        if: steps.gate.outputs.go == 'true'
+        env:
+          # A PAT, not GITHUB_TOKEN: a merge made with the built-in token does not
+          # trigger release.yml (GitHub's loop prevention), so nothing would publish.
+          GITHUB_TOKEN: ${{ secrets.CHANGESETS_PAT }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          # Null on a schedule trigger, which reads as "not true" below.
+          DRY_RUN: ${{ inputs.dry_run }}
+        # Explicit `shell: bash` adds pipefail, so a refusal still fails the step through tee.
+        shell: bash
+        run: |
+          ARGS=()
+          if [ "$DRY_RUN" = "true" ]; then
+            ARGS+=(--dry-run)
+          fi
+          node scripts/release-train.mjs "${ARGS[@]}" | tee -a "$GITHUB_STEP_SUMMARY"
