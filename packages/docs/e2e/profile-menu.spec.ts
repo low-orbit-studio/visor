@@ -138,6 +138,16 @@ for (const width of [1440, 390]) {
       for (const row of rows) expect(alpha(await style(row, "background-color"))).toBeLessThan(1);
       const [a, b] = await Promise.all(rows.map((r) => r.boundingBox()));
       expect(b!.y - (a!.y + a!.height)).toBeGreaterThanOrEqual(8);
+      // And they keep their own soft corners, never squared by the panel's inset (VI-838).
+      const md = await menu.evaluate((n) => {
+        const probe = document.createElement("span");
+        probe.style.borderRadius = "var(--radius-md)";
+        n.appendChild(probe);
+        const r = getComputedStyle(probe).borderTopLeftRadius;
+        probe.remove();
+        return r;
+      });
+      expect(await style(rows[0], "border-top-left-radius")).toBe(md);
 
       if (width === 390) {
         const fits = await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth);
