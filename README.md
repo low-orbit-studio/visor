@@ -112,11 +112,11 @@ npx visor add button input label card
 
 The registry ships 88+ UI components across 6 categories, plus admin compounds, blocks, and hooks.
 
-**Form (28)**
-`billing-slider` · `button` · `calendar` · `checkbox` · `combobox` · `date-picker` · `field` · `fieldset` · `file-upload` · `form` · `input` · `label` · `number-input` · `otp-input` · `password-input` · `phone-input` · `photo-picker` · `position-picker` · `radio-group` · `search-input` · `select` · `slider` · `slider-control` · `switch` · `tag-input` · `textarea` · `time-picker` · `toggle-group`
+**Form (30)**
+`billing-slider` · `button` · `calendar` · `checkbox` · `combobox` · `date-picker` · `field` · `fieldset` · `file-upload` · `form` · `input` · `label` · `number-input` · `otp-input` · `password-input` · `phone-input` · `photo-drop` · `photo-picker` · `position-picker` · `radio-group` · `scroll-hint` · `search-input` · `select` · `slider` · `slider-control` · `switch` · `tag-input` · `textarea` · `time-picker` · `toggle-group`
 
-**Data Display (14)**
-`accordion` · `avatar` · `carousel` · `code-block` · `collapsible` · `heading` · `image` · `layer-chart` · `meter` · `progress` · `proportion-bar` · `separator` · `skeleton` · `text` · `timeline`
+**Data Display (17)**
+`accordion` · `animated-title` · `avatar` · `carousel` · `code-block` · `collapsible` · `heading` · `image` · `layer-chart` · `meter` · `progress` · `proportion-bar` · `reach-rings` · `rich-text` · `separator` · `skeleton` · `text` · `timeline`
 
 **Navigation (6)**
 `bottom-nav` · `breadcrumb` · `command` · `navbar` · `pagination` · `stepper`
@@ -347,7 +347,7 @@ emits no extra CSS at all. Bind one and every consuming surface follows.
 
 Families: `table` · `data-table` · `chip` · `badge` · `status-badge` ·
 `filter-bar` · `page-header` · `empty-state` · `banner` · `sidebar` · `tabs` ·
-`skeleton` · `spinner` · `checkbox` · `switch` · `toggle-group` · `radio-card` · `tooltip` · `action-row` · `glass` · `admin-ui`. The full token list, with each
+`skeleton` · `spinner` · `stepper` · `checkbox` · `switch` · `toggle-group` · `radio-card` · `radio-step` · `reach-rings` · `tooltip` · `action-row` · `glass` · `admin-ui`. The full token list, with each
 one's fallback, is in [Component Tokens](https://visor.design/docs/themes/component-tokens)
 and in [`docs/token-rules.md`](./docs/token-rules.md).
 
@@ -356,7 +356,7 @@ and in [`docs/token-rules.md`](./docs/token-rules.md).
 Glass is a switch, off by default. Set `data-glass="on"` on the container a photo
 sits behind, and `data-glass="off"` to turn a subtree back to solid. A theme binds
 its glass per tone under `components.glass` (`fill`, `blur`, `edge`, `lift`,
-`shadow`, `ink`, and `control-fill`, `control-hover-fill`, `control-ring`,
+`shadow`, `ink`, `ink-shadow`, and `control-fill`, `control-hover-fill`, `control-ring`,
 `control-ink`, `control-blur` for controls). Components read the switch's
 `var(--glass-on-<key>, <solid value>)`, so a plain page keeps its solid surfaces and
 borders and renders no `backdrop-filter`. See [Glass](https://visor.design/docs/themes/glass).

@@ -53,7 +53,7 @@ props:
   - name: size
     type: '"compact" | "contract"'
     default: '"compact"'
-    description: '"compact" is the 10px row meter; "contract" is the 30px meter with a thinner used bar.'
+    description: '"compact" is the 10px row meter; "contract" is the 30px pill meter with a thinner pill bar inset 9px all round.'
   - name: overflow
     type: '"alert" | "ink"'
     default: '"alert"'

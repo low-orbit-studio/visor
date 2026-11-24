@@ -17,7 +17,8 @@ why: >
   apps. It owns the localStorage keys (visor-theme, visor-color-mode) so the
   no-flash script in the host layout can restore selections before paint. The
   extras slot is the seam through which apps mount dev-only chrome without
-  Visor depending on dev tools.
+  Visor depending on dev tools. The active option's corners are the segment
+  track's radius minus its padding, so they stay concentric (VI-837).
 
 props:
   - name: themes

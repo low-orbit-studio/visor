@@ -37,6 +37,7 @@ import {
   generateCornerShapeDecls,
   generateOptInMotionDurationDecls,
   CORNER_SHAPE_BINDING,
+  SQUIRCLE_FALLBACK,
   DEFAULT_EASING_OUT,
 } from "../generate-css.js";
 import { generateFontMetricDecls } from "../font-metrics.js";
@@ -656,7 +657,7 @@ export function docsAdapter(
   // VI-796: corner-shape binding, lowest layer, only for `corners: squircle`.
   const baseLayer =
     input.config.corners === "squircle"
-      ? wrapInLayer("visor-base", `${sectionComment("Base: corner shape")}\n${CORNER_SHAPE_BINDING}`)
+      ? wrapInLayer("visor-base", `${sectionComment("Base: corner shape")}\n${CORNER_SHAPE_BINDING}\n\n${SQUIRCLE_FALLBACK}`)
       : "";
   const layerBlocks = [baseLayer, semanticLayer, brandLayer, adaptiveLayer].filter(Boolean);
   return head + LAYER_ORDER + "\n\n" + layerBlocks.join("\n\n") + "\n";

@@ -23,6 +23,7 @@ import {
   block,
   header,
   CORNER_SHAPE_BINDING,
+  SQUIRCLE_FALLBACK,
 } from "../generate-css.js";
 import { collectBrandPassthrough } from "../overrides.js";
 import { generateBrandPassthroughCss } from "./brand-passthrough.js";
@@ -196,6 +197,8 @@ export function nextjsAdapter(
       baseLines.push("");
       baseLines.push(sectionComment("Base: corner shape"));
       baseLines.push(CORNER_SHAPE_BINDING);
+      baseLines.push("");
+      baseLines.push(SQUIRCLE_FALLBACK);
     }
 
     lines.push(wrapInLayer("visor-base", baseLines.join("\n").trim()));

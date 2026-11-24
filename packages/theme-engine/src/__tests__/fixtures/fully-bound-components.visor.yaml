@@ -209,6 +209,12 @@ components:
     divider-color: "#3d0a2b"
     divider-hover-color: "#00aaff"
     divider-active-color: "#ff7700"
+  scroll-hint:
+    bg: "#fff3d6"
+    border: "#5a2d82"
+    color: "#1d4f3a"
+    glass-bg: "rgba(250, 240, 230, 0.7)"
+    gap: "40px"
   dialog:
     max-width: "760px"
     radius: "56px"
@@ -231,6 +237,9 @@ components:
       dark: "transparent"
     shadow: "0 48px 120px -48px #000"
     ink: "#ffffff"
+    scrim: "#0000009e"
+    scrim-ink: "#fffff0"
+    ink-shadow: "0 0 10px #0000008c"
     control-fill:
       light: "#ffffff24"
       dark: "#ffffff3d"
@@ -293,6 +302,15 @@ components:
     label-font-size: "37px"
     label-font-weight: "900"
     label-color: "#ff00aa"
+  stepper:
+    rail-gap: "3px"
+    rail-padding: "7px 4px"
+    rail-mark-gap: "37px"
+    rail-font-size: "37px"
+    rail-font-weight: "900"
+    rail-letter-spacing: "0.3em"
+    rail-mark-size: "37px"
+    rail-mark-active-width: "73px"
   checkbox:
     size: "37px"
     radius: "3px"
@@ -519,6 +537,19 @@ components:
     ring: "#c7b8d6"
     ring-selected: "#ffcc00"
     dot: "#ff00aa"
+  radio-step:
+    key: "#2ce0e6"
+    well: "#000000"
+    well-radius: "10px"
+    ink: "#757575"
+    icon-size: "22px"
+    selected-bg: "#103a3b"
+    selected-border: "#1b8c90"
+  reach-rings:
+    key: "#2ce0e6"
+    ring: "#2a2a2a"
+    glyph: "#808080"
+    core-ink: "#000000"
   tooltip:
     bg: "#ff00aa"
     text: "#2b0a3d"
@@ -643,5 +674,7 @@ components:
     panel-border-color: "#ff00aa"
     panel-radius: "3px"
     panel-padding: "19px"
+  rich-text:
+    link-underline: "#ff00aa"
   admin-ui:
     marquee-family: "\"Courier New\", monospace"

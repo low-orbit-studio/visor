@@ -6,12 +6,18 @@
    760px and under), --photo-picker-gap, --photo-picker-padding,
    --photo-picker-max-height, --photo-picker-radius, --photo-picker-ring,
    --photo-picker-ring-selected, --photo-picker-ease, and the draw wave's
-   --photo-picker-draw-duration, --photo-picker-draw-gap, --photo-picker-draw-rise. */
+   --photo-picker-draw-duration, --photo-picker-draw-gap, --photo-picker-draw-rise.
+
+   Colour and corners are the theme's: the chosen ring is the key colour
+   (--interactive-primary-bg), the resting ring the theme border, and the
+   thumbnails take the theme's corner shape (squircle in honcho-backstage,
+   VI-796). The grid draws no surface of its own, so glass is the panel's
+   or popover's it sits in. */
 .root {
-  /* Backstage's --ease. No Visor token carries this curve; intentional. */
-  --_ease: var(--photo-picker-ease, cubic-bezier(0.22, 1, 0.36, 1));
-  /* The menu's wave: Backstage's 800ms rise and 120ms beat at 40%, rising 10px. */
-  --_draw-duration: var(--photo-picker-draw-duration, calc(var(--motion-duration-800, 800ms) * 0.4));
+  /* The enter curve (VI-796), which carries Backstage's --ease in the honcho-backstage theme. */
+  --_ease: var(--photo-picker-ease, var(--motion-easing-enter, cubic-bezier(0.22, 1, 0.36, 1)));
+  /* The menu's wave: Backstage's 800ms rise (the theme's enter duration, VI-796) and 120ms beat at 40%, rising 10px. */
+  --_draw-duration: var(--photo-picker-draw-duration, calc(var(--motion-duration-enter, var(--motion-duration-800, 800ms)) * 0.4));
   --_draw-gap: var(--photo-picker-draw-gap, 48ms);
   --_draw-rise: var(--photo-picker-draw-rise, 10px);
   display: grid;

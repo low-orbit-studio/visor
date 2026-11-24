@@ -1,0 +1,59 @@
+name: RichText
+description: Safe, tiny markup for text that comes from a database — *bold*, _italic_, [links](https://…), blank-line paragraphs and "- " lists. Nothing else renders; raw HTML shows as plain text.
+category: typography
+# The Flutter RichText (components/flutter/visor_rich_text) is a different widget that only shares
+# the name (it auto-links bare URLs). The two are not siblings, so their manifests are not synced.
+flutter_sibling: none
+
+when_to_use:
+  - Copy, hints and descriptions stored in a database that need bold, italic, a link or a short list
+  - Form intros and field hints (FormDeck), sheet bodies and itinerary notes that editors write in plain text
+  - Text inside a <p> or <label> — paragraphs and lists render as block spans, so the nesting stays valid
+
+when_not_to_use:
+  - Long-form documents with headings, tables, images or code (use a Markdown renderer)
+  - Authored HTML you need to render as HTML — RichText never parses HTML, by design
+  - Static copy you write in JSX (use Text and plain elements)
+
+why: >
+  Text that comes from a database is a trust boundary. RichText parses only
+  five constructs with one regular expression and builds React elements from
+  them, so it never sets innerHTML: any other character, tags included, is
+  escaped text. A link renders only for http, https and mailto, opens in a new
+  tab with rel="noreferrer", and any other scheme (javascript:, data:, file:,
+  protocol-relative or relative) renders its label as plain text. Link text
+  inherits the host's ink and its underline is a theme value, so it reads right
+  in every look, over a photo too. It draws no surface and no glass.
+
+props:
+  - name: text
+    type: string
+    required: true
+    description: 'The markup: `*bold*`, `_italic_`, `[label](https://…)`, a blank line between paragraphs, a single newline for a line break, and `- ` at the start of a line for a list item.'
+  - name: elements
+    type: boolean
+    default: "false"
+    description: Render plain p, ul, li, a, b and i with no classes, for a host that styles them itself. Off, paragraphs and lists are block spans (role="list"/"listitem") and bold and italic are strong and em.
+  - name: dashes
+    type: boolean
+    default: "false"
+    description: Draw every en dash at en-dash width. Satoshi's en dash runs as long as an em dash; other faces do not need it.
+
+exports:
+  - RichText
+  - RichTextProps
+  - RichOptions
+  - dashes
+
+theme_hooks:
+  - name: --rich-text-link-underline
+    description: Link underline colour at rest, bound by a theme under `components.rich-text.link-underline`. Default the host's ink at 40%.
+
+dependencies: []
+
+preview_url: "https://visor.loworbit.studio/docs/components/typography/rich-text"
+
+example: |
+  <p>
+    <RichText text={"Doors open at *6 PM* – bring _your_ ticket.\n\n- Read the [guide](https://example.com)\n- Write to [us](mailto:help@example.com)"} dashes />
+  </p>

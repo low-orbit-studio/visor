@@ -394,6 +394,25 @@ export const propsData: Record<string, PropDef[]> = {
       default: 'false',
       description: 'Disables all radio items in the group.',
     },
+    {
+      name: 'variant',
+      type: "'default' | 'card' | 'stepped'",
+      default: "'default'",
+      description: 'default draws a dot beside a label; card draws each item as a card with icon, title and description; stepped draws one row of equal tiles in a well, each an icon over a label.',
+    },
+    {
+      name: 'size',
+      type: "'default' | 'compact'",
+      default: "'default'",
+      description: 'Stepped variant only. compact sets the tile labels at 10px instead of 11px.',
+    },
+  ],
+
+  'reach-rings': [
+    { name: 'levels', type: 'number', required: true, description: 'How many rings, the filled core included.' },
+    { name: 'value', type: 'number', required: true, description: 'How far the reach goes: 0 (the core alone) to levels - 1 (every ring). value + 1 rings are lit, from the centre out; -1 lights none.' },
+    { name: 'icon', type: 'ReactNode', description: 'The glyph in the core, passed in by the consumer.' },
+    { name: 'size', type: "'default' | 'compact'", default: "'default'", description: 'default is 148px across; compact is 112px.' },
   ],
 
   'billing-slider': [
@@ -481,6 +500,12 @@ export const propsData: Record<string, PropDef[]> = {
       default: 'true',
       description: 'Pin to the foot of the viewport and publish --bottom-nav-height on the document root. `false` lays the bar out in flow.',
     },
+  ],
+
+  'scroll-hint': [
+    { name: 'boxRef', type: 'RefObject<HTMLElement | null>', required: true, description: 'The scroll box the hint sits in. Render the hint as its last child.' },
+    { name: 'keepGoing', type: 'KeepGoing', required: true, description: 'What useKeepGoing returns for the same box. `more` shows the pill; a click calls `go()`, or pages the box down by 0.8 of its height.' },
+    { name: 'label', type: 'ReactNode', default: '"More Below"', description: "The pill's words." },
   ],
 
   'segmented-control': [
@@ -985,6 +1010,43 @@ export const propsData: Record<string, PropDef[]> = {
     },
   ],
 
+  'animated-title': [
+    {
+      name: 'text',
+      type: 'string',
+      description: 'The title. Split into words on single spaces.',
+    },
+    {
+      name: 'as',
+      type: "'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'p' | 'span'",
+      default: "'h2'",
+      description: 'The element to render.',
+    },
+    {
+      name: 'animation',
+      type: "'rise' | 'blur' | 'weight'",
+      default: "'blur'",
+      description: 'How each word arrives: up out of a mask, up into focus, or from light to settled weight.',
+    },
+    {
+      name: 'format',
+      type: '(word: string) => ReactNode',
+      description: 'Draws each word, for example swapping hyphens for dashes.',
+    },
+    {
+      name: 'play',
+      type: 'boolean',
+      default: 'true',
+      description: "false holds every word on its first frame. Replay by changing the component's key.",
+    },
+    {
+      name: 'delay',
+      type: 'number',
+      default: '0',
+      description: 'Milliseconds before the first word starts. Sets --animated-title-delay.',
+    },
+  ],
+
   heading: [
     {
       name: 'level',
@@ -1289,9 +1351,9 @@ export const propsData: Record<string, PropDef[]> = {
     },
     {
       name: 'variant',
-      type: "'default' | 'prominent'",
+      type: "'default' | 'prominent' | 'rail'",
       default: "'default'",
-      description: 'Visual treatment. "default" is the standard step indicator for multi-step forms. "prominent" adds a primary-soft active-row tint, a concentric halo, a filled pulse dot in the active bullet, and a primary-tinted complete rail — use it vertically as a primary derivation spine or navigation surface.',
+      description: 'Visual treatment. "default" is the standard step indicator for multi-step forms. "prominent" adds a primary-soft active-row tint, a concentric halo, a filled pulse dot in the active bullet, and a primary-tinted complete rail — use it vertically as a primary derivation spine or navigation surface. "rail" is a side list of form sections: each trigger is a row-wide button with a dot mark and its label (the children), the current mark stretches to a pill, and over a photo (data-glass="on") the ink is the glass ink in light, and the glass scrim ink (white) with its shadow in dark.',
     },
     {
       name: 'step',
@@ -1314,6 +1376,27 @@ export const propsData: Record<string, PropDef[]> = {
       name: 'className',
       type: 'string',
       description: 'Additional CSS class names to merge onto the element.',
+    },
+  ],
+
+  'rich-text': [
+    {
+      name: 'text',
+      type: 'string',
+      required: true,
+      description: 'The markup: `*bold*`, `_italic_`, `[label](https://…)`, a blank line between paragraphs, a single newline for a line break, and `- ` at the start of a line for a list item. Everything else, HTML included, is plain text.',
+    },
+    {
+      name: 'elements',
+      type: 'boolean',
+      default: 'false',
+      description: 'Render bare `p`, `ul`, `li`, `a`, `b` and `i` with no classes, for a host that styles them. Off, paragraphs and lists are block spans (`role="list"`/`"listitem"`) and bold and italic are `strong` and `em`.',
+    },
+    {
+      name: 'dashes',
+      type: 'boolean',
+      default: 'false',
+      description: "Draw every en dash at en-dash width (Satoshi's runs as long as an em dash). Also exported as the `dashes(text)` function.",
     },
   ],
 
@@ -2043,6 +2126,26 @@ export const propsData: Record<string, PropDef[]> = {
       type: 'React.InputHTMLAttributes<HTMLInputElement>',
       description: 'All standard HTML input attributes are forwarded.',
     },
+  ],
+
+  'photo-drop': [
+    { name: 'id', type: 'string', description: "The file input's id, for a <label htmlFor>. Required." },
+    { name: 'src', type: 'string', description: "The picked photo's URL (in file mode, the file's name), or empty. Required." },
+    { name: 'onPick', type: '(url: string, file: File) => void', description: 'Called with a preview object URL and the picked File, so you can upload it.' },
+    { name: 'size', type: 'number', default: '220 (128 in file mode)', description: 'Side of the tile, in px.' },
+    { name: 'file', type: '{ icon: ReactNode; accept?: string; onFile: (file: File) => void; onClear: () => void }', description: "File mode: the tile shows the icon, the file's name sits beside it, and Remove calls onClear." },
+    { name: 'progress', type: 'number | "indeterminate"', description: 'Uploading: 0 to 1, drawn as a ring along the edge in the key colour, or "indeterminate" for a sweeping arc. The tile takes no new file while it uploads.' },
+    { name: 'failed', type: 'boolean', description: 'The upload stopped: an error edge, "didn\'t upload" and Try Again. A tap still picks a new file.' },
+    { name: 'onRetry', type: '() => void', description: 'Called by Try Again.' },
+    { name: 'locked', type: 'boolean', description: 'Locked: the photo or file shows with a lock badge, "Locked" and no input.' },
+    { name: 'lockedReason', type: 'ReactNode', description: 'Why it is locked, shown under "Locked".' },
+    { name: 'readOnly', type: 'boolean', description: 'Read-only: the photo (or file name) only, with a quiet rim, no hint and no input.' },
+    { name: 'readOnlyReason', type: 'ReactNode', description: 'Read-only with a note, shown under "Read-Only" (e.g. why it can\'t be changed). Without it, read-only shows no caption.' },
+    { name: 'alt', type: 'string', default: '""', description: "The photo's alt text. Give one when the photo means something, as in read-only and locked." },
+    { name: 'invalid', type: 'boolean', description: 'Sets aria-invalid on the input and draws the edge in the error colour.' },
+    { name: 'required', type: 'boolean', description: 'Sets aria-required on the input.' },
+    { name: 'describedBy', type: 'string', description: "More ids for the input's aria-describedby (a field's hint or error), after the tile's own hint." },
+    { name: '...props', type: 'React.HTMLAttributes<HTMLDivElement>', description: 'Standard div attributes are forwarded to the row (tile and hint).' },
   ],
 
   'photo-picker': [

@@ -6,6 +6,10 @@ description: A grid of photo thumbnails, one chosen, with a staggered draw wave 
 import { ComponentPreview } from '@/components/preview';
 import { PropsTable } from '@/components/props-table';
 import { PhotoPickerDefaultDemo, PhotoPickerPopoverDemo } from '@/components/ui/photo-picker-demos';
+import { FiveLooks } from '@/components/looks/five-looks';
+import { PRIVATE_THEMES } from '@/lib/private-themes';
+
+export const HONCHO_BACKSTAGE = PRIVATE_THEMES.some((t) => t.slug === 'honcho-backstage');
 
 ## Default
 
@@ -28,6 +32,24 @@ The picker is only the grid, so it sits in whatever popover or panel you bring. 
 >
   <PhotoPickerPopoverDemo />
 </ComponentPreview>
+
+## In Five Looks
+
+The grid takes its colours and corners from the theme: the resting ring is the theme's border, the chosen ring its key colour (`--interactive-primary-bg`), and the thumbnails take the theme's corner shape. It draws no surface of its own, so over a photo it sits in a glass panel or popover (see [Glass](/docs/themes/glass)). Here it is in each look on the theme picked in the docs; the Photo looks turn glass on over a photo.
+
+<FiveLooks specimen="photo-picker" height={300} />
+
+{HONCHO_BACKSTAGE && (
+  <section data-slot="honcho-backstage-looks" aria-label="Honcho Backstage">
+    <h3>Honcho Backstage</h3>
+    <p>
+      Backstage's Photo menu grid from the theme alone: squircle thumbnails and the pink key ring on the chosen one.
+      Today is the <code>honcho</code> theme; the other four looks are <code>honcho-backstage</code>. Over a photo the
+      grid sits on a glass panel.
+    </p>
+    <FiveLooks specimen="photo-picker" theme="honcho-backstage" todayTheme="honcho" height={300} />
+  </section>
+)}
 
 ## Installation
 
@@ -65,8 +87,8 @@ const photos = [
 | `--photo-picker-radius` | `--radius-xl` | Thumbnail corner radius |
 | `--photo-picker-ring` | `--border-default` | The 1px inset ring before a thumbnail loads |
 | `--photo-picker-ring-selected` | `--interactive-primary-bg` | The chosen thumbnail's 2px ring |
-| `--photo-picker-ease` | `cubic-bezier(0.22, 1, 0.36, 1)` | The wave's and the hover's easing |
-| `--photo-picker-draw-duration` | 320ms (`--motion-duration-800` × 0.4) | Each thumbnail's rise |
+| `--photo-picker-ease` | `--motion-easing-enter` | The wave's and the hover's easing |
+| `--photo-picker-draw-duration` | 320ms (`--motion-duration-enter`, else `--motion-duration-800`, × 0.4) | Each thumbnail's rise |
 | `--photo-picker-draw-gap` | `48ms` | The beat between neighbours |
 | `--photo-picker-draw-rise` | `10px` | How far each thumbnail rises |
 

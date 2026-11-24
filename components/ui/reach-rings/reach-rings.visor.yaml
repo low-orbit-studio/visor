@@ -1,0 +1,64 @@
+name: ReachRings
+description: Concentric rings, the innermost a filled core holding an icon, lit from the centre out to show how far something reaches. Decorative (aria-hidden); the control beside it carries the semantics.
+extends: HTMLDivElement
+category: data-display
+
+when_to_use:
+  - Showing how far a setting reaches (who can see something, how wide a share goes) beside the control that sets it
+  - A hero mark for a level picked from a small ordered set (3-5 levels)
+
+when_not_to_use:
+  - Progress toward a goal (use Progress or SegmentedProgress)
+  - Anything that must be read on its own; the rings are decorative and announce nothing
+
+why: >
+  A stepped picker names each level, but not how much wider each one is than
+  the last. ReachRings draws the levels as rings around the subject and lights
+  them from the centre out, so the reach reads at a glance. It is aria-hidden:
+  the radio group beside it holds the state and the names, and the rings only
+  echo it.
+
+variants:
+  size: [default, compact]
+
+props:
+  - name: levels
+    type: number
+    required: true
+    description: How many rings, the filled core included.
+  - name: value
+    type: number
+    required: true
+    description: How far the reach goes, 0 (the core alone) to levels - 1 (every ring). value + 1 rings are lit, from the centre out; -1 lights none.
+  - name: icon
+    type: ReactNode
+    description: The glyph in the core, passed in by the consumer.
+  - name: size
+    type: '"default" | "compact"'
+    default: '"default"'
+    description: default is 148px across with 20px steps; compact is 112px with 15px steps (at 4 levels).
+
+dependencies:
+  - "@loworbitstudio/visor-core"
+
+preview_url: "https://visor.design/docs/components/data-display/reach-rings"
+
+design_ref: "https://github.com/low-orbit-studio/blacklight/blob/main/blacklight-planning/public/prototypes/visibility-picker-refresh/index.html"
+
+example: |
+  <ReachRings levels={4} value={2} icon={<UserIcon weight="bold" />} />
+  <ReachRings levels={4} value={0} icon={<UserIcon weight="bold" />} size="compact" />
+
+theme_hooks:
+  - name: --reach-rings-key
+    description: >
+      Lit ring stroke, halo and wash, and the filled core. Theme key: components.reach-rings.key.
+  - name: --reach-rings-ring
+    description: >
+      Unlit ring stroke. Theme key: components.reach-rings.ring.
+  - name: --reach-rings-glyph
+    description: >
+      Core icon while the core is unlit. Theme key: components.reach-rings.glyph.
+  - name: --reach-rings-core-ink
+    description: >
+      Core icon on the lit core. Theme key: components.reach-rings.core-ink.

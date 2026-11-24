@@ -25,8 +25,9 @@ export const focusRingTokens: Rule = {
       for (let i = 0; i < lines.length; i++) {
         const line = lines[i];
         // Strip :not(...) wrappers so selectors like :hover:not(:focus-visible)
-        // don't start a phantom focus block.
-        const lineWithoutNot = line.replace(/:not\([^)]*\)/g, '');
+        // don't start a phantom focus block, and :has(...) ones: an ancestor that
+        // wakes when a child has focus (VI-812's tile) is not where the ring is drawn.
+        const lineWithoutNot = line.replace(/:(not|has)\([^)]*\)/g, '');
 
         if (/:focus-visible/.test(lineWithoutNot)) {
           inFocusBlock = true;

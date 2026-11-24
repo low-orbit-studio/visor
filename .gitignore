@@ -129,3 +129,6 @@ packages/docs/public/themes/*.visor.yaml
 .env*
 
 /scripts-playbook
+
+# VI-813 review photos are private Honcho client photos (ruling VI-829 q-4)
+packages/docs/public/vi-813-photos/

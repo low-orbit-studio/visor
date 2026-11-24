@@ -1,5 +1,26 @@
 # @loworbitstudio/visor-core
 
+## 0.19.1
+
+### Patch Changes
+
+- 698b375: VI-841: `forceSquircleFallback(css)`, a test-only hook that draws the Safari squircle fallback in any engine. It turns every `@supports not (corner-shape: squircle)` gate into `@media all` and turns native `corner-shape` off, so fallback tests keep working in a Playwright WebKit that draws `corner-shape` natively (1.64+). Production CSS is unchanged. The concentric scan (`visor-core/test-utils`) now reads a box drawing the fallback as a squircle even where the engine also reports a native corner.
+
+## 0.19.0
+
+### Minor Changes
+
+- 2556e35: **Visual change to defaults.** Nested corners are now concentric by default. In SegmentedControl, the ToggleGroup `outline` track, the default Tabs list and ThemeSwitcher, the selected item's radius (the item, the sliding indicator, the hover fill and the focus ring) is now worked out in CSS as the track radius minus the track's padding and border. A theme can no longer let the two drift apart. On the default theme, SegmentedControl and outline ToggleGroup items go from 6px to 3px at sm and md, from 8px to 7px at lg and from 4px to 3px at xs. Tabs triggers are now pills inside the pill list. ThemeSwitcher is still a pill inside a pill. A theme that binds only `--segmented-control-radius` (or `--tabs-list-radius`) gets matching inner corners. `--segmented-control-radius: 999px` on its own now gives a round switch.
+  
+  `--segmented-control-item-radius`, `--segmented-control-indicator-radius`, `--toggle-group-xs-item-radius` and `--tabs-trigger-radius` still work as explicit overrides. Leave them unset to get the derived radius. The default ToggleGroup variant (no track) and the line Tabs variant are unchanged. `@loworbitstudio/visor-core/test-utils` exports `expectConcentric(outer, inner)` and `measureConcentric`. They measure the gap from the bounding rects and check inner = max(0, outer − gap) to within 0.5px. Re-copy with `npx visor add segmented-control toggle-group tabs theme-switcher --overwrite`.
+- c45c2fa: **Nested corners are concentric across the catalog (VI-838).** Tabs triggers and the ThemeSwitcher's end segment now sit the same distance from the track's end as from its top. The SegmentedControl / ToggleGroup sliding indicator is placed from fractional rects (it was up to 1px off one end) and follows its items when they resize, for example when web fonts land. The contract Meter's track is now a pill, with the bar inset 9px all round as a pill inside it (radius derived from the track). BillingSlider's colour layers clip to the rail's rounded ends. Menu items in Select, TimePicker, DropdownMenu, ContextMenu, Menubar and Combobox take the menu radius minus its padding (Select and TimePicker go from 2px to 4px on the default theme), and Menubar triggers fill the bar's height. Re-copy with `npx visor add tabs theme-switcher toggle-group segmented-control meter billing-slider select time-picker dropdown-menu context-menu menubar combobox --overwrite`.
+  
+  `@loworbitstudio/visor-core/test-utils` now exports `scanConcentric`, which finds every rounded box drawn inside another on a page (open shadow roots included) and checks inner = outer − gap with an even gap on both axes. Run it with `page.evaluate(scanConcentric, { root: "main" })`.
+
+### Patch Changes
+
+- db1e285: VI-839: squircle themes draw squircles in Safari. Where `corner-shape` is missing (Safari on macOS and iOS), a `corners: squircle` theme's base layer now defines `--squircle-radius` and `--squircle-clip`, and Button, Dialog, SegmentedControl, ToggleGroup, Meter, Badge and Chip draw the squircle from them: a circle at 0.54 of the radius under a `clip-path: shape()` that trims only what it draws outside the squircle, so focus rings and shadows stay whole, and edges redrawn on a squircle ring layer (`--squircle-ring`). Inputs, cards and tabs stay round in Safari: their halo or shadow hugs the box, which Safari cannot shape to a clip. Chromium and round themes are unchanged. The concentric scan (`visor-core/test-utils`) reads a fallback box as its squircle.
+
 ## 0.18.0
 
 ### Minor Changes

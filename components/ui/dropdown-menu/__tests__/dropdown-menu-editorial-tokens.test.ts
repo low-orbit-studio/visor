@@ -31,7 +31,7 @@ describe("DropdownMenu density axis — editorial rules present", () => {
 
     it("editorial content has border-radius: var(--radius-md)", () => {
       expect(css).toMatch(
-        /\[data-density="editorial"\][^}]*\.content[^}]*\{[^}]*border-radius:\s*var\(--radius-md\)/
+        /\[data-density="editorial"\][^}]*\.content[^}]*\{[^}]*--_menu-radius:\s*var\(--radius-md\)/
       )
     })
 

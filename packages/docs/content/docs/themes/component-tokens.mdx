@@ -372,6 +372,18 @@ ResizableSplit — the line the divider draws between the two panes, at rest, un
 | `--resizable-split-divider-hover-color` | The divider's line under the pointer. | `var(--border-strong, #d1d5db)` |
 | `--resizable-split-divider-active-color` | The divider's line while it is dragged. | `var(--interactive-primary-bg, #111827)` |
 
+### `scroll-hint`
+
+ScrollHint — the "More Below" pill pinned to a scroll box's bottom edge: the solid chip's fill, edge and ink, the fill it takes over a photo, and the gap it undoes.
+
+| Token | Binds | Falls back to |
+|---|---|---|
+| `--scroll-hint-bg` | The chip's fill, glass off. | `var(--surface-card, #ffffff)` |
+| `--scroll-hint-border` | The chip's edge, glass off. Over a photo the pill has no edge. | `var(--border-default, #e5e7eb)` |
+| `--scroll-hint-color` | The pill's words and caret. | `var(--text-secondary, #4b5563)` |
+| `--scroll-hint-glass-bg` | The pill's fill inside `data-glass="on"`, blurred with the glass layer's control blur. | `color-mix(in srgb, var(--surface-page, #ffffff) 70%, transparent)` |
+| `--scroll-hint-gap` | The scroll box's row gap, which the zero-height hint row undoes so it adds no space. | `0px` |
+
 ### `dialog`
 
 Dialog's panel and page scrim — width, corners, fill, inset, shadow, a backdrop filter for glass, and the scrim's colour and blur. ConfirmDialog shares them.
@@ -389,7 +401,7 @@ Dialog's panel and page scrim — width, corners, fill, inset, shadow, a backdro
 
 ### `glass`
 
-The glass layer over a photo: surface fill, blur, edge, lift, shadow and on-photo ink, plus the glass values controls read. No component reads these directly. visor-core's `data-glass="on"` switch copies each one into a `--glass-on-<key>` variable, and components read those, so glass draws only where the switch is on. See [Glass](/docs/themes/glass).
+The glass layer over a photo: surface fill, blur, edge, lift, shadow, on-photo ink, the scrim under white labels with its ink and shadow, plus the glass values controls read. No component reads these directly. visor-core's `data-glass="on"` switch copies each one into a `--glass-on-<key>` variable, and components read those, so glass draws only where the switch is on. See [Glass](/docs/themes/glass).
 
 | Token | Binds | Recommended (Visor default) |
 |---|---|---|
@@ -399,6 +411,9 @@ The glass layer over a photo: surface fill, blur, edge, lift, shadow and on-phot
 | `--glass-lift` | White lift laid over the fill, e.g. `rgb(255 255 255 / 0.45)` in light. | `transparent` |
 | `--glass-shadow` | Glass surface shadow. | `var(--shadow-xl)` |
 | `--glass-ink` | Text colour on glass over a photo. | `var(--text-primary)` |
+| `--glass-scrim` | Dark glass laid under white labels on a photo in dark mode (e.g. Stepper's rail panel in Dark + Photo), dark enough that white clears 4.5:1 on a bright photo. | `rgb(0 0 0 / 0.55)` |
+| `--glass-scrim-ink` | Label colour on the scrim, in dark mode over a photo. | `#ffffff` |
+| `--glass-ink-shadow` | Shadow under the scrim ink in dark mode over a photo, seating the labels. | `0 0 10px rgb(0 0 0 / 0.55), 0 1px 3px rgb(0 0 0 / 0.5)` |
 | `--glass-control-fill` | Glass control fill (icon buttons, toggles). | `color-mix(in srgb, var(--text-primary) 14%, transparent)` |
 | `--glass-control-hover-fill` | Glass control fill on hover. | `color-mix(in srgb, var(--text-primary) 24%, transparent)` |
 | `--glass-control-ring` | Glass control ring colour. | `color-mix(in srgb, var(--text-primary) 16%, transparent)` |
@@ -417,7 +432,7 @@ Tab rail and trigger treatment, for both the segmented (`default`) and underline
 | `--tabs-list-color` | Tab-rail base text colour. | `var(--text-secondary, #6b7280)` |
 | `--tabs-list-bg` | Segmented-variant rail fill. | `var(--surface-muted, #f3f4f6)` |
 | `--tabs-line-border-bottom` | Underlined-variant rail rule (width, style and colour). Unbound, the rail rule is painted at `--hairline-width`; binding this draws your border instead. | `1px solid transparent` (the rule is painted by `border-image` at `--hairline-width`) |
-| `--tabs-trigger-radius` | Trigger corner rounding. | `var(--radius-md, 0.375rem)` |
+| `--tabs-trigger-radius` | Trigger corner rounding. Leave unset: derived from the rail (rail radius minus rail padding minus the 1px trigger inset), so the corners stay concentric. Bound, an explicit override. | the rail's radius minus its padding and 1px; line variant `var(--radius-md, 0.375rem)` |
 | `--tabs-trigger-padding` | Trigger inset. | `var(--spacing-1, 0.25rem) var(--spacing-2, 0.5rem)` |
 | `--tabs-trigger-font-size` | Trigger type size. | `var(--font-size-sm, 0.875rem)` |
 | `--tabs-trigger-font-weight` | Trigger weight. | `var(--font-weight-medium, 500)` |
@@ -477,6 +492,21 @@ Inline loading ring — track, leading edge, per-size geometry, cycle length, th
 | `--spinner-label-font-size` | Visible words size (`showLabel`). | `var(--font-size-sm, 0.875rem)` |
 | `--spinner-label-font-weight` | Visible words weight (`showLabel`). | `var(--font-weight-medium, 500)` |
 | `--spinner-label-color` | Visible words colour (`showLabel`). | `var(--text-secondary, #4b5563)` |
+
+### `stepper`
+
+Stepper's `rail` variant — row gap and inset, the space between mark and label, label size, weight and tracking, and the dot mark's size and current width. The rail's ink is `--text-primary`, or over a photo the glass ink in light and the glass scrim ink in dark, at the kit's 100/64/40/24% ramp.
+
+| Token | Binds | Falls back to |
+|---|---|---|
+| `--stepper-rail-gap` | Space between rail rows. | `0` |
+| `--stepper-rail-padding` | Rail row inset. | `var(--spacing-2, 0.5rem) var(--spacing-1, 0.25rem)` |
+| `--stepper-rail-mark-gap` | Space between the mark and the label. | `var(--spacing-3, 0.75rem)` |
+| `--stepper-rail-font-size` | Rail label size. | `var(--font-size-sm, 0.875rem)` |
+| `--stepper-rail-font-weight` | Rail label weight. | `var(--font-weight-medium, 500)` |
+| `--stepper-rail-letter-spacing` | Rail label tracking. | `normal` |
+| `--stepper-rail-mark-size` | Dot mark diameter. | `calc(var(--spacing-1, 0.25rem) * 1.5)` |
+| `--stepper-rail-mark-active-width` | The current row's mark, stretched to a pill. | `var(--spacing-5, 1.25rem)` |
 
 ### `checkbox`
 
@@ -924,12 +954,12 @@ SegmentedControl — the well, its corner radius and padding, the segment height
 | Token | Binds | Falls back to |
 |---|---|---|
 | `--segmented-control-track-bg` | The well the pill slides in. Default is the page nudged 12% toward the ink, so it reads as a well in light and dark; under glass, the glass layer's control fill. | `var(--glass-on-control-fill, color-mix(in srgb, var(--text-primary, #111827) 12%, var(--surface-page, #ffffff)))` |
-| `--segmented-control-radius` | Track corner radius. Unset, each size keeps its ToggleGroup radius. | xs `var(--radius-md, 0.375rem)`, sm and md `var(--radius-lg, 0.5rem)`, lg `var(--radius-xl, 0.75rem)` |
+| `--segmented-control-radius` | Track corner radius. Unset, each size keeps its ToggleGroup radius. The segments and the pill derive their corners from it. | xs `var(--radius-md, 0.375rem)`, sm and md `var(--radius-lg, 0.5rem)`, lg `var(--radius-xl, 0.75rem)` |
 | `--segmented-control-track-padding` | Inset between the well's edge and the segments. | xs `calc(var(--spacing-1, 0.25rem) / 2)`, sm, md and lg `var(--spacing-1, 0.25rem)` |
 | `--segmented-control-item-height` | Segment height; the pill follows it. | xs `1.5rem`, sm `1.75rem`, md `2.25rem`, lg `2.75rem` |
 | `--segmented-control-item-padding-x` | Segment sides. | xs `var(--toggle-group-xs-padding-x, var(--spacing-2, 0.5rem))`, sm `var(--spacing-2, 0.5rem)`, md `var(--spacing-3, 0.75rem)`, lg `var(--spacing-4, 1rem)` |
-| `--segmented-control-item-radius` | Segment corners: the hover fill and the focus ring. | xs `var(--toggle-group-xs-item-radius, var(--radius-sm, 0.25rem))`, sm and md `var(--radius-md, 0.375rem)`, lg `var(--radius-lg, 0.5rem)` |
-| `--segmented-control-indicator-radius` | Sliding pill corners. | xs `var(--toggle-group-xs-item-radius, var(--radius-sm, 0.25rem))`, sm and md `var(--radius-md, 0.375rem)`, lg `var(--radius-lg, 0.5rem)` |
+| `--segmented-control-item-radius` | Segment corners: the hover fill and the focus ring. Leave unset: derived from the track, so the corners stay concentric. Bound, an explicit override. | the track radius minus its padding and 1px border (xs reads `--toggle-group-xs-item-radius` first) |
+| `--segmented-control-indicator-radius` | Sliding pill corners. Leave unset: derived from the track, so `--segmented-control-radius: 999px` alone gives a round switch. Bound, an explicit override. | the track radius minus its padding and 1px border (xs reads `--toggle-group-xs-item-radius` first) |
 | `--segmented-control-font-size` | Segment label size. | xs `var(--toggle-group-xs-font-size, var(--font-size-xs, 0.75rem))`, sm `var(--font-size-xs, 0.75rem)`, md `var(--font-size-sm, 0.875rem)`, lg `var(--font-size-base, 1rem)` |
 | `--segmented-control-indicator-bg` | Sliding active pill. Bind a lifted dark fill where the theme wants one. | `var(--interactive-primary-bg, var(--primary, #111827))` |
 | `--segmented-control-indicator-text` | Active segment label ink, on the pill. | `var(--interactive-primary-text, #f9fafb)` |
@@ -991,7 +1021,7 @@ ToggleGroup — the outline track's fill, the selected option's fill and ink, th
 | `--toggle-group-xs-font-size` | Compact (`xs`) label size. | `var(--font-size-xs, 0.75rem)` |
 | `--toggle-group-xs-padding-x` | Compact (`xs`) option sides. | `var(--spacing-2, 0.5rem)` |
 | `--toggle-group-xs-track-radius` | Compact (`xs`) outline track corner radius. | `var(--radius-md, 0.375rem)` |
-| `--toggle-group-xs-item-radius` | Compact (`xs`) option and indicator corner radius. Concentric with the track is the track radius minus its 2px inset. | `var(--radius-sm, 0.25rem)` |
+| `--toggle-group-xs-item-radius` | Compact (`xs`) option and indicator corner radius. Leave unset: in the outline track it is derived from the track (radius minus padding minus 1px border), so the corners stay concentric. Bound, an explicit override. | outline: the derived radius; default variant `var(--radius-sm, 0.25rem)` |
 | `--toggle-group-option-gap` | Option variant (VI-787): the space between rows. | `var(--spacing-2, 0.5rem)` |
 | `--toggle-group-option-inner-gap` | Option row: the space between key, label and check. | `var(--spacing-3_5, 0.875rem)` |
 | `--toggle-group-option-min-height` | Option row height; a wrapped label grows past it. | `3.375rem` |
@@ -1058,6 +1088,45 @@ components:
     ring: "rgba(255, 255, 255, 0.3)"
     ring-selected: { light: "#111827", dark: "#2ce0e6" }
     dot: "#2ce0e6"
+```
+
+### `radio-step`
+
+RadioGroup `variant="stepped"` — the key colour, the well and its radius, the resting ink, the icon size, and the chosen tile's fill and hairline.
+
+| Token | Binds | Falls back to |
+|---|---|---|
+| `--radio-step-key` | The key colour: the chosen tile's fill tint, hairline and icon, and the focus ring. | `var(--interactive-primary-bg, var(--primary, #111827))` |
+| `--radio-step-well` | The well the tiles sit in. Default is the page nudged 12% toward the ink; a dark app binds it darker than its plane (Blacklight: `rgb(0 0 0 / 0.65)`). | `color-mix(in srgb, var(--text-primary, #111827) 12%, var(--surface-page, #ffffff))` |
+| `--radio-step-well-radius` | Well corner radius. The tiles take it minus the well padding, so the corners stay concentric. | `var(--radius-xl, 0.75rem)` |
+| `--radio-step-ink` | Icon and label ink on a tile that is not chosen. | `var(--text-tertiary, #9ca3af)` |
+| `--radio-step-icon-size` | Tile icon size. | `1.25rem` |
+| `--radio-step-selected-bg` | Chosen tile fill. Default is 12% key over `--surface-elev-2`. | `color-mix(in srgb, var(--_key) 12%, var(--surface-elev-2, #f3f4f6))` |
+| `--radio-step-selected-border` | Chosen tile hairline. Default is 35% key. | `color-mix(in srgb, var(--_key) 35%, transparent)` |
+
+```yaml
+components:
+  radio-step:
+    key: "#2ce0e6"
+    well: "rgb(0 0 0 / 0.65)"
+```
+
+### `reach-rings`
+
+ReachRings — the key colour of lit rings and the core, the unlit ring stroke, and the core icon lit and unlit.
+
+| Token | Binds | Falls back to |
+|---|---|---|
+| `--reach-rings-key` | The key colour: a lit ring's stroke, halo and wash, and the filled core. | `var(--interactive-primary-bg, var(--primary, #111827))` |
+| `--reach-rings-ring` | An unlit ring's stroke. | `color-mix(in srgb, var(--text-primary, #111827) 12%, transparent)` |
+| `--reach-rings-glyph` | The core icon while the core is unlit. | `color-mix(in srgb, var(--text-primary, #111827) 50%, transparent)` |
+| `--reach-rings-core-ink` | The core icon on the lit core. | `var(--interactive-primary-text, #f9fafb)` |
+
+```yaml
+components:
+  reach-rings:
+    key: "#2ce0e6"
+    core-ink: "#000000"
 ```
 
 ### `tooltip`
@@ -1362,6 +1431,14 @@ KeyValueList — label and value type and ink, the horizontal columns, item gap 
 | `--key-value-list-panel-padding` | `surface="panel"` inset. | `var(--spacing-2, 0.5rem) var(--spacing-6, 1.5rem)` |
 
 Inside `data-glass="on"` (see [Glass](/docs/themes/glass)) a `surface="panel"` list takes the glass layer's fill, lift and blur, and its edge clears; the label and value keep the theme's ink. A list with no surface never blurs, so it can sit inside a glass tile without a nested blur.
+
+### `rich-text`
+
+RichText link underline colour. Link text inherits the surrounding ink.
+
+| Token | Binds | Falls back to |
+|---|---|---|
+| `--rich-text-link-underline` | Link underline colour at rest; on hover it turns the link's own ink. | `color-mix(in srgb, currentColor 40%, transparent)` |
 
 ### `admin-ui`
 

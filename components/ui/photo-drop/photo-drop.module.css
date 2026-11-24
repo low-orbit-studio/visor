@@ -1,0 +1,342 @@
+/* PhotoDrop: a squircle drop tile for one photo or file. Lifted from the Honcho kit's photo
+   drop; its values are the defaults wherever no theme token speaks for them. The squircle is a
+   clip-path built in JS (CSS radii can't draw one), so the dashed edge and the upload ring are SVG.
+
+   Variables: --photo-drop-ink, --photo-drop-bg, --photo-drop-bg-hover, --photo-drop-ring,
+   --photo-drop-error, --photo-drop-badge-bg, --photo-drop-dim, --photo-drop-duration,
+   --photo-drop-ease, --photo-drop-hint-font-size, --photo-drop-lead-font-size.
+
+   Glass (VI-795): the tile never blurs (Chrome doesn't clip a backdrop-filter to a clip-path,
+   so its square would poke out past the squircle). Under data-glass="on" the tile takes the
+   glass layer's control fill, and the badges turn to paper at 72% with the control blur.
+   With glass off every --glass-on-* variable is unset: solid fills, a border, no blur. */
+
+.row {
+  --_ink: var(--photo-drop-ink, var(--text-primary, #111827));
+  --_bg: var(--photo-drop-bg, var(--glass-on-control-fill, var(--input-bg, var(--surface-interactive-default, #f9fafb))));
+  /* The kit's field-fill hover: the fill 4% nearer the ink (9% to 13% ink on Backstage). */
+  --_bg-hover: var(--photo-drop-bg-hover, var(--glass-on-control-hover-fill, color-mix(in srgb, var(--_ink) 4%, var(--_bg))));
+  --_ring: var(--photo-drop-ring, var(--interactive-primary-bg, #2563eb));
+  --_error: var(--photo-drop-error, var(--border-error, #ef4444));
+  --_ease: var(--photo-drop-ease, var(--motion-easing-enter, cubic-bezier(0, 0, 0.2, 1)));
+  --_duration: var(--photo-drop-duration, var(--motion-duration-500, 500ms));
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--spacing-4, 1rem) var(--spacing-6, 1.5rem);
+  border-radius: var(--radius-md, 0.375rem);
+}
+
+/* Keyboard focus: the edge wakes (below), and the row draws the focus ring, which the clip
+   can't cut and reduced motion leaves on. */
+.row:has(.input:focus-visible, .zone:focus-visible) {
+  outline: var(--focus-ring-width, 2px) solid var(--border-focus, #3b82f6);
+  outline-offset: var(--focus-ring-offset, 2px);
+}
+
+.zone {
+  /* The resting edge: the kit's ink at 36%. */
+  --_edge: color-mix(in srgb, var(--_ink) 36%, transparent);
+  position: relative;
+  flex: none;
+  display: grid;
+  place-items: center;
+  clip-path: var(--clip);
+  background: var(--_bg);
+  color: var(--text-secondary, #6b7280);
+  transition:
+    background-color var(--_duration) var(--_ease),
+    color var(--_duration) var(--_ease),
+    scale var(--_duration) var(--_ease);
+}
+
+.edge {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.edge path {
+  fill: none;
+  stroke-width: var(--stroke-width-regular, 1.5px);
+  stroke-linecap: butt;
+  vector-effect: non-scaling-stroke;
+  transition:
+    stroke var(--_duration) var(--_ease),
+    opacity var(--_duration) var(--_ease);
+}
+
+/* The kit's dash: 7px on, 6px off. Intentional; no token carries a dash. */
+.ants {
+  stroke: var(--_edge);
+  stroke-dasharray: 7px 6px;
+}
+
+.icon {
+  display: grid;
+  width: 30%;
+  height: 30%;
+  font-size: 0;
+  transition: scale var(--_duration) var(--_ease);
+}
+
+.icon > svg {
+  width: 100%;
+  height: 100%;
+}
+
+.zone[data-filled] .icon {
+  color: var(--_ink);
+}
+
+.plus {
+  width: 15%;
+  height: 15%;
+  transition:
+    rotate var(--_duration) var(--_ease),
+    scale var(--_duration) var(--_ease);
+}
+
+.photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 30%;
+  transition:
+    scale var(--motion-duration-800, 800ms) var(--_ease),
+    filter var(--_duration) var(--_ease);
+}
+
+/* A filled photo keeps a quiet ink rim at rest; the ants come back on hover, as a drop target. */
+.zone[data-filled] .ants {
+  stroke: color-mix(in srgb, var(--_ink) 12%, transparent);
+  stroke-dasharray: none;
+}
+
+/* The camera (change) and lock badge: low in the middle. Glass off, a solid paper disc with a
+   border; glass on, paper at 72% over the blurred photo with no border. */
+.badge {
+  position: absolute;
+  bottom: 9%;
+  left: 50%;
+  translate: -50% 0;
+  display: grid;
+  place-items: center;
+  width: var(--spacing-10, 2.5rem);
+  height: var(--spacing-10, 2.5rem);
+  border-radius: var(--radius-full, 9999px);
+  background: var(--photo-drop-badge-bg, color-mix(in srgb, var(--surface-page, #ffffff) 72%, var(--glass-on-clear, var(--surface-page, #ffffff))));
+  box-shadow: inset 0 0 0 var(--stroke-width-thin, 1px) var(--glass-on-clear, var(--border-default, #e5e7eb));
+  /* Prefixed line first, so Lightning CSS keeps both (VI-788). */
+  -webkit-backdrop-filter: var(--glass-on-control-blur, none);
+  backdrop-filter: var(--glass-on-control-blur, none);
+  color: var(--_ink);
+  font-size: var(--font-size-lg, 1.125rem);
+  transition:
+    opacity var(--_duration) var(--_ease),
+    scale var(--_duration) var(--_ease);
+}
+
+/* The camera shows only when the tile wakes. */
+.change {
+  opacity: 0;
+  scale: 0.8;
+}
+
+.input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+/* ---- Awake: hover, keyboard focus, a file dragged over ---------------------------- */
+
+.zone:has(.input):is(:hover, [data-drag], :has(:focus-visible)) {
+  background: var(--_bg-hover);
+  color: var(--_ink);
+}
+
+.zone:has(.input):is(:hover, [data-drag], :has(:focus-visible)) .ants {
+  stroke: var(--_ink);
+  stroke-dasharray: 7px 6px;
+  /* The kit's 550ms march. */
+  animation: march calc(var(--motion-duration-500, 500ms) * 1.1) var(--motion-easing-linear, linear) infinite;
+}
+
+.zone:has(.input):is(:hover, [data-drag], :has(:focus-visible)) .plus {
+  rotate: 90deg;
+  scale: 1.08;
+}
+
+.zone:has(.input):is(:hover, [data-drag], :has(:focus-visible)) .icon {
+  scale: 1.08;
+}
+
+.zone[data-filled]:has(.input):is(:hover, [data-drag], :has(:focus-visible)) .photo {
+  scale: 1.04;
+  filter: brightness(0.86);
+}
+
+.zone[data-filled]:has(.input):is(:hover, [data-drag], :has(:focus-visible)) .change {
+  opacity: 1;
+  scale: 1;
+}
+
+/* A file over it: the tile leans in. */
+.zone[data-drag] {
+  scale: 1.03;
+}
+
+.zone[data-invalid]:not(:hover, [data-drag]) .ants {
+  stroke: var(--_error);
+}
+
+@keyframes march {
+  to {
+    stroke-dashoffset: -13px;
+  }
+}
+
+/* ---- Uploading -------------------------------------------------------------------- */
+
+/* The ring: a solid stroke in the key colour along the same squircle edge (pathLength 100,
+   so the inline dash offset is 100 minus the percent). */
+.ring {
+  stroke: var(--_ring);
+  stroke-width: calc(var(--stroke-width-regular, 1.5px) * 2);
+  stroke-dasharray: 100;
+  /* The path starts at the right; a quarter turn back starts the fill at the top (the squircle is the same shape turned). */
+  transform: rotate(-90deg);
+  transform-box: view-box;
+  transform-origin: center;
+  transition: stroke-dashoffset var(--_duration) var(--_ease);
+}
+
+/* Progress unknown: a quarter arc sweeps the edge. */
+.ring[data-indeterminate] {
+  stroke-dasharray: 25 75;
+  animation: sweep calc(var(--motion-duration-800, 800ms) * 2) var(--motion-easing-linear, linear) infinite;
+}
+
+@keyframes sweep {
+  to {
+    stroke-dashoffset: -100;
+  }
+}
+
+.zone[data-status="uploading"] .ants {
+  stroke: color-mix(in srgb, var(--_ink) 16%, transparent);
+  stroke-dasharray: none;
+}
+
+.zone:is([data-status="uploading"], [data-status="failed"]) .photo {
+  filter: var(--photo-drop-dim, brightness(0.7) saturate(0.8));
+}
+
+/* The percentage, or the retry mark, on a pill in the middle; the badge's paper. */
+.status {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  min-width: var(--spacing-12, 3rem);
+  height: var(--spacing-8, 2rem);
+  padding: 0 var(--spacing-3, 0.75rem);
+  border-radius: var(--radius-full, 9999px);
+  background: var(--photo-drop-badge-bg, color-mix(in srgb, var(--surface-page, #ffffff) 72%, var(--glass-on-clear, var(--surface-page, #ffffff))));
+  box-shadow: inset 0 0 0 var(--stroke-width-thin, 1px) var(--glass-on-clear, var(--border-default, #e5e7eb));
+  -webkit-backdrop-filter: var(--glass-on-control-blur, none);
+  backdrop-filter: var(--glass-on-control-blur, none);
+  color: var(--_ink);
+  font-size: var(--font-size-sm, 0.875rem);
+  font-weight: var(--font-weight-semibold, 600);
+  font-variant-numeric: tabular-nums;
+}
+
+/* A file's tile holds its icon: the pill sits low, under it. */
+.zone:has(.icon) .status {
+  bottom: 10%;
+  height: var(--spacing-6, 1.5rem);
+  font-size: var(--font-size-xs, 0.75rem);
+}
+
+/* ---- Failed ----------------------------------------------------------------------- */
+
+.zone[data-status="failed"] .ants {
+  stroke: var(--_error);
+  stroke-dasharray: none;
+}
+
+/* ---- Locked and read-only: a quiet rim, no ants ----------------------------------- */
+
+.zone:is([data-locked], [data-readonly]) .ants {
+  stroke: color-mix(in srgb, var(--_ink) 12%, transparent);
+  stroke-dasharray: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .zone:has(.input):is(:hover, [data-drag], :has(:focus-visible)) .ants {
+    animation: none;
+  }
+
+  .ring[data-indeterminate] {
+    animation: none;
+  }
+}
+
+/* ---- The hint beside the tile ----------------------------------------------------- */
+
+.hint {
+  flex: 1 1 11rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--spacing-1, 0.25rem);
+  min-width: 0;
+  margin: 0;
+  overflow-wrap: anywhere;
+  /* The kit's 15px on 20px; no type token sits at 15px. */
+  font-size: var(--photo-drop-hint-font-size, 0.9375rem);
+  line-height: 1.25rem;
+  color: var(--text-secondary, #6b7280);
+}
+
+.lead {
+  font-size: var(--photo-drop-lead-font-size, var(--font-size-lg, 1.125rem));
+  font-weight: var(--font-weight-medium, 500);
+  color: var(--_ink);
+}
+
+/* Remove and Try Again: the kit's small pill on the field fill. */
+.action {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(var(--spacing-1, 0.25rem) * 1.5);
+  height: calc(var(--spacing-8, 2rem) - var(--spacing-1, 0.25rem) / 2);
+  margin-top: calc(var(--spacing-1, 0.25rem) * 1.5);
+  padding: 0 calc(var(--spacing-3, 0.75rem) + var(--spacing-1, 0.25rem) / 2);
+  border: 0;
+  border-radius: var(--radius-full, 9999px);
+  background: var(--_bg);
+  color: var(--text-secondary, #6b7280);
+  font-size: var(--font-size-sm, 0.875rem);
+  font-weight: var(--font-weight-medium, 500);
+  cursor: pointer;
+  transition: color var(--_duration) var(--_ease);
+}
+
+.action:focus-visible {
+  outline: var(--focus-ring-width, 2px) solid var(--border-focus, #3b82f6);
+  outline-offset: var(--focus-ring-offset, 2px);
+}
+
+@media (hover: hover) {
+  .action:hover {
+    color: var(--_ink);
+  }
+}
