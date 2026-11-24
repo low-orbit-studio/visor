@@ -198,6 +198,28 @@ GITHUB_TOKEN=... npm run audit:publish -- --post-comments
 
 **When you see an audit comment on a PR:** treat it as a signal that the change merged but never made it into the published registry. Cut a coordinated release per [`docs/wisdom/W020-publish-coordination-drift.md`](./docs/wisdom/W020-publish-coordination-drift.md); the next smoke run will clear the drift and no further audit comments will fire. See [`docs/wisdom/W029-vi-ticket-publish-governance.md`](./docs/wisdom/W029-vi-ticket-publish-governance.md) for the full governance pattern.
 
+## Release Train
+
+Visor releases once a day. Kit PRs merge to `main` as fast as ever, and each push refreshes the
+changesets "Version Packages" PR. At 5PM New York time,
+[`release-train.yml`](./.github/workflows/release-train.yml) merges that PR when its CI is green,
+and `release.yml` publishes from the merge. No open Version Packages PR means nothing is pending,
+and the train does nothing.
+
+- **Two crons, one train.** GitHub cron is UTC, so the train fires at 21:00 and 22:00 UTC and a
+  gate step keeps whichever is 5PM in New York that day (daylight saving).
+- **Same rules as `/lo-visor-release`.** [`scripts/release-train.mjs`](./scripts/release-train.mjs)
+  merges only a `changeset-release/main` PR whose diff is changeset bookkeeping and whose checks
+  have all finished green. Checks still running at 5PM, red checks or a refused PR fail the run.
+  It merges with `CHANGESETS_PAT`: a `GITHUB_TOKEN` merge would not trigger `release.yml`.
+- **Release early** (Justin's call only): `gh workflow run release-train.yml`. Dry run:
+  `gh workflow run release-train.yml -f dry_run=true`, or locally
+  `GITHUB_REPOSITORY=low-orbit-studio/visor GITHUB_TOKEN=$(gh auth token) node scripts/release-train.mjs --dry-run`.
+- **When it fails**, [`stale-version-packages-pr.yml`](./.github/workflows/stale-version-packages-pr.yml)
+  opens a `ci-watch` issue, and the next train run that succeeds closes it. An open Version
+  Packages PR is normal between trains; the hourly drift check counts only changesets on `main`
+  for more than a day that the PR has not picked up.
+
 ## Scheduled Workflow Watch
 
 A scheduled workflow blocks nobody's merge, so nothing surfaces one that has gone
