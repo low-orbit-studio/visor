@@ -446,6 +446,23 @@ export const FIXTURES: Record<string, Record<string, Fixture>> = {
       export: "Field",
       props: `{ "data-density": "editorial", children: [React.createElement(__mod.FieldLabel, { key: "l" }, "Display name"), React.createElement(__mod.FieldDescription, { key: "d" }, "Shown on your profile.")] }`,
     },
+    // VI-805: the control box with a bare control in it, the optional mark and the error line.
+    control: {
+      export: "Field",
+      props: `{ children: [React.createElement(__mod.FieldLabel, { key: "l", optional: true }, "Display name"), React.createElement(__mod.FieldControl, { key: "c" }, React.createElement("input", { className: "control", placeholder: "Jane Doe", "aria-label": "Display name" })), React.createElement(__mod.FieldError, { key: "e", icon: ${ICON_X} }, "Tell us your name")] }`,
+    },
+    invalid: {
+      export: "FieldControl",
+      props: `{ children: React.createElement("input", { className: "control", "aria-invalid": "true", "aria-label": "Email" }) }`,
+    },
+    tall: {
+      export: "FieldControl",
+      props: `{ tall: true, children: React.createElement("textarea", { className: "control", "aria-label": "Notes" }) }`,
+    },
+    select: {
+      export: "FieldControl",
+      props: `{ children: React.createElement("button", { type: "button", role: "combobox", className: "control", "data-slot": "select-trigger", "data-placeholder": "", "aria-label": "Arrival" }, "Choose one") }`,
+    },
   },
   text: {
     default: {

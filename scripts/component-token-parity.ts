@@ -220,9 +220,10 @@ function fixtureMarkup(): string {
   </section>
 
   <section class="band" data-family="field">
-    <div class="${c("field", "field", "fieldVertical")}">
+    <div class="${c("field", "field", "fieldVertical")}" data-probe="field">
       <label class="${c("field", "fieldLabel")}" data-probe="field-label">Display name</label>
-      <p class="${c("field", "fieldDescription")}">Shown on your profile.</p>
+      <p class="${c("field", "fieldDescription")}" data-probe="field-description">Shown on your profile.</p>
+      <div class="${c("field", "fieldError", "fieldErrorWithIcon")}" data-probe="field-error"><span class="${c("field", "fieldErrorIcon")}" data-probe="field-error-icon">!</span>Display name is required</div>
     </div>
   </section>
 

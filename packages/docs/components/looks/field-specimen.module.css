@@ -1,0 +1,36 @@
+/* The kit's field (honcho-kit field-shell), bound the way a theme binds it
+   (components.field), with the kit's numbers as intentional values. Colours are
+   shares of the theme's ink, so every look and both tones read them. */
+.stack {
+  --field-gap: 10px;
+  --field-text-inset: 4px;
+  --field-label-font-size: 15px;
+  --field-label-font-weight: 540;
+  --field-label-line-height: 20px;
+  --field-label-color: color-mix(in srgb, var(--text-primary) 80%, transparent);
+  --field-label-optional-font-weight: 420;
+  --field-label-optional-color: color-mix(in srgb, var(--text-primary) 40%, transparent);
+  --field-description-font-size: 14px;
+  --field-description-line-height: 20px;
+  --field-description-color: color-mix(in srgb, var(--text-primary) 48%, transparent);
+  --field-error-font-weight: 520;
+  --field-error-line-height: 20px;
+  --field-error-icon-gap: 8px;
+  --field-error-icon-size: 16px;
+  --field-error-line-width: 1px;
+  --field-control-height: 54px;
+  --field-control-radius: 12px;
+  --field-control-padding-x: 20px;
+  --field-control-font-size: 18px;
+  --field-control-font-weight: 460;
+  --field-control-letter-spacing: -0.005em;
+  --field-control-placeholder-color: color-mix(in srgb, var(--text-primary) 40%, transparent);
+  --field-control-focus-ring-color: var(--text-primary);
+  --field-control-tall-min-height: 140px;
+  --field-control-tall-max-height: 260px;
+  --field-control-tall-padding-y: 16px;
+
+  display: grid;
+  gap: 24px;
+  width: min(100%, 22rem);
+}

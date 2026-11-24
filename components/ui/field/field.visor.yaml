@@ -30,7 +30,18 @@ props:
 
 sub_components:
   - name: FieldLabel
-    description: Styled label for the form control. Wraps the Label component.
+    description: >
+      Styled label for the form control. Wraps the Label component. `optional`
+      renders " optional" after the label text, inside the label, so the
+      accessible name includes it.
+  - name: FieldControl
+    description: >
+      The box a control sits in (VI-805). Put one Input, Textarea or Select
+      inside: the control fills the box and goes bare, and the box draws the
+      fill, edge, focus ring (2px on keyboard focus) and invalid look, read from
+      the control's aria-invalid. `tall` lets the box grow with a Textarea's
+      text. Solid by default; inside data-glass="on" it reads the glass layer's
+      control fill, hover fill, ring, ink and blur.
   - name: FieldDescription
     description: Helper text below the label providing additional guidance.
   - name: FieldError
@@ -40,7 +51,9 @@ sub_components:
       switches to a centered icon + message row; without it the error renders
       as plain inline text (default, unchanged). Typography follows the density
       axis: place data-density="editorial" on any ancestor to activate the
-      13px/11px discrete ramp and tertiary color treatment.
+      13px/11px discrete ramp and tertiary color treatment. Its colour is the
+      theme's `field.error-color` (unset, --text-error); inside
+      data-glass="on" it takes the glass layer's on-photo ink.
 
 dependencies:
   - "class-variance-authority"
@@ -48,6 +61,14 @@ dependencies:
 preview_url: "https://visor.loworbit.studio/docs/components/form/field"
 
 example: |
+  <Field>
+    <FieldLabel htmlFor="name" optional>Your name</FieldLabel>
+    <FieldControl>
+      <Input id="name" aria-invalid="true" aria-describedby="name-error" />
+    </FieldControl>
+    <FieldError id="name-error" icon={<WarningCircle weight="fill" />}>Tell us your name</FieldError>
+  </Field>
+
   <Field>
     <FieldLabel htmlFor="email">Email</FieldLabel>
     <FieldDescription>We will never share your email.</FieldDescription>

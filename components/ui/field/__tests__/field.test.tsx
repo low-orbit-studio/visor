@@ -1,6 +1,9 @@
 import { render, screen } from "@testing-library/react"
 import { describe, it, expect } from "vitest"
-import { Field, FieldLabel, FieldDescription, FieldError } from "../field"
+import { Field, FieldLabel, FieldControl, FieldDescription, FieldError } from "../field"
+import { Input } from "../../input/input"
+import { Textarea } from "../../textarea/textarea"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../select/select"
 import { checkA11y } from "../../../../test-utils/a11y"
 
 describe("Field", () => {
@@ -183,5 +186,110 @@ describe("accessibility", () => {
       </Field>
     )
     await checkA11y(container)
+  })
+})
+
+describe("FieldLabel optional (VI-805)", () => {
+  it("adds an optional mark inside the label, so the accessible name includes it", () => {
+    render(
+      <Field>
+        <FieldLabel htmlFor="phone" optional>Phone</FieldLabel>
+        <input id="phone" />
+      </Field>
+    )
+    expect(screen.getByRole("textbox", { name: "Phone optional" })).toBeInTheDocument()
+    const mark = document.querySelector('[data-slot="field-label-optional"]')
+    expect(mark).toHaveTextContent("optional")
+    expect(mark).toHaveClass("fieldLabelOptional")
+  })
+
+  it("renders the label as before without it", () => {
+    render(<FieldLabel>Phone</FieldLabel>)
+    expect(document.querySelector('[data-slot="field-label-optional"]')).toBeNull()
+    expect(screen.getByText("Phone").tagName.toLowerCase()).toBe("label")
+  })
+})
+
+describe("FieldControl (VI-805)", () => {
+  it("renders the control box slot around its child", () => {
+    render(
+      <FieldControl data-testid="box">
+        <Input aria-label="Name" />
+      </FieldControl>
+    )
+    const box = screen.getByTestId("box")
+    expect(box).toHaveAttribute("data-slot", "field-control")
+    expect(box).toHaveClass("control")
+    expect(box).not.toHaveClass("controlTall")
+    expect(box).toContainElement(screen.getByRole("textbox", { name: "Name" }))
+  })
+
+  it("takes the tall box for a Textarea", () => {
+    render(
+      <FieldControl tall data-testid="box">
+        <Textarea aria-label="Notes" />
+      </FieldControl>
+    )
+    expect(screen.getByTestId("box")).toHaveClass("control", "controlTall")
+  })
+
+  it("forwards ref and passes props through", () => {
+    const ref = { current: null as HTMLDivElement | null }
+    render(<FieldControl ref={ref} id="box" />)
+    expect(ref.current?.id).toBe("box")
+  })
+})
+
+describe("accessibility with FieldControl (VI-805)", () => {
+  const Form = ({ invalid }: { invalid?: boolean }) => (
+    <>
+      <Field>
+        <FieldLabel htmlFor="n">Your name</FieldLabel>
+        <FieldControl>
+          <Input id="n" aria-describedby="n-hint n-error" aria-invalid={invalid || undefined} />
+        </FieldControl>
+        <FieldDescription id="n-hint">As it appears on your ID.</FieldDescription>
+        {invalid && (
+          <FieldError id="n-error" icon={<svg />}>
+            Tell us your name
+          </FieldError>
+        )}
+      </Field>
+      <Field>
+        <FieldLabel htmlFor="t" optional>Notes</FieldLabel>
+        <FieldControl tall>
+          <Textarea id="t" aria-invalid={invalid || undefined} />
+        </FieldControl>
+      </Field>
+      <Field>
+        <FieldLabel htmlFor="s">Arrival</FieldLabel>
+        <FieldControl>
+          <Select>
+            <SelectTrigger id="s" aria-invalid={invalid || undefined}>
+              <SelectValue placeholder="Choose one" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="fri">Friday</SelectItem>
+            </SelectContent>
+          </Select>
+        </FieldControl>
+      </Field>
+    </>
+  )
+
+  it("has no WCAG 2.1 AA violations (valid)", async () => {
+    const { container } = render(<Form />)
+    await checkA11y(container)
+  })
+
+  it("has no WCAG 2.1 AA violations (invalid, with the error line)", async () => {
+    const { container } = render(<Form invalid />)
+    await checkA11y(container)
+    const error = screen.getByRole("alert")
+    expect(error).toHaveTextContent("Tell us your name")
+    expect(error.querySelector('[data-slot="field-error-icon"]')).toHaveAttribute("aria-hidden", "true")
+    expect(screen.getByRole("textbox", { name: "Your name" })).toHaveAccessibleDescription(
+      "As it appears on your ID. Tell us your name"
+    )
   })
 })

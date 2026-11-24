@@ -6,7 +6,7 @@ import { test, expect, type Frame, type Page } from "@playwright/test";
 // The stock theme CI has; LOOKS_THEME=honcho-backstage draws the kit's looks locally.
 const THEME = process.env.LOOKS_THEME ?? "neutral";
 // Every specimen with form controls or tiles (the spinner has neither). Add new ones here.
-const SPECIMENS = ["theme", "button", "number-input", "alert", "glass", "key-value-list", "segmented-control", "card", "toggle-group"];
+const SPECIMENS = ["theme", "button", "number-input", "alert", "glass", "key-value-list", "segmented-control", "card", "toggle-group", "field"];
 const PHOTO_LOOKS = [
   { id: "dark-photo", mode: "dark" },
   { id: "light-photo", mode: "light" },
@@ -86,7 +86,7 @@ for (const width of [1440, 390]) {
 }
 
 test("Form panel: the plain looks draw no panel, so they are unchanged", async ({ page }) => {
-  for (const specimen of ["theme", "button", "number-input", "toggle-group"]) {
+  for (const specimen of ["theme", "button", "number-input", "toggle-group", "field"]) {
     for (const look of ["today", "dark", "light"]) {
       await page.goto(`/looks/panel?theme=${THEME}&look=${look}&specimen=${specimen}`);
       await expect(page.locator(`body.${THEME}-theme`)).toHaveCount(1);
@@ -146,6 +146,7 @@ const GRIDS = [
   { path: "/docs/components/form/number-input", theme: THEME, private: false },
   { path: "/docs/components/general/button", theme: THEME, private: false },
   { path: "/docs/components/form/toggle-group", theme: THEME, private: false },
+  { path: "/docs/components/form/field", theme: THEME, private: false },
 ];
 
 for (const grid of GRIDS) for (const width of [1440, 390]) {
@@ -200,6 +201,7 @@ const HONCHO_GRIDS = [
   { path: "/docs/components/typography/text", primary: false },
   { path: "/docs/components/data-display/status-dot", primary: false },
   { path: "/docs/components/overlay/popover", primary: false },
+  { path: "/docs/components/form/field", primary: false },
 ];
 
 // Visor's default greys (Tailwind Gray 50-900 fallbacks). Honcho binds every role a component
@@ -313,6 +315,7 @@ const readButtons = (frame: Frame) =>
         secondary: /variantSecondary/.test(button.className) || button.dataset.slot === "glass-control",
         name: (button.getAttribute("aria-label") ?? button.textContent ?? "").trim().slice(0, 40),
         kind: text ? "text" : "icon",
+        placeholder: button.hasAttribute("data-placeholder"),
         ink: toRgba(getComputedStyle(target === button ? button : target).color),
         clip: { x: r.x - b.x, y: r.y - b.y, width: r.width, height: r.height },
         cornerShape: style.getPropertyValue("corner-shape"),
@@ -399,7 +402,7 @@ for (const width of [1440, 390]) {
           const png = await page.screenshot({ clip: { x: box.x + b.clip.x, y: box.y + b.clip.y, width: b.clip.width, height: b.clip.height } });
           const contrast = await worstContrast(page, png, b.ink);
           const floor = b.kind === "text" ? 4.5 : 3;
-          rows.push({ width, specimen, theme, look, name: b.name, kind: b.kind, wash: b.wash, cornerShape: b.cornerShape, background: b.background, ink: `rgba(${b.ink.join(",")})`, min: +contrast.min.toFixed(2), p5: +contrast.p5.toFixed(2), floor });
+          rows.push({ width, specimen, theme, look, name: b.name, kind: b.kind, placeholder: b.placeholder, wash: b.wash, cornerShape: b.cornerShape, background: b.background, ink: `rgba(${b.ink.join(",")})`, min: +contrast.min.toFixed(2), p5: +contrast.p5.toFixed(2), floor });
         }
       }
     }
@@ -412,7 +415,9 @@ for (const width of [1440, 390]) {
     const accepted = (r: Record<string, unknown>) =>
       r.theme === "honcho" && r.background === "rgb(255, 45, 138)" && r.ink === "rgba(255,255,255,255)";
     for (const r of rows.filter(accepted)) expect(r.min as number, `${r.specimen} "${r.name}"`).toBeGreaterThanOrEqual(3.49);
-    const short = rows.filter((r) => !accepted(r) && (r.min as number) < (r.floor as number));
+    // A Select trigger showing its placeholder ("Choose one") draws placeholder ink, which keeps the
+    // FormDeck value below AA in every look (Justin, Nov 20, "Keep FormDeck Values").
+    const short = rows.filter((r) => !accepted(r) && !r.placeholder && (r.min as number) < (r.floor as number));
     expect(short, "buttons under their contrast floor").toEqual([]);
   });
 }

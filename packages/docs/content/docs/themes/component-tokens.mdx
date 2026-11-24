@@ -749,14 +749,76 @@ How the switch holds up:
 
 ### `field`
 
-Field label treatment — size, case, tracking and colour of `FieldLabel`, in both densities.
+Field's parts: the label (size, weight, line height, case, tracking, colour, the "optional" mark), the hint, the error line (a theme error colour, weight, icon gap and size) and the `FieldControl` box a control sits in (height, corners, fill, focus ring, invalid fill and line, the control's padding, type and placeholder, the tall box for a Textarea). Under `data-glass="on"` the box reads the glass layer's control values and the error line its on-photo ink.
 
 | Token | Binds | Falls back to |
 |---|---|---|
+| `--field-gap` | Space between the label, the control, the hint and the error line. | `var(--spacing-2, 0.5rem)` |
+| `--field-text-inset` | Start inset of the label, the hint and the error line, so their text lines up inside the box's corner. | `0` |
+| `--field-label-font-weight` | Label weight. | `var(--font-weight-medium, 500)` |
+| `--field-label-line-height` | Label line height. | `1.4` |
+| `--field-label-optional-color` | Colour of the "optional" mark after the label (`FieldLabel optional`). | `var(--text-secondary, currentColor)` |
+| `--field-label-optional-font-weight` | Weight of the "optional" mark. | `var(--font-weight-normal, 400)` |
+| `--field-description-font-size` | Hint (`FieldDescription`) type size. Drives both the standard and editorial-density steps. | `var(--font-size-xs, 0.75rem)` · `11px` |
+| `--field-description-color` | Hint colour. Drives both the standard and editorial-density steps. | `var(--text-secondary, currentColor)` · `var(--text-tertiary)` |
+| `--field-description-line-height` | Hint line height. | `1.5` |
+| `--field-error-color` | The error line's colour, icon included. Under `data-glass="on"` the glass layer's on-photo ink (`glass.ink`) draws it instead. | `var(--text-error, currentColor)` |
+| `--field-error-font-weight` | Error line weight. | `var(--font-weight-normal, 400)` |
+| `--field-error-line-height` | Error line height. | `inherit` |
+| `--field-error-icon-gap` | Space between the error icon and its message. | `calc(var(--spacing-1, 0.25rem) + var(--spacing-1, 0.25rem) / 2)` |
+| `--field-error-icon-size` | Error icon size. | `1.077em` |
+| `--field-error-fill` | `FieldControl` fill while its control is invalid. Under glass, the glass hover fill. | `var(--input-bg-invalid, var(--surface-error-subtle, color-mix(in srgb, var(--border-error, #ef4444) 6%, var(--field-control-bg, var(--input-bg, #f9fafb)))))` |
+| `--field-error-line` | `FieldControl` edge colour while its control is invalid. Under glass, the on-photo ink. | `var(--control-invalid-ring-color, var(--border-error, #ef4444))` |
+| `--field-error-line-width` | `FieldControl` edge width while its control is invalid. | `var(--control-invalid-ring-width, 1.5px)` |
+| `--field-control-height` | `FieldControl` box height. | `var(--input-md-height, 2.75rem)` |
+| `--field-control-radius` | `FieldControl` corner radius. | `var(--input-md-radius, var(--input-radius-md, var(--radius-sm, 0.5rem)))` |
+| `--field-control-fill` | `FieldControl` fill. Under glass, the glass control fill. | `var(--field-control-bg, var(--input-bg, var(--surface-interactive-default, #f9fafb)))` |
+| `--field-control-fill-hover` | `FieldControl` fill on hover and focus. Unset, the resting fill. Under glass, the glass hover fill. | `var(--field-control-fill, var(--field-control-bg, var(--input-bg, var(--surface-interactive-default, #f9fafb))))` |
+| `--field-control-focus-ring-color` | Focus ring colour: 1px on pointer focus, the full ring on keyboard focus. Under glass, the glass control ink. | `var(--border-focus, #111827)` |
+| `--field-control-focus-ring-width` | Keyboard focus ring width. Unset, the shared focus ring width. | `var(--focus-ring-width, 2px)` |
+| `--field-control-padding-x` | Side inset of the control inside the box. | `var(--spacing-4, 1rem)` |
+| `--field-control-font-size` | The control's type size inside the box. | `var(--font-size-sm, 0.875rem)` |
+| `--field-control-font-weight` | The control's weight inside the box. | `inherit` |
+| `--field-control-letter-spacing` | The control's tracking inside the box. | `inherit` |
+| `--field-control-placeholder-color` | Placeholder colour inside the box, the Select trigger's placeholder included. | `var(--input-placeholder-color, var(--text-secondary, #9ca3af))` |
+| `--field-control-tall-min-height` | The tall box's (`FieldControl tall`) shortest; it grows with the Textarea's content. | `6.25rem` |
+| `--field-control-tall-max-height` | The tall box's tallest; the Textarea scrolls beyond it. | `none` |
+| `--field-control-tall-padding-y` | Top and bottom inset of the Textarea in the tall box. | `var(--spacing-3_5, 0.875rem)` |
 | `--field-label-font-size` | Label type size. Drives both the standard and editorial-density steps. | `var(--font-size-sm, 0.875rem)` · `13px` |
 | `--field-label-text-transform` | Label casing. | `revert-layer` |
 | `--field-label-letter-spacing` | Label tracking. | `revert-layer` |
 | `--field-label-color` | Label colour. Drives both the standard and editorial-density steps. | `var(--text-primary, currentColor)` · `var(--text-secondary)` |
+
+The box's resting edge width and colour come from the shared [`control`](#control) tokens.
+Glass is off unless an ancestor sets `data-glass="on"`: there the box's fill, hover fill,
+edge, focus ring, control ink and blur come from the [glass layer](/docs/themes/glass)'s
+control values, and the error line and the invalid edge take its on-photo ink.
+
+```yaml
+components:
+  field:
+    gap: "10px"
+    text-inset: "4px"
+    label-font-size: "15px"
+    label-font-weight: "540"
+    label-line-height: "20px"
+    label-optional-font-weight: "420"
+    description-font-size: "14px"
+    description-line-height: "20px"
+    error-font-weight: "520"
+    error-line-height: "20px"
+    error-icon-gap: "8px"
+    error-icon-size: "16px"
+    error-line-width: "1px"
+    control-height: "54px"
+    control-radius: "12px"
+    control-padding-x: "20px"
+    control-font-size: "18px"
+    control-font-weight: "460"
+    control-tall-min-height: "140px"
+    control-tall-max-height: "260px"
+    control-tall-padding-y: "16px"
+```
 
 ### `button`
 
