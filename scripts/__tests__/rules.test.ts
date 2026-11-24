@@ -234,6 +234,11 @@ describe('focus-ring-tokens', () => {
     const results = await focusRingTokens.run();
     expect(results.length).toBeGreaterThan(0);
   });
+
+  it('skips an ancestor styled through :has(:focus-visible) (VI-812)', async () => {
+    const results = await focusRingTokens.run();
+    expect(results.filter((r) => !r.pass && r.file?.includes('photo-drop'))).toEqual([]);
+  });
 });
 
 describe('theme-structure', () => {
@@ -387,7 +392,8 @@ describe('rule type compliance', () => {
       const results = await rule.run();
       expect(results.length).toBeGreaterThan(0);
     }
-  });
+    // Runs every rule over the whole repo: past the 5s default when the suite runs in parallel.
+  }, 30_000);
 });
 
 describe('element-defaults-owned-by-base', () => {

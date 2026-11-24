@@ -590,6 +590,28 @@ export const FIXTURES: Record<string, Record<string, Fixture>> = {
     invalid: { export: "OTPInput", interactiveTarget: "input", props: `{ value: "428519", invalid: true, errorMessage: "That code didn't work. Check it and try again." }` },
     trailing: { export: "OTPInput", interactiveTarget: "input", props: `{ value: "428519", trailing: React.createElement("button", { type: "button" }, "Resend") }` },
   },
+  // VI-812: every state of the tile. Filled states use a gradient stand-in photo
+  // (the public repo ships no photos); file mode draws a plain document glyph.
+  "photo-drop": (() => {
+    const photo = `"data:image/svg+xml;utf8," + encodeURIComponent("<svg xmlns='http://www.w3.org/2000/svg' width='440' height='440'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='#fbbf24'/><stop offset='1' stop-color='#7c2d12'/></linearGradient></defs><rect width='440' height='440' fill='url(#g)'/><circle cx='220' cy='170' r='80' fill='#fde68a'/><rect x='90' y='280' width='260' height='200' rx='120' fill='#fde68a'/></svg>")`
+    const icon = `React.createElement("svg", { viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 1.5 }, React.createElement("path", { d: "M6 3h8l4 4v14H6z M14 3v4h4" }))`
+    const file = (rest: string) => `{ id: "doc", src: "insurance.pdf", file: { icon: ${icon}, accept: "application/pdf", onFile: function () {}, onClear: function () {} }${rest} }`
+    const tile = (rest: string) => ({ export: "PhotoDrop", interactiveTarget: "input", props: `{ id: "photo", alt: "Your photo"${rest} }` })
+    return {
+      default: tile(`, src: ""`),
+      filled: tile(`, src: ${photo}`),
+      uploading: tile(`, src: ${photo}, progress: 0.4`),
+      "uploading-indeterminate": tile(`, src: ${photo}, progress: "indeterminate"`),
+      failed: tile(`, src: ${photo}, failed: true, onRetry: function () {}`),
+      invalid: tile(`, src: "", invalid: true`),
+      locked: tile(`, src: ${photo}, locked: true, lockedReason: "Check-in has started."`),
+      readonly: tile(`, src: ${photo}, readOnly: true`),
+      file: { export: "PhotoDrop", interactiveTarget: "input", props: `{ id: "doc", src: "", file: { icon: ${icon}, onFile: function () {}, onClear: function () {} } }` },
+      "file-filled": { export: "PhotoDrop", interactiveTarget: "input", props: file("") },
+      "file-uploading": { export: "PhotoDrop", interactiveTarget: "input", props: file(`, progress: 0.65`) },
+      small: tile(`, src: ${photo}, size: 96`),
+    }
+  })(),
   // VI-793: ten gradient stand-in photos, one chosen, loaded, in a 600px frame
   // (Backstage's menu width) so the five-column grid renders at its real size.
   "photo-picker": {

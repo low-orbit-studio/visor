@@ -32,6 +32,14 @@ describe('FiveLooks', () => {
     window.history.replaceState(null, '', '/');
   });
 
+  it('passes ?tile-photo= to every look (VI-812)', () => {
+    window.history.replaceState(null, '', '/?tile-photo=/face.webp');
+    const { container } = render(<FiveLooks specimen="photo-drop" />);
+    expect(srcs(container).map((p) => p.get('tile-photo'))).toEqual(Array(5).fill('/face.webp'));
+    window.history.replaceState(null, '', '/');
+    expect(LOOK_SPECIMENS['photo-drop']).toBeTypeOf('function');
+  });
+
   it('draws Today on todayTheme when one is given', () => {
     const { container } = render(<FiveLooks specimen="theme" theme="neutral" todayTheme="space" />);
     expect(srcs(container).map((p) => p.get('theme'))).toEqual(['space', 'neutral', 'neutral', 'neutral', 'neutral']);

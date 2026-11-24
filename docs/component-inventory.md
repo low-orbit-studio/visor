@@ -1,9 +1,9 @@
 # Component Inventory
 
-## Current Components (85)
+## Current Components (86)
 
 ### Form (25)
-- billing-slider, button, calendar, checkbox, combobox, date-picker, field, fieldset, file-upload, input, label, number-input, otp-input, password-input, phone-input, photo-picker, position-picker, radio-group, scroll-hint, search-input, select, slider, switch, tag-input, textarea, time-picker, toggle-group
+- billing-slider, button, calendar, checkbox, combobox, date-picker, field, fieldset, file-upload, input, label, number-input, otp-input, password-input, phone-input, photo-drop, photo-picker, position-picker, radio-group, scroll-hint, search-input, select, slider, switch, tag-input, textarea, time-picker, toggle-group
 
 ### Container / Layout (5)
 - badge, card, resizable-split, sheet, sidebar

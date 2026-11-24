@@ -24,6 +24,7 @@
     "otp-input",
     "password-input",
     "phone-input",
+    "photo-drop",
     "photo-picker",
     "position-picker",
     "radio-group",

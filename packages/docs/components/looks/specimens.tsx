@@ -6,6 +6,7 @@ import { GlassSpecimen } from './glass-specimen';
 import { ItineraryLabelsSpecimen } from './itinerary-labels-specimen';
 import { KeyValueListSpecimen } from './key-value-list-specimen';
 import { NumberInputSpecimen } from './number-input-specimen';
+import { PhotoDropSpecimen } from './photo-drop-specimen';
 import { PhotoPickerSpecimen } from './photo-picker-specimen';
 import { RichTextSpecimen } from './rich-text-specimen';
 import { ScrollHintSpecimen } from './scroll-hint-specimen';
@@ -28,6 +29,7 @@ export const LOOK_SPECIMENS: Record<string, ComponentType> = {
   'itinerary-labels': ItineraryLabelsSpecimen,
   'key-value-list': KeyValueListSpecimen,
   'number-input': NumberInputSpecimen,
+  'photo-drop': PhotoDropSpecimen,
   'photo-picker': PhotoPickerSpecimen,
   'rich-text': RichTextSpecimen,
   'scroll-hint': ScrollHintSpecimen,

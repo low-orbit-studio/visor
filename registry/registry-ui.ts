@@ -1827,6 +1827,25 @@ export const ui: Registry = [
     ],
   },
   {
+    name: "photo-drop",
+    type: "registry:ui",
+    category: "form",
+    description:
+      "A squircle drop tile for one photo or file: a marching-ants edge, an upload ring along the edge, failed with Try Again, locked and read-only. The real file input covers it, so click, drop and keyboard go through the browser's picker.",
+    dependencies: ["@phosphor-icons/react", "@loworbitstudio/visor-core"],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/photo-drop/photo-drop.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/photo-drop/photo-drop.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
     name: "photo-picker",
     type: "registry:ui",
     category: "form",

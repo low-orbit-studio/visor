@@ -20,7 +20,12 @@ const WEB_ONLY_THEMES = new Set<string>([
   'blacklight-app',
   'blacklight-aqua',
   'blacklight-pro',
+  // Private themes: the docs dev server generates their CSS locally (gitignored), CI never has it.
+  'cue',
   'entr',
+  'flight-deck',
+  'honcho',
+  'honcho-backstage',
   'kaiah',
   'knowmentum',
   'reference-app',
