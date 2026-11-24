@@ -1,4 +1,5 @@
 import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import { test, expect, type Frame, type Page } from "@playwright/test";
 
 // VI-804: Card's glass variant and editable tile, in each of the five looks, at 390 and
@@ -16,6 +17,13 @@ const LOOKS = [
   { id: "light", photo: false },
   { id: "light-photo", photo: true },
 ] as const;
+
+// V13's 18 review shots: each look at rest (5 x 2 widths), the docs grid per docs mode and width (4),
+// and the editable tile hovered and mid-flash in both Photo looks at 1440 (4). Photo-look shots never
+// enter the repo (spec/style-rules.md), so the default is the gitignored Playwright output folder.
+const SHOTS = process.env.CARD_LOOKS_SHOTS ?? join(__dirname, "../test-results/card-looks");
+// Hide the dev server's overlay badge (absent from the production build CI runs).
+const CLEAN = { style: "nextjs-portal { display: none !important; }" };
 
 const AXE = readFileSync(require.resolve("axe-core/axe.min.js"), "utf-8");
 
@@ -81,7 +89,9 @@ for (const width of [1440, 390]) {
   for (const look of LOOKS) {
     test(`Card glass and editable: ${look.id} at ${width}`, async ({ page }) => {
       await openLook(page, look.id, width);
+      await page.screenshot({ path: `${SHOTS}/${look.id}__${width}.png`, fullPage: true, animations: "disabled", ...CLEAN });
       const r = await layers(page);
+      const reviewShot = look.photo && width === 1440;
 
       if (look.photo) {
         // Glass on over the photo: blur, soft-light edge, the lift laid over the fill.
@@ -139,6 +149,7 @@ for (const width of [1440, 390]) {
       await expect.poll(() => pen.evaluate((n) => getComputedStyle(n).color)).toBe(keyInk);
       await expect.poll(() => card.evaluate((n) => getComputedStyle(n).boxShadow)).not.toBe(rest);
       expect(await card.evaluate((n) => getComputedStyle(n).transform)).toBe("none");
+      if (reviewShot) await page.screenshot({ path: `${SHOTS}/${look.id}__${width}__hover.png`, ...CLEAN });
 
       // Keyboard: Tab reaches the card, its outline is the key colour, Enter and Space each save.
       const saves = page.locator('[data-slot="card-saves"]');
@@ -170,6 +181,7 @@ for (const width of [1440, 390]) {
       expect(flash).toHaveLength(1);
       expect(flash[0]!.duration).toBe(1600);
       expect(flash[0]!.first).toContain(key);
+      if (reviewShot) await page.screenshot({ path: `${SHOTS}/${look.id}__${width}__flash.png`, ...CLEAN });
 
       // The press scales the card while held.
       await card.hover();
@@ -229,6 +241,21 @@ for (const width of [1440, 390]) {
       await expect(grid.locator("iframe").first()).toHaveAttribute("src", /specimen=card/);
       const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
       expect(overflow).toBeLessThanOrEqual(0);
+      // The grid re-points its frames once the docs theme and mode are read; let that land first.
+      await page.waitForLoadState("networkidle");
+      // Shoot each frame settled, with the viewport grown to hold the whole grid: frames outside it
+      // never paint, and an element shot scrolls the sticky docs header over the grid.
+      for (const look of LOOKS) {
+        const frame = grid.locator(`[data-look="${look.id}"] iframe`).contentFrame();
+        const lookMode = look.id === "today" ? mode : look.id.split("-")[0];
+        await expect(frame.locator("html")).toHaveClass(new RegExp(`\\b${lookMode}\\b`));
+        await frame.locator('[data-slot="card-specimen"]').waitFor();
+        await frame.locator("head").evaluate((head, css) => head.append(Object.assign(document.createElement("style"), { textContent: css })), CLEAN.style);
+      }
+      await page.evaluate(() => window.scrollTo(0, 0));
+      const clip = (await grid.boundingBox())!;
+      await page.setViewportSize({ width, height: Math.ceil(clip.y + clip.height) });
+      await page.screenshot({ path: `${SHOTS}/docs-${mode}__${width}.png`, clip, animations: "disabled", ...CLEAN });
     });
   }
 }
