@@ -183,6 +183,7 @@ When adding tokens:
 - All components must have test coverage using **Vitest** and **React Testing Library**.
 - Tests live alongside source in `components/__tests__/`.
 - Run the full test suite with `npm test` before submitting a PR.
+- The browser tests do not run in CI (VI-847). Run them locally when you touch color mode, routing or glass: `npm run test:prod -w packages/docs` and `npm run test:glass` (the glass files with `VISOR_REQUIRE_BROWSER=1`; needs `npx playwright install chromium` once).
 - Tests should cover rendering, key interactions, and any meaningful variant combinations.
 - Aim for meaningful coverage — don't write tests just to check a box.
 

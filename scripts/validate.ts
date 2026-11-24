@@ -50,6 +50,7 @@ import { widgetbookUseCaseCoverage } from './rules/widgetbook-use-case-coverage.
 import { widgetbookDepsFresh } from './rules/widgetbook-deps-fresh.js';
 import { schemaCopiesSync } from './rules/schema-copies-sync.js';
 import { componentNamesFresh } from './rules/component-names-fresh.js';
+import { noWebkitInCi } from './rules/no-webkit-in-ci.js';
 import type { Rule } from './rules/types.js';
 
 const rules: Rule[] = [
@@ -84,6 +85,7 @@ const rules: Rule[] = [
   flutterCssTokenSync,
   schemaCopiesSync,
   componentNamesFresh,
+  noWebkitInCi,
   widgetbookUseCaseCoverage,
   widgetbookDepsFresh,
   testFileExists,

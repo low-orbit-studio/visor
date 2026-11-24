@@ -475,3 +475,34 @@ describe('element-defaults-owned-by-base — fixtures', () => {
     expect(findOwnedDeclarations(css, fixture, false)).toHaveLength(0);
   });
 });
+
+describe('no-webkit-in-ci', async () => {
+  const { findWebkitInCi, noWebkitInCi } = await import('../rules/no-webkit-in-ci.js');
+  const wf = (text: string) => [{ file: 'ci.yml', text }];
+
+  it('passes on current codebase', async () => {
+    expect((await noWebkitInCi.run()).filter((r) => !r.pass)).toEqual([]);
+  });
+
+  it('flags webkit in a workflow, any case', () => {
+    expect(findWebkitInCi(wf('run: npx playwright install WebKit'), [], {})).toHaveLength(1);
+  });
+
+  it('flags playwright install without chromium, allows chromium only', () => {
+    expect(findWebkitInCi(wf('run: npx playwright install --with-deps'), [], {})).toHaveLength(1);
+    expect(findWebkitInCi(wf('run: npx playwright install --with-deps chromium'), [], {})).toEqual([]);
+  });
+
+  it('flags a workflow running a webkit config by script name, and a webkit default config', () => {
+    const configs = [
+      { file: 'packages/docs/playwright.concentric.config.ts', text: 'devices["Desktop Safari"]' },
+      { file: 'packages/docs/playwright.config.ts', text: 'webkit' },
+    ];
+    const scripts = { 'test:concentric': 'playwright test -c playwright.concentric.config.ts' };
+    const fails = findWebkitInCi(wf('run: npm run test:concentric -w packages/docs'), configs, scripts);
+    expect(fails.map((f) => f.message)).toEqual([
+      'Default Playwright config uses webkit, and CI runs it',
+      'Workflow runs test:concentric, which uses webkit',
+    ]);
+  });
+});
