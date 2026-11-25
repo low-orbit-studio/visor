@@ -753,11 +753,13 @@ const skeletonFamily: ComponentTokenFamily = {
 const spinnerFamily: ComponentTokenFamily = {
   family: "spinner",
   prefix: "spinner",
-  description: "Inline loading ring — track, leading edge, per-size geometry, cycle length, the delayed fade-in and the visible words.",
+  description: "Inline loading ring — track, leading edge, an optional theme glyph, per-size geometry, cycle length, the delayed fade-in and the visible words.",
   tokens: [
     { key: "track-color", property: "border-color", description: "Ring track colour.", consumers: at(SPINNER, "var(--border-default, #e5e7eb)") },
     { key: "edge-color", property: "border-top-color", description: "Leading-edge colour (default tone).", consumers: at(SPINNER, "var(--text-tertiary, #6b7280)") },
     { key: "primary-edge-color", property: "border-top-color", description: "Leading-edge colour (primary tone).", consumers: at(SPINNER, "var(--primary, #111827)") },
+    { key: "glyph", property: "mask-image", description: "Glyph drawn in place of the ring: a mask image, e.g. `url(\"data:image/svg+xml,...\")`. Unset keeps the border ring.", consumers: at(SPINNER, "none") },
+    { key: "glyph-color", property: "background-color", description: "Glyph ink (default tone; the primary tone inks the glyph with `primary-edge-color`).", consumers: at(SPINNER, "currentColor") },
     { key: "radius", property: "border-radius", description: "Ring rounding.", consumers: at(SPINNER, "var(--radius-full, 9999px)") },
     { key: "duration", property: "animation-duration", description: "Rotation cycle length.", consumers: at(SPINNER, "var(--motion-duration-1500, 1500ms)") },
     { key: "xs-size", property: "width / height", description: "Extra-small ring diameter.", consumers: at(SPINNER, "12px") },

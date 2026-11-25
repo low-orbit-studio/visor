@@ -303,6 +303,8 @@ components:
     track-color: "#ff00aa"
     edge-color: "#ff00aa"
     primary-edge-color: "#ff00aa"
+    glyph: 'url("data:image/svg+xml,%3Csvg xmlns=''http://www.w3.org/2000/svg'' viewBox=''0 0 8 8''%3E%3Ccircle cx=''4'' cy=''4'' r=''4''/%3E%3C/svg%3E")'
+    glyph-color: "#ff00aa"
     radius: "3px"
     duration: "3s"
     xs-size: "37px"
