@@ -33,3 +33,5 @@ per-pixel difference (brighter is more different), both padded, never stretched.
 | Behind the alert | the FormDeck slide's glass card | the docs specimen's glass form panel (the glass layer's recipe, card fill and blur) | page context, not the Alert |
 
 Captured with `clean-capture.mjs` (`cleanShot`), each PNG stamped with its base commit.
+
+These compare shots show a private Honcho Campout client photo, so they stay on the Review Station and out of this public repo (ruling `[external/no-client-photos-public]`, VI-842).
