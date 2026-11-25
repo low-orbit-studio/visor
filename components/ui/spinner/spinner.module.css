@@ -6,6 +6,9 @@
  * All colors flow through CSS custom properties so themes can override the
  * track and edge colors without forking the component. Stroke widths are
  * sourced from the --stroke-width-* token set (thin/regular/medium/thick).
+ *
+ * VI-860: a theme can draw a glyph in place of the ring by setting the
+ * spinner glyph hook to a mask image. Unset, the ring renders as before.
  */
 
 @keyframes spin {
@@ -35,6 +38,21 @@
   box-sizing: border-box;
   /* VI-797: a ring stays a circle when a theme draws squircle corners (VI-796). */
   --corner-shape: round;
+  /* VI-860: a theme glyph masks the whole box (ring included); none masks nothing. */
+  position: relative;
+  -webkit-mask: var(--spinner-glyph, none) center / 100% 100% no-repeat;
+  mask: var(--spinner-glyph, none) center / 100% 100% no-repeat;
+}
+
+/* VI-860: the glyph ink, laid over the border box. Its mask falls back to a
+   transparent gradient, so with no glyph set this layer paints nothing. */
+.root::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-color: var(--spinner-glyph-color, currentColor);
+  -webkit-mask: var(--spinner-glyph, linear-gradient(transparent, transparent)) center / 100% 100% no-repeat;
+  mask: var(--spinner-glyph, linear-gradient(transparent, transparent)) center / 100% 100% no-repeat;
 }
 
 /* Visually-hidden label text — accessible to screen readers, not visible */
@@ -57,6 +75,10 @@
   border-width: var(--spinner-xs-border-width, var(--stroke-width-thin, 1px));
 }
 
+.root.sizeXs::before {
+  inset: calc(-1 * var(--spinner-xs-border-width, var(--stroke-width-thin, 1px)));
+}
+
 /* Size sm — 16px ring, stroke-width-regular (1.5px) */
 .root.sizeSm {
   width: var(--spinner-sm-size, 16px);
@@ -64,11 +86,19 @@
   border-width: var(--spinner-sm-border-width, var(--stroke-width-regular, 1.5px));
 }
 
+.root.sizeSm::before {
+  inset: calc(-1 * var(--spinner-sm-border-width, var(--stroke-width-regular, 1.5px)));
+}
+
 /* Size md — 24px ring, stroke-width-medium (2px) */
 .root.sizeMd {
   width: var(--spinner-md-size, 24px);
   height: var(--spinner-md-size, 24px);
   border-width: var(--spinner-md-border-width, var(--stroke-width-medium, 2px));
+}
+
+.root.sizeMd::before {
+  inset: calc(-1 * var(--spinner-md-border-width, var(--stroke-width-medium, 2px)));
 }
 
 /* Tone: default — tertiary text for leading edge */
@@ -79,6 +109,11 @@
 /* Tone: primary — primary brand color for leading edge */
 .root.tonePrimary {
   border-top-color: var(--spinner-primary-edge-color, var(--primary, #111827));
+}
+
+/* VI-860: a primary-tone glyph is inked like the primary edge. */
+.root.tonePrimary::before {
+  background-color: var(--spinner-primary-edge-color, var(--primary, #111827));
 }
 
 /* VI-797: `delay` — nothing shows until the wait passes, then the spinner (or

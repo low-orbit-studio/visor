@@ -1,5 +1,5 @@
 name: Spinner
-description: Loading spinner — an inline rotating border ring, or a dotted thinking-orb (nine animations) for waits over larger surfaces. Three sizes (xs/sm/md), two tones (default/primary), optional visible words, an opt-in delay so quick loads never flash it, and full reduced-motion support.
+description: Loading spinner — an inline rotating border ring, or a dotted thinking-orb (nine animations) for waits over larger surfaces. Three sizes (xs/sm/md), two tones (default/primary), optional visible words, an opt-in delay so quick loads never flash it, and full reduced-motion support. A theme can swap the ring for its own glyph (components.spinner.glyph, a mask image).
 extends: HTMLSpanElement
 category: data-display
 

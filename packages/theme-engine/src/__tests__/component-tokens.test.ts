@@ -174,6 +174,40 @@ describe("VI-625 component-token emission", () => {
     });
   });
 
+  describe("VI-860 spinner glyph", () => {
+    // Phosphor bold CircleNotch, as the Honcho Kit draws it: quotes, %3C and commas must pass through verbatim.
+    const GLYPH = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Cpath d='M236,128a108,108,0,0,1-216,0c0-42.52,24.73-81.34,63-98.9A12,12,0,1,1,93,50.91C63.24,64.57,44,94.83,44,128a84,84,0,0,0,168,0c0-33.17-19.24-63.43-49-77.09A12,12,0,1,1,173,29.1C211.27,46.66,236,85.48,236,128Z'/%3E%3C/svg%3E")`;
+    const THEME = `${MINIMAL}components:\n  spinner:\n    glyph: '${GLYPH.replace(/'/g, "''")}'\n    glyph-color: "#123456"\n`;
+
+    function input(yaml: string): AdapterInput {
+      const data = generateThemeData(yaml);
+      return { config: resolveConfig(parseConfig(yaml)), primitives: data.primitives, tokens: data.tokens } as AdapterInput;
+    }
+    const docsCss = (yaml: string) => {
+      const out = docsAdapter(input(yaml));
+      return typeof out === "string" ? out : Object.values(out).join("\n");
+    };
+
+    it("validates a theme that sets the glyph", () => {
+      expect(validateConfig(parseConfig(THEME)).errors).toEqual([]);
+    });
+
+    it("emits the glyph verbatim in both modes from the nextjs and docs adapters", () => {
+      for (const css of [nextjsAdapter(input(THEME)) as string, docsCss(THEME)]) {
+        const glyphs = [...css.matchAll(/--spinner-glyph: ([^\n]+);\n/g)].map((m) => m[1]);
+        // light, dark toggle and the prefers-color-scheme block
+        expect(glyphs.length).toBeGreaterThanOrEqual(2);
+        for (const g of glyphs) expect(g).toBe(GLYPH);
+        expect(css).toContain("--spinner-glyph-color: #123456;");
+      }
+    });
+
+    it("emits no glyph for a theme that leaves it unset", () => {
+      expect(nextjsAdapter(input(MINIMAL)) as string).not.toContain("--spinner-glyph");
+      expect(docsCss(MINIMAL)).not.toContain("--spinner-glyph");
+    });
+  });
+
   describe("generateComponentTokensCss", () => {
     const selectors = { light: ":root", dark: ".dark", prefers: ":root:not(.light)" };
 

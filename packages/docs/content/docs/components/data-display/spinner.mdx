@@ -88,6 +88,23 @@ The same delayed spinner in each look, on the theme picked in the docs. Reload t
 
 <FiveLooks specimen="spinner" height={160} />
 
+## Theme Glyph
+
+A theme can draw a glyph in place of the ring, such as a kit's notched circle icon. Set `components.spinner.glyph` to a mask image. The spinner keeps its size, place and turn and fills the glyph's shape with ink. A theme that leaves the key unset keeps the border ring, unchanged.
+
+```yaml
+components:
+  spinner:
+    glyph: 'url("data:image/svg+xml,%3Csvg xmlns=''http://www.w3.org/2000/svg'' viewBox=''0 0 256 256''%3E%3Cpath d=''M236,128a108,108,0,0,1-216,0...''/%3E%3C/svg%3E")'
+    glyph-color: "#ffffff"   # optional
+```
+
+- Use a `data:` URI. A URL to a file resolves against the stylesheet that sets it, which moves with the theme.
+- The glyph is drawn edge to edge in the spinner's box, so draw it on a square view box.
+- The default tone inks the glyph with `glyph-color`, or the surrounding text colour when unset. The primary tone uses `primary-edge-color`, like the ring's primary edge.
+
+All spinner keys are listed under [Component Tokens](/docs/themes/component-tokens#spinner).
+
 ## Orb
 
 `variant="orb"` swaps the ring for a dotted thinking-orb, drawn on a canvas by [thinking-orbs](https://libraries.dev/orbs). The ring belongs inline, beside a button label. The orb is for a wait over a large visual, like a card re-rendering under a scrim or an agent thinking.
