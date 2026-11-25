@@ -38,6 +38,22 @@
   background-color: var(--glass-on-control-hover-fill, var(--number-input-bg-focus, var(--number-input-bg, var(--surface-interactive-default, #f9fafb))));
 }
 
+/* Invalid (VI-821): aria-invalid on the input draws Input's invalid fill and
+   inset ring on the wrapper, from the same control/input invalid tokens. Under
+   glass it follows the Field box (VI-805): the glass hover fill and an ink line,
+   so the error reads over a photo. */
+.wrapper:has(.input[aria-invalid="true"]) {
+  outline-color: transparent;
+  background-color: var(--glass-on-control-hover-fill, var(--input-bg-invalid, var(--surface-error-subtle, color-mix(in srgb, var(--border-error, #ef4444) 6%, var(--field-control-bg, var(--input-bg, #f9fafb))))));
+  box-shadow: inset 0 0 0 var(--control-invalid-ring-width, 1.5px) var(--glass-on-ink, var(--control-invalid-ring-color, var(--border-error, #ef4444))),
+    0 0 0 var(--control-invalid-halo-width, 0px) var(--control-invalid-halo-color, color-mix(in srgb, var(--border-error, #ef4444) 15%, transparent));
+}
+
+.wrapper:has(.input[aria-invalid="true"]):focus-within {
+  box-shadow: inset 0 0 0 var(--control-invalid-ring-width, 1.5px) var(--glass-on-ink, var(--control-invalid-ring-color, var(--border-error, #ef4444))),
+    0 0 0 var(--control-focus-halo-width, var(--focus-ring-width, 2px)) var(--control-invalid-halo-color, color-mix(in srgb, var(--border-error, #ef4444) 30%, transparent));
+}
+
 .wrapperDisabled {
   opacity: 0.5;
   pointer-events: none;
