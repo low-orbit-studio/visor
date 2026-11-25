@@ -51,6 +51,7 @@ import { widgetbookDepsFresh } from './rules/widgetbook-deps-fresh.js';
 import { schemaCopiesSync } from './rules/schema-copies-sync.js';
 import { componentNamesFresh } from './rules/component-names-fresh.js';
 import { noBrowsersInCi } from './rules/no-browsers-in-ci.js';
+import { noClientPhotosPublic } from './rules/no-client-photos-public.js';
 import type { Rule } from './rules/types.js';
 
 const rules: Rule[] = [
@@ -86,6 +87,7 @@ const rules: Rule[] = [
   schemaCopiesSync,
   componentNamesFresh,
   noBrowsersInCi,
+  noClientPhotosPublic,
   widgetbookUseCaseCoverage,
   widgetbookDepsFresh,
   testFileExists,

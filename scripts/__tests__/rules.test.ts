@@ -501,3 +501,32 @@ describe('no-browsers-in-ci', async () => {
     expect(findBrowsersInCi(wf('run: npm run build'), scripts)).toEqual([]);
   });
 });
+
+describe('no-client-photos-public', async () => {
+  const { findClientPhotos, noClientPhotosPublic } = await import('../rules/no-client-photos-public.js');
+
+  it('passes on current codebase', async () => {
+    expect((await noClientPhotosPublic.run()).filter((r) => !r.pass)).toEqual([]);
+  });
+
+  it.each([
+    'docs/audits/VI-1/dark-photo__390.png',
+    'docs/audits/VI-1/compare/alert__light-photo.PNG',
+    'docs/audits/VI-1/photo.jpg',
+    'docs/audits/VI-1/Photo.jpeg',
+    'packages/docs/public/looks/photos/dark.webp',
+    'packages/docs/public/themes/honcho-backstage/photos/light.webp',
+  ])('flags %s', (path) => {
+    expect(findClientPhotos([path])).toHaveLength(1);
+  });
+
+  it.each([
+    'docs/audits/VI-1/today__1440.png',
+    'docs/audits/VI-1/dark__390.png',
+    'docs/audits/VI-1/light__1440.png',
+    'docs/audits/VI-1/photo-notes.md',
+    'packages/registry/photo.png',
+  ])('passes %s', (path) => {
+    expect(findClientPhotos([path])).toEqual([]);
+  });
+});
