@@ -126,8 +126,9 @@ export interface FieldErrorProps extends React.HTMLAttributes<HTMLDivElement> {
   errors?: Array<string | { message?: string } | undefined>
   /**
    * Optional leading icon rendered before the error message (e.g. a 14px
-   * Phosphor `WarningCircle`). When present, the error lays out as a centered
-   * icon + message row; without it the error renders exactly as before (plain
+   * Phosphor `WarningCircle`). When present, the icon sits at the top left,
+   * centred on the message's first line, and a wrapped message runs on below
+   * it; without it the error renders exactly as before (plain
    * inline text). The icon is `aria-hidden` — `role="alert"` already conveys
    * the error to assistive tech.
    */

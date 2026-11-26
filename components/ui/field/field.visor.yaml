@@ -48,7 +48,9 @@ sub_components:
     description: >
       Error message display with role="alert". Accepts an errors array or
       children. Optional `icon` prop renders an aria-hidden leading glyph and
-      switches to a centered icon + message row; without it the error renders
+      sits at the top left, centred on the message's first line, so a wrapped
+      message runs on below it. A theme sizes it with `field.error-icon-size`
+      (its width and height, whatever size the icon was passed at). Without it the error renders
       as plain inline text (default, unchanged). Typography follows the density
       axis: place data-density="editorial" on any ancestor to activate the
       13px/11px discrete ramp and tertiary color treatment. Its colour is the

@@ -90,13 +90,15 @@
 }
 
 /* Leading-icon layout — opt-in. Only applied when the consumer passes an
- * `icon` to FieldError, so the default (text-only) error is unchanged. Lays
- * the icon + message out as a centered row; the icon sizes itself in em so it
- * tracks the error's font-size (a 14px WarningCircle at the editorial 13px
- * ramp), matching the prototype's field-error icon sizing (14px). */
+ * `icon` to FieldError, so the default (text-only) error is unchanged. The
+ * icon sits at the top left (VI-862): its box is one line of the message tall
+ * (1lh), so the icon centres on the first line and a message that wraps runs
+ * on below it. The size governs the SVG itself, not the icon's own width, so a
+ * theme binding --field-error-icon-size draws it at that size whatever the consumer
+ * passed. Unbound it is 1.077em, a 14px WarningCircle at the editorial 13px. */
 .fieldErrorWithIcon {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   /* 6px gap — no --spacing-1.5 token exists, so the 6px step uses
      calc(--spacing-1 + --spacing-1/2) (the same pattern badge/kbd use). */
   gap: var(--field-error-icon-gap, calc(var(--spacing-1, 0.25rem) + var(--spacing-1, 0.25rem) / 2));
@@ -107,8 +109,12 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  font-size: var(--field-error-icon-size, 1.077em);
-  line-height: 1;
+  height: 1lh;
+}
+
+.fieldErrorIcon > svg {
+  width: var(--field-error-icon-size, 1.077em);
+  height: var(--field-error-icon-size, 1.077em);
 }
 
 .fieldErrorList {

@@ -1086,7 +1086,7 @@ const fieldFamily: ComponentTokenFamily = {
     { key: "error-font-weight", property: "font-weight", description: "Error line weight.", consumers: at(FIELD, "var(--font-weight-normal, 400)") },
     { key: "error-line-height", property: "line-height", description: "Error line height.", consumers: at(FIELD, "inherit") },
     { key: "error-icon-gap", property: "gap", description: "Space between the error icon and its message.", consumers: at(FIELD, "calc(var(--spacing-1, 0.25rem) + var(--spacing-1, 0.25rem) / 2)") },
-    { key: "error-icon-size", property: "font-size", description: "Error icon size.", consumers: at(FIELD, "1.077em") },
+    { key: "error-icon-size", property: "width / height", description: "Error icon size: the icon's width and height, whatever size the icon was passed at. It sits centred on the message's first line.", consumers: at(FIELD, "1.077em") },
     { key: "error-fill", property: "background-color", description: "`FieldControl` fill while its control is invalid. Under glass, the glass hover fill.", consumers: at(FIELD, "var(--input-bg-invalid, var(--surface-error-subtle, color-mix(in srgb, var(--border-error, #ef4444) 6%, var(--field-control-bg, var(--input-bg, #f9fafb)))))") },
     { key: "error-line", property: "box-shadow (inset ring)", description: "`FieldControl` edge colour while its control is invalid. Under glass, the on-photo ink.", consumers: at(FIELD, "var(--control-invalid-ring-color, var(--border-error, #ef4444))") },
     { key: "error-line-width", property: "box-shadow (inset ring)", description: "`FieldControl` edge width while its control is invalid.", consumers: at(FIELD, "var(--control-invalid-ring-width, 1.5px)") },

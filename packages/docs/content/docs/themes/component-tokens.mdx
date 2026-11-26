@@ -768,7 +768,7 @@ Field's parts: the label (size, weight, line height, case, tracking, colour, the
 | `--field-error-font-weight` | Error line weight. | `var(--font-weight-normal, 400)` |
 | `--field-error-line-height` | Error line height. | `inherit` |
 | `--field-error-icon-gap` | Space between the error icon and its message. | `calc(var(--spacing-1, 0.25rem) + var(--spacing-1, 0.25rem) / 2)` |
-| `--field-error-icon-size` | Error icon size. | `1.077em` |
+| `--field-error-icon-size` | Error icon size: the icon's width and height, whatever size the icon was passed at. It sits centred on the message's first line. | `1.077em` |
 | `--field-error-fill` | `FieldControl` fill while its control is invalid. Under glass, the glass hover fill. | `var(--input-bg-invalid, var(--surface-error-subtle, color-mix(in srgb, var(--border-error, #ef4444) 6%, var(--field-control-bg, var(--input-bg, #f9fafb)))))` |
 | `--field-error-line` | `FieldControl` edge colour while its control is invalid. Under glass, the on-photo ink. | `var(--control-invalid-ring-color, var(--border-error, #ef4444))` |
 | `--field-error-line-width` | `FieldControl` edge width while its control is invalid. | `var(--control-invalid-ring-width, 1.5px)` |
