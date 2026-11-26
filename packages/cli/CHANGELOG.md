@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.63.0
+
+### Minor Changes
+
+- b0162d0: Spinner glyph slot (VI-860): a theme sets `components.spinner.glyph` to a mask image (a `data:` URI) and the ring Spinner draws that glyph in place of its border ring, inked with `glyph-color` (default tone) or `primary-edge-color` (primary tone). A theme that leaves it unset renders exactly as before.
+
+### Patch Changes
+
+- ac40652: NumberInput invalid look (VI-821): when its input carries `aria-invalid="true"`, NumberInput draws the same invalid fill and inset ring Input draws, from the shared `--input-bg-invalid` and `--control-invalid-*` tokens, and keeps the ring while focused. Under `data-glass="on"` it takes the Field box's glass error look (the glass hover fill and an ink line).
+- Updated dependencies [b0162d0]
+  - @loworbitstudio/visor-theme-engine@0.49.0
+
 ## 1.62.0
 
 ### Minor Changes
