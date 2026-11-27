@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.64.0
+
+### Minor Changes
+
+- f836eb6: `npx visor add before-after-compare` ships BeforeAfterCompare, a before/after capture pair for review surfaces. Four modes: Side by Side (top-aligned, stacking under 768px), Swipe (a clip-path divider that is a `role="slider"` the arrow keys move), Flip (an instant blink on click or Space) and Diff (a pixel diff in the browser, changed regions boxed, with a stat line). Keys 1 to 4 switch mode and Z toggles a synced 2.5x loupe; a faint crosshair follows the pointer on both images. In Side by Side and Diff a click drops a numbered mark at the same spot on both images (0 to 1 coordinates plus capture CSS pixels), and `markLine` writes it as `n. <label> at x X, y Y`. A capture under 600px wide draws at its CSS width, never scaled up, in a bezel concentric with its screen. The pixel engine is the new `capture-diff` registry lib (`lib/capture-diff.ts`), shared with FidelityMirror: its new `onDiff` prop runs the same diff when both sides are image sources and reports the result, with no visible change.
+- 64c1fca: Add OptionCards (VI-864): a radiogroup of 2–4 lettered option cards, each with a label, a one-line detail and its pros and cons, a Recommended mark on at most one card, and a selection ring that slides to the picked card (a CSS transition, off under reduced motion). Arrows move and select, A/B/C pick while focus is in the group, and the cards stack under 900px.
+- 28e44cb: feat: add DecisionDock (VI-865), a floating answer bar with keys and a sent state
+  
+  `npx visor add decision-dock` ships a frosted bar, sticky at the bottom of the view, carrying the item's context and its answer buttons, each with its key. `kind="approve"` is Needs Work (N) and Approve (A); `kind="pick"` is Needs Work and Send X (Enter), disabled with no key until `choice` is set; `kind="run"` is Needs Work and I Ran It (R). Needs Work opens a note in place that sends with ⌘↵ and closes with Esc. An answer calls `onAnswer(verdict, note?)` and turns the bar into a sent state: a drawn check, the verdict line and a progress bar that calls `onAdvance` when it fills (`--decision-dock-advance`, 1.2s). Over a photo (`data-glass="on"`) it reads the glass layer. Below 640px it spans the screen and the buttons share the row. CSS keyframes only, no animation library.
+- aefb6c0: InfographicBar gets a selectable mode, a band of counts that is also a list's filter (VI-868). Pass `value`, `defaultValue` or `onValueChange` and the band becomes a radiogroup: each cell is a radio with `aria-checked`, arrow keys move focus and selection together, and `onValueChange` reports the cell's `id`. A pressed plate slides between cells: a lifted plate on a light page, a 9% ink wash in dark, with the hairline dividers hidden beside it. The selectable band has no border and sits on one tint (the page mixed 6% toward the ink), draws a 44px count over a 13px sentence-case caption, and keeps cells at least 124px wide with a 4px concentric inset. The read-only band is unchanged.
+
 ## 1.63.1
 
 ### Patch Changes
