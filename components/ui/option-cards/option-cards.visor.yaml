@@ -1,0 +1,65 @@
+name: OptionCards
+description: A radiogroup of 2–4 lettered option cards, each with a label, a one-line detail and its pros and cons, a Recommended mark on at most one, and a selection ring that slides to the picked card.
+extends: HTMLDivElement
+category: form
+
+when_to_use:
+  - Asking someone to pick one of a few approaches where each has a real trade-off
+  - Decision and approval screens (an approval inbox, a design review) that recommend one option
+  - Any single choice where the reader needs the pros and cons side by side before choosing
+
+when_not_to_use:
+  - A plain single choice with no trade-off to show (use Radio Group or Segmented Control)
+  - More than four options (use Radio Group or Select)
+  - Picking several options (use Checkbox)
+
+why: >
+  Approval and decision screens kept hand-building the same card row: lettered
+  tiles, a label and one-line detail, pros and cons lists, a Recommended mark, and
+  a ring that moves to the pick. OptionCards is that row as a proper radiogroup.
+  Arrows move and select, and the A, B, C keys pick directly while focus is in the
+  group. The ring is one element that slides between cards on a CSS transition, so
+  it needs no animation library and stops moving under prefers-reduced-motion.
+  Cards stack once the component is narrower than 900px. Every colour comes from
+  theme tokens.
+
+props:
+  - name: options
+    type: "{ label: ReactNode; detail?: ReactNode; pros?: ReactNode[]; cons?: ReactNode[]; recommended?: boolean; footnote?: ReactNode }[]"
+    description: Two to four options, lettered A to D in order. Only the first option with recommended is marked.
+  - name: value
+    type: "number | null"
+    description: Controlled selection, the picked option's index.
+  - name: defaultValue
+    type: "number | null"
+    default: "null"
+    description: Uncontrolled initial selection.
+  - name: onValueChange
+    type: "(index: number) => void"
+    description: Fires with the picked option's index.
+
+dependencies:
+  - "@phosphor-icons/react"
+
+preview_url: "https://visor.loworbit.studio/docs/components/form/option-cards"
+
+example: |
+  <OptionCards
+    aria-label="Hosting"
+    defaultValue={0}
+    options={[
+      {
+        label: "Vercel",
+        detail: "Deploy the docs site as it is today.",
+        pros: ["No setup"],
+        cons: ["Per-seat cost"],
+        recommended: true,
+      },
+      {
+        label: "Self-host",
+        detail: "Run the docs on our own box.",
+        pros: ["No monthly bill"],
+        cons: ["We run upgrades"],
+      },
+    ]}
+  />

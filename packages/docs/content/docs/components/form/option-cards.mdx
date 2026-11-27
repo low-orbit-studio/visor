@@ -1,0 +1,103 @@
+---
+title: Option Cards
+description: A radiogroup of 2–4 lettered option cards, each with a label, a one-line detail and its pros and cons, a Recommended mark on at most one, and a selection ring that slides to the picked card.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { OptionCards } from '@/components/ui/option-cards';
+
+## Default
+
+<ComponentPreview
+  title="Default"
+  code={"import { OptionCards } from '@/components/ui/option-cards/option-cards';\n\n<OptionCards\n  aria-label=\"Hosting\"\n  defaultValue={0}\n  options={[\n    {\n      label: 'Keep Vercel',\n      detail: 'Deploy the docs site the way it ships today.',\n      pros: ['No setup', 'Preview links on every PR'],\n      cons: ['Per-seat cost'],\n      recommended: true,\n    },\n    {\n      label: 'Self-Host',\n      detail: 'Run the docs on our own box.',\n      pros: ['No monthly bill'],\n      cons: ['We run upgrades', 'No previews'],\n    },\n    {\n      label: 'Static Export',\n      detail: 'Ship plain files to a bucket.',\n      pros: ['Cheapest'],\n      cons: ['No server routes'],\n    },\n  ]}\n/>"}
+>
+  <OptionCards
+    aria-label="Hosting"
+    defaultValue={0}
+    options={[
+      {
+        label: 'Keep Vercel',
+        detail: 'Deploy the docs site the way it ships today.',
+        pros: ['No setup', 'Preview links on every PR'],
+        cons: ['Per-seat cost'],
+        recommended: true,
+      },
+      {
+        label: 'Self-Host',
+        detail: 'Run the docs on our own box.',
+        pros: ['No monthly bill'],
+        cons: ['We run upgrades', 'No previews'],
+      },
+      {
+        label: 'Static Export',
+        detail: 'Ship plain files to a bucket.',
+        pros: ['Cheapest'],
+        cons: ['No server routes'],
+      },
+    ]}
+  />
+</ComponentPreview>
+
+## With a Footnote
+
+Each card can end on a quiet `footnote`, for example what picking it sends.
+
+<ComponentPreview
+  title="With a Footnote"
+  code={"<OptionCards\n  aria-label=\"Reply\"\n  options={[\n    { label: 'Approve', detail: 'Ship it as built.', pros: ['Lands today'], cons: ['Keeps the old copy'], recommended: true, footnote: 'Sends: Approved.' },\n    { label: 'Needs Work', detail: 'Send it back with notes.', pros: ['Fixes the copy'], cons: ['Another day'], footnote: 'Sends: your notes.' },\n  ]}\n/>"}
+>
+  <OptionCards
+    aria-label="Reply"
+    options={[
+      { label: 'Approve', detail: 'Ship it as built.', pros: ['Lands today'], cons: ['Keeps the old copy'], recommended: true, footnote: 'Sends: Approved.' },
+      { label: 'Needs Work', detail: 'Send it back with notes.', pros: ['Fixes the copy'], cons: ['Another day'], footnote: 'Sends: your notes.' },
+    ]}
+  />
+</ComponentPreview>
+
+## Installation
+
+```bash
+npx visor add option-cards
+```
+
+This copies two files into your project:
+
+- `components/ui/option-cards/option-cards.tsx` — the component
+- `components/ui/option-cards/option-cards.module.css` — the styles
+
+## Usage
+
+```tsx
+import { OptionCards } from '@/components/ui/option-cards/option-cards';
+
+const [pick, setPick] = React.useState<number | null>(null);
+
+<OptionCards
+  aria-label="Hosting"
+  value={pick}
+  onValueChange={setPick}
+  options={[
+    { label: 'Keep Vercel', detail: 'As today.', pros: ['No setup'], cons: ['Per-seat cost'], recommended: true },
+    { label: 'Self-Host', detail: 'Our own box.', pros: ['No bill'], cons: ['We run upgrades'] },
+  ]}
+/>
+```
+
+Pass `value` and `onValueChange` to control it, or `defaultValue` to leave it uncontrolled. The selection is the picked option's index, or `null` before anything is picked.
+
+## Behavior
+
+- **Recommended.** Only the first option with `recommended` gets the mark, so a row never recommends two.
+- **Selection ring.** One ring slides to the picked card on a CSS transition. Under `prefers-reduced-motion: reduce` it moves without sliding.
+- **Keyboard.** The group is one tab stop. Arrow keys move and select, wrapping at the ends. While focus is in the group, the A, B, C and D keys pick that card directly.
+- **Layout.** Cards sit side by side, and stack once the component is narrower than 900px (a container query, so a narrow column stacks too).
+- **Colour.** Every colour is a theme token: the card is a tile a half-step off `--surface-page` toward the ink, ink and the ring are `--text-primary`, pros and the Recommended mark are `--text-success`, cons are `--text-warning`.
+
+## API Reference
+
+### OptionCardsProps
+
+<PropsTable component="option-cards" />

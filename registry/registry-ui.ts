@@ -1220,6 +1220,25 @@ export const ui: Registry = [
     ],
   },
   {
+    name: "option-cards",
+    type: "registry:ui",
+    category: "form",
+    description:
+      "A radiogroup of 2–4 lettered option cards, each with a label, a one-line detail and its pros and cons, a Recommended mark on at most one, and a selection ring that slides to the picked card. Arrows and A/B/C keys pick.",
+    dependencies: ["@phosphor-icons/react", "@loworbitstudio/visor-core"],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/option-cards/option-cards.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/option-cards/option-cards.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
     name: "combobox",
     type: "registry:ui",
     description:

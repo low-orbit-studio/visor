@@ -508,6 +508,30 @@ export const propsData: Record<string, PropDef[]> = {
     { name: 'label', type: 'ReactNode', default: '"More Below"', description: "The pill's words." },
   ],
 
+  'option-cards': [
+    {
+      name: 'options',
+      type: '{ label: ReactNode; detail?: ReactNode; pros?: ReactNode[]; cons?: ReactNode[]; recommended?: boolean; footnote?: ReactNode }[]',
+      required: true,
+      description: 'Two to four options, lettered A to D in order. Only the first option with recommended is marked.',
+    },
+    {
+      name: 'value',
+      type: 'number | null',
+      description: "Controlled selection, the picked option's index.",
+    },
+    {
+      name: 'defaultValue',
+      type: 'number | null',
+      default: 'null',
+      description: 'Uncontrolled initial selection.',
+    },
+    {
+      name: 'onValueChange',
+      type: '(index: number) => void',
+      description: "Fires with the picked option's index.",
+    },
+  ],
   'segmented-control': [
     {
       name: 'options',

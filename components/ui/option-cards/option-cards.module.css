@@ -1,0 +1,207 @@
+/* OptionCards: pick one of 2–4 options, each showing its trade-off.
+   Every colour is a theme token: ink is --text-primary, the card is a tile a
+   half-step off --surface-page toward the ink (a blend of two tokens), pros
+   read --text-success and cons --text-warning. */
+
+.root {
+  container-type: inline-size;
+  container-name: option-cards;
+}
+
+.grid {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(var(--option-cards-count, 3), minmax(0, 1fr));
+  gap: var(--spacing-4, 1rem);
+}
+
+/* Stack under 900px of available width. */
+@container option-cards (max-width: 899.98px) {
+  .grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3, 0.75rem);
+  padding: var(--spacing-6, 1.5rem);
+  border: 0;
+  border-radius: var(--radius-xl, 0.75rem);
+  background: color-mix(in oklab, var(--surface-page, #ffffff) 94%, var(--text-primary, #111827));
+  color: var(--text-primary, #111827);
+  text-align: left;
+  cursor: pointer;
+  transition:
+    box-shadow var(--motion-duration-200, 200ms) var(--motion-easing-ease-out, ease-out),
+    translate var(--motion-duration-200, 200ms) var(--motion-easing-ease-out, ease-out);
+}
+
+@media (hover: hover) {
+  .card:hover {
+    translate: 0 calc(-1 * var(--spacing-1, 0.25rem) / 2);
+    box-shadow: var(--shadow-md);
+  }
+}
+
+.card:focus-visible {
+  outline: var(--focus-ring-width, 2px) solid var(--border-focus, #111827);
+  outline-offset: var(--focus-ring-offset, 2px);
+}
+
+/* The selection ring: one element that slides to the picked card. It sits
+   one spacing step outside the card, so its radius is the card's plus that
+   step (concentric). */
+.ring {
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin: calc(-1 * var(--spacing-1, 0.25rem));
+  padding: var(--spacing-1, 0.25rem);
+  box-sizing: content-box;
+  border-radius: calc(var(--radius-xl, 0.75rem) + var(--spacing-1, 0.25rem));
+  box-shadow: 0 0 0 var(--stroke-width-medium, 2px) var(--text-primary, #111827);
+  pointer-events: none;
+}
+
+.ring[data-placed] {
+  transition:
+    transform var(--motion-duration-300, 300ms) var(--motion-easing-ease-out, ease-out),
+    width var(--motion-duration-300, 300ms) var(--motion-easing-ease-out, ease-out),
+    height var(--motion-duration-300, 300ms) var(--motion-easing-ease-out, ease-out);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ring[data-placed],
+  .card {
+    transition: none;
+  }
+
+  .card:hover {
+    translate: none;
+  }
+}
+
+.top {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2, 0.5rem);
+}
+
+/* The A, B, C tile. */
+.letter {
+  display: grid;
+  place-items: center;
+  width: var(--spacing-10, 2.5rem);
+  height: var(--spacing-10, 2.5rem);
+  border-radius: var(--radius-lg, 0.5rem);
+  background: color-mix(in srgb, var(--text-primary, #111827) 8%, transparent);
+  color: var(--text-primary, #111827);
+  font-family: var(--font-heading);
+  font-size: var(--font-size-xl, 1.25rem);
+  font-weight: var(--font-weight-bold, 700);
+  transition:
+    background var(--motion-duration-200, 200ms) var(--motion-easing-ease-out, ease-out),
+    color var(--motion-duration-200, 200ms) var(--motion-easing-ease-out, ease-out);
+}
+
+.card[data-state="checked"] .letter {
+  background: var(--text-primary, #111827);
+  color: var(--surface-page, #ffffff);
+}
+
+.recommended {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-1, 0.25rem);
+  font-size: var(--font-size-sm, 0.875rem);
+  font-weight: var(--font-weight-bold, 700);
+  color: var(--text-success, #15803d);
+}
+
+.check {
+  display: grid;
+  place-items: center;
+  width: var(--spacing-6, 1.5rem);
+  height: var(--spacing-6, 1.5rem);
+  margin-left: auto;
+  border-radius: var(--radius-full, 9999px);
+  background: var(--text-primary, #111827);
+  color: var(--surface-page, #ffffff);
+  opacity: 0;
+  scale: 0.4;
+  transition:
+    opacity var(--motion-duration-200, 200ms) var(--motion-easing-ease-out, ease-out),
+    scale var(--motion-duration-200, 200ms) var(--motion-easing-ease-out, ease-out);
+}
+
+.card[data-state="checked"] .check {
+  opacity: 1;
+  scale: 1;
+}
+
+.label {
+  font-family: var(--font-heading);
+  font-size: var(--font-size-xl, 1.25rem);
+  font-weight: var(--font-weight-bold, 700);
+  line-height: 1.25;
+  color: var(--text-primary, #111827);
+}
+
+.detail {
+  font-size: var(--font-size-base, 1rem);
+  line-height: 1.5;
+  color: var(--text-secondary, #4b5563);
+}
+
+.tradeoff {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2, 0.5rem);
+  padding-top: var(--spacing-3, 0.75rem);
+  /* A hairline from the ink: --border-default can match the tile on some themes. */
+  border-top: var(--stroke-width-thin, 1px) solid color-mix(in oklab, var(--text-primary, #111827) 12%, transparent);
+  font-size: var(--font-size-sm, 0.875rem);
+  line-height: 1.45;
+  color: var(--text-primary, #111827);
+}
+
+.item {
+  display: flex;
+  gap: var(--spacing-2, 0.5rem);
+}
+
+.item svg {
+  flex: none;
+  margin-top: var(--spacing-1, 0.25rem);
+}
+
+.item[data-kind="pro"] svg {
+  color: var(--text-success, #15803d);
+}
+
+.item[data-kind="con"] svg {
+  color: var(--text-warning, #b45309);
+}
+
+.footnote {
+  margin-top: auto;
+  padding-top: var(--spacing-1, 0.25rem);
+  font-size: var(--font-size-sm, 0.875rem);
+  line-height: 1.45;
+  color: var(--text-tertiary, #6b7280);
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
