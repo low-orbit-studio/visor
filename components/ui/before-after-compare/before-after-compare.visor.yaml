@@ -1,0 +1,72 @@
+name: BeforeAfterCompare
+description: A before/after capture pair in four modes. Side by Side, Swipe (a slider divider), Flip (an instant blink) and Diff (a pixel diff in the browser with changed regions boxed and a stat line). A shared crosshair and a synced 2.5x loupe follow the pointer on both images, a click drops a numbered mark at the same spot on both, and a phone capture draws at its CSS width in a concentric bezel.
+extends: HTMLElement
+category: data-display
+
+when_to_use:
+  - Reviewing a change between two captures of the same screen, in an approval inbox, a visual regression report or a PR comment
+  - Pointing at a spot on a change with numbered marks that a note or a session can quote
+  - Comparing phone captures at their true size next to each other
+
+when_not_to_use:
+  - A design against its build, with live routes, a verdict and classed deltas (use FidelityMirror)
+  - Browsing photos full size (use Lightbox)
+  - A generic two-up media layout with no before/after meaning (use a grid)
+
+why: >
+  The approval inbox (PL-3452) needs a general before/after pair, not only a
+  design-vs-built mirror. FidelityMirror stays the design-vs-built surface: its
+  sides are live nodes and iframes, which can't be pixel-diffed or loupe'd, and
+  it carries a verdict and classed deltas. BeforeAfterCompare compares two image
+  captures. Both share one pixel engine, lib/capture-diff.ts (the capture-diff
+  registry lib): FidelityMirror calls it for two image sources through onDiff. The pointer is written as CSS variables on the
+  stage, so the crosshair and both loupes move without a React render.
+
+props:
+  - name: pair
+    type: "{ before: string; after: string; label: string; viewport: { width: number; height: number; dpr?: number } }"
+    required: true
+    description: The two capture URLs, the pair's name (alt text and mark lines) and the viewport they were taken at. A width under 600 renders as a phone at that CSS width.
+  - name: mode
+    type: "'side' | 'swipe' | 'flip' | 'diff'"
+    description: Controlled mode.
+  - name: defaultMode
+    type: "'side' | 'swipe' | 'flip' | 'diff'"
+    default: "'side'"
+    description: Uncontrolled initial mode.
+  - name: onModeChange
+    type: "(mode: CompareMode) => void"
+    description: Fires when the mode changes, from the control or keys 1 to 4.
+  - name: marks
+    type: "CompareMark[]"
+    description: Controlled marks. Each has n, x and y as 0 to 1 of the image, and px in the capture's CSS pixels.
+  - name: defaultMarks
+    type: "CompareMark[]"
+    default: "[]"
+    description: Uncontrolled initial marks.
+  - name: onMarksChange
+    type: "(marks: CompareMark[]) => void"
+    description: Fires when a click adds a mark or removes one.
+  - name: defaultLoupe
+    type: boolean
+    default: "false"
+    description: Whether the loupe starts on. Z toggles it.
+
+dependencies:
+  - "@phosphor-icons/react"
+  - "@loworbitstudio/visor-core"
+
+preview_url: "https://visor.loworbit.studio/docs/components/data-display/before-after-compare"
+
+example: |
+  const [marks, setMarks] = React.useState<CompareMark[]>([])
+  <BeforeAfterCompare
+    pair={{
+      label: "Settings",
+      before: "/captures/settings-before.webp",
+      after: "/captures/settings-after.webp",
+      viewport: { width: 1440, height: 900, dpr: 2 },
+    }}
+    marks={marks}
+    onMarksChange={setMarks}
+  />

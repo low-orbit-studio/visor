@@ -86,6 +86,10 @@ export function DocNavMirror() {
 }
 ```
 
+## Pixel Diff
+
+When both sides are image captures, `onDiff` runs the same capture-pair engine as [`BeforeAfterCompare`](/docs/components/data-display/before-after-compare)'s Diff mode (`lib/capture-diff.ts`, added with either component) and hands you the result: the changed-pixel count, the changed regions and the height difference. The mirror draws nothing from it; use it to set `verdict` and `score`.
+
 ## API Reference
 
 <PropsTable component="fidelity-mirror" />

@@ -29,6 +29,18 @@ export const lib: Registry = [
     ],
   },
   {
+    name: "capture-diff",
+    type: "registry:lib",
+    description:
+      "The capture-pair engine: a browser pixel diff of two image captures, with a changed-pixel mask and the changed regions boxed. Shared by BeforeAfterCompare and FidelityMirror.",
+    files: [
+      {
+        path: "lib/capture-diff.ts",
+        type: "registry:lib",
+      },
+    ],
+  },
+  {
     name: "deck-registry",
     type: "registry:lib",
     category: "deck",

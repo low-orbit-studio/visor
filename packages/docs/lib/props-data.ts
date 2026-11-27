@@ -811,6 +811,11 @@ export const propsData: Record<string, PropDef[]> = {
       type: "(mode: 'split' | 'overlay') => void",
       description: 'Notified when the compare mode toggles via the header segmented control.',
     },
+    {
+      name: 'onDiff',
+      type: '(result: DiffResult) => void',
+      description: "Receives the pixel diff of design vs built from the shared capture-pair engine (lib/capture-diff.ts, also BeforeAfterCompare's Diff mode). Runs only when both sides render as images; the captures must be same-origin or served with CORS. Draws nothing, so a caller can derive verdict and score from it.",
+    },
   ],
   'decision-dock': [
     {
@@ -2213,6 +2218,30 @@ export const propsData: Record<string, PropDef[]> = {
       name: '...props',
       type: 'React.InputHTMLAttributes<HTMLInputElement>',
       description: 'All standard HTML input attributes are forwarded.',
+    },
+  ],
+
+  'before-after-compare': [
+    {
+      name: 'pair',
+      type: '{ before: string; after: string; label: string; viewport: { width: number; height: number; dpr?: number } }',
+      description: "The two capture URLs, the pair's name (alt text and mark lines) and the viewport they were taken at. A width under 600 renders as a phone at that CSS width. Required.",
+    },
+    { name: 'mode', type: "'side' | 'swipe' | 'flip' | 'diff'", description: 'Controlled mode.' },
+    { name: 'defaultMode', type: "'side' | 'swipe' | 'flip' | 'diff'", default: "'side'", description: 'Uncontrolled initial mode.' },
+    { name: 'onModeChange', type: '(mode: CompareMode) => void', description: 'Fires when the mode changes, from the control or keys 1–4.' },
+    {
+      name: 'marks',
+      type: '{ n: number; x: number; y: number; px: { x: number; y: number } }[]',
+      description: 'Controlled marks. x and y are 0–1 of the image; px is in the capture\'s CSS pixels.',
+    },
+    { name: 'defaultMarks', type: 'CompareMark[]', default: '[]', description: 'Uncontrolled initial marks.' },
+    { name: 'onMarksChange', type: '(marks: CompareMark[]) => void', description: 'Fires when a click adds a mark or removes one.' },
+    { name: 'defaultLoupe', type: 'boolean', default: 'false', description: 'Whether the loupe starts on. Z toggles it.' },
+    {
+      name: '...props',
+      type: "React.ComponentProps<'section'>",
+      description: 'Standard section attributes are forwarded to the root.',
     },
   ],
 

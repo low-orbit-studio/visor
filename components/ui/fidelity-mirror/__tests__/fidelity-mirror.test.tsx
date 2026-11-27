@@ -1,9 +1,15 @@
 import * as React from "react"
-import { render, screen, within, fireEvent } from "@testing-library/react"
+import { render, screen, within, fireEvent, waitFor } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { describe, it, expect, vi } from "vitest"
 import { FidelityMirror, type FidelityDelta } from "../fidelity-mirror"
 import { checkA11y } from "../../../../test-utils/a11y"
+import { computeDiff } from "../../../../lib/capture-diff"
+
+// The shared capture-pair engine (VI-863), stubbed: jsdom has no canvas.
+vi.mock("../../../../lib/capture-diff", () => ({
+  computeDiff: vi.fn(async () => ({ changed: 7 })),
+}))
 
 // The Example-A worked deltas from the approved spec — the doc-nav compare.
 const deltas: FidelityDelta[] = [
@@ -261,5 +267,29 @@ describe("FidelityMirror — accessibility", () => {
   it("has no WCAG 2.1 AA violations (overlay)", async () => {
     const { container } = render(<A11yMirror mode="overlay" />)
     await checkA11y(container)
+  })
+})
+
+describe("FidelityMirror onDiff (shared capture-pair engine)", () => {
+  it("diffs two image sources with lib/capture-diff and reports the result", async () => {
+    const onDiff = vi.fn()
+    render(
+      <FidelityMirror
+        title="Home"
+        platform="native"
+        verdict="drift"
+        design={{ src: "/d.png" }}
+        built={{ src: "/b.png" }}
+        onDiff={onDiff}
+      />
+    )
+    await waitFor(() => expect(onDiff).toHaveBeenCalledWith({ changed: 7 }))
+    expect(computeDiff).toHaveBeenCalledWith("/d.png", "/b.png")
+  })
+
+  it("does not diff live routes", () => {
+    vi.mocked(computeDiff).mockClear()
+    render(<WebMirror onDiff={vi.fn()} />)
+    expect(computeDiff).not.toHaveBeenCalled()
   })
 })

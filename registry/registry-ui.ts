@@ -2623,6 +2623,25 @@ export const ui: Registry = [
     ],
   },
   {
+    name: "before-after-compare",
+    type: "registry:ui",
+    category: "data-display",
+    description:
+      "A before/after capture pair in four modes: Side by Side, Swipe (a keyboard slider divider), Flip (an instant blink on Space) and Diff (a pixel diff in the browser with changed regions boxed and a stat line). A shared crosshair and a synced 2.5x loupe follow the pointer on both images, a click drops a numbered mark at the same spot on both, and a phone capture draws at its CSS width in a concentric bezel.",
+    dependencies: ["@phosphor-icons/react", "@loworbitstudio/visor-core"],
+    registryDependencies: ["utils", "capture-diff", "button", "segmented-control"],
+    files: [
+      {
+        path: "components/ui/before-after-compare/before-after-compare.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/before-after-compare/before-after-compare.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
     name: "fidelity-mirror",
     type: "registry:ui",
     category: "data-display",
@@ -2632,7 +2651,7 @@ export const ui: Registry = [
       "@phosphor-icons/react",
       "@loworbitstudio/visor-core",
     ],
-    registryDependencies: ["utils"],
+    registryDependencies: ["utils", "capture-diff"],
     files: [
       {
         path: "components/ui/fidelity-mirror/fidelity-mirror.tsx",

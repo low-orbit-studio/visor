@@ -115,8 +115,8 @@ The registry ships 88+ UI components across 6 categories, plus admin compounds, 
 **Form (30)**
 `billing-slider` · `button` · `calendar` · `checkbox` · `combobox` · `date-picker` · `field` · `fieldset` · `file-upload` · `form` · `input` · `label` · `number-input` · `option-cards` · `otp-input` · `password-input` · `phone-input` · `photo-drop` · `photo-picker` · `position-picker` · `radio-group` · `scroll-hint` · `search-input` · `select` · `slider` · `slider-control` · `switch` · `tag-input` · `textarea` · `time-picker` · `toggle-group`
 
-**Data Display (18)**
-`accordion` · `animated-title` · `avatar` · `carousel` · `code-block` · `collapsible` · `heading` · `image` · `layer-chart` · `meter` · `photo-backdrop` · `progress` · `proportion-bar` · `reach-rings` · `rich-text` · `separator` · `skeleton` · `text` · `timeline`
+**Data Display (19)**
+`accordion` · `animated-title` · `avatar` · `before-after-compare` · `carousel` · `code-block` · `collapsible` · `heading` · `image` · `layer-chart` · `meter` · `photo-backdrop` · `progress` · `proportion-bar` · `reach-rings` · `rich-text` · `separator` · `skeleton` · `text` · `timeline`
 
 **Navigation (6)**
 `bottom-nav` · `breadcrumb` · `command` · `navbar` · `pagination` · `stepper`
