@@ -8,6 +8,7 @@ declare const styles: {
   readonly primary: string
   readonly note: string
   readonly noteLabel: string
+  readonly composer: string
   readonly done: string
   readonly tick: string
   readonly tickRing: string

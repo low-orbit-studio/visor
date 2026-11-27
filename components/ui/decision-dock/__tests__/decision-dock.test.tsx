@@ -129,7 +129,7 @@ describe("DecisionDock CSS", () => {
 
   it("is sticky to the bottom of the viewport and reads the glass layer", () => {
     expect(css).toMatch(/\.root \{[^}]*position: sticky;[^}]*bottom:/)
-    expect(css).toContain("var(--glass-on-fill,")
+    expect(css).toMatch(/var\(\s*--glass-on-fill,/)
     expect(css).toContain("var(--glass-on-blur,")
   })
 

@@ -60,7 +60,7 @@ export function DecisionDockDemo() {
         data-demo="decision-dock-page"
       >
         {kind === 'pick' && (
-          <div role="radiogroup" aria-label="Options" style={{ display: 'flex', gap: 'var(--spacing-2)', marginBottom: 'var(--spacing-4)' }}>
+          <div role="radiogroup" aria-label="Options" style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--spacing-2)', marginBottom: 'var(--spacing-4)' }}>
             {OPTIONS.map((o) => (
               <Button
                 key={o}

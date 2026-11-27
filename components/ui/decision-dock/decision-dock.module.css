@@ -1,7 +1,8 @@
 /* DecisionDock: a frosted answer bar pinned to the bottom of the viewport.
    Sticky, so it rides the bottom of whatever scrolls it and stops at its
    container's end. Over a photo (data-glass="on") it reads the glass layer;
-   elsewhere a see-through card surface blurs the page under it. */
+   elsewhere the card surface over a veil of the page colour (so a see-through
+   card, as in Blackout, still reads) blurs the page under it. */
 .root {
   position: sticky;
   bottom: var(--decision-dock-inset, var(--spacing-4, 1rem));
@@ -16,14 +17,19 @@
   background: var(
     --decision-dock-bg,
     linear-gradient(var(--glass-on-lift, transparent) 0 0),
-    var(--glass-on-fill, color-mix(in srgb, var(--surface-card, #ffffff) 82%, transparent))
+    var(
+      --glass-on-fill,
+      linear-gradient(color-mix(in srgb, var(--surface-card, #ffffff) 82%, transparent) 0 0),
+      color-mix(in srgb, var(--surface-page, #ffffff) 72%, transparent)
+    )
   );
   /* Intentional: the reference build's frost, so text behind the bar never reads through. */
   -webkit-backdrop-filter: var(--decision-dock-filter, var(--glass-on-blur, blur(22px) saturate(150%)));
   backdrop-filter: var(--decision-dock-filter, var(--glass-on-blur, blur(22px) saturate(150%)));
   box-shadow: var(--glass-on-shadow, var(--shadow-xl, 0 20px 25px -5px rgb(0 0 0 / 0.1)));
   color: var(--glass-on-ink, var(--text-primary, #111827));
-  animation: decision-dock-enter var(--motion-duration-slow, 500ms) var(--motion-easing-enter, ease-out) both;
+  /* No fill mode: a held transform keeps Chromium from blurring what is behind the bar. */
+  animation: decision-dock-enter var(--motion-duration-slow, 500ms) var(--motion-easing-enter, ease-out);
 }
 
 .root[data-phase="note"] {
@@ -98,8 +104,19 @@
 }
 
 .noteLabel {
-  font-size: var(--font-size-sm, 0.875rem);
-  font-weight: var(--font-weight-semibold, 600);
+  font-size: var(--font-size-base, 1rem);
+  font-weight: var(--font-weight-normal, 400);
+}
+
+/* The card carries focus, so the ring follows its corners instead of boxing the
+   bare field inside it (the reference build's treatment). */
+.composer:focus-within {
+  border-color: var(--border-focus, var(--primary, #111827));
+  box-shadow: 0 0 0 var(--focus-ring-width, 2px) color-mix(in srgb, var(--border-focus, var(--primary, #111827)) 25%, transparent);
+}
+
+.composer [data-slot="composer-field"]:focus-visible {
+  outline: none;
 }
 
 /* ---------- done: the drawn check, the verdict and the bar to the next item ---------- */
@@ -199,8 +216,13 @@
     white-space: normal;
   }
 
+  /* Too narrow for both side by side, the buttons stack instead of overflowing. */
+  .row {
+    flex-wrap: wrap;
+  }
+
   .row > * {
-    flex: 1;
+    flex: 1 1 auto;
   }
 
   .row kbd {

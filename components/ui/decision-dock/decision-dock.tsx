@@ -110,7 +110,7 @@ const DecisionDock = React.forwardRef<HTMLDivElement, DecisionDockProps>(
             <label htmlFor={noteId} className={styles.noteLabel}>
               What needs work?
             </label>
-            <Composer value={note} onValueChange={setNote} onSubmit={(text) => send("Needs work", text.trim())}>
+            <Composer className={styles.composer} value={note} onValueChange={setNote} onSubmit={(text) => send("Needs work", text.trim())}>
               <ComposerField id={noteId} ref={noteRef} placeholder="Name what looks wrong." />
               <ComposerToolbar>
                 <ComposerSpacer />
