@@ -124,8 +124,8 @@ The registry ships 88+ UI components across 6 categories, plus admin compounds, 
 **Overlay (7)**
 `context-menu` · `dialog` · `fullscreen-overlay` · `hover-card` · `lightbox` · `menubar` · `popover`
 
-**Feedback (6)**
-`alert` · `banner` · `chart` · `table` · `toast` · `tooltip`
+**Feedback (7)**
+`alert` · `banner` · `chart` · `decision-dock` · `table` · `toast` · `tooltip`
 
 **Layout (10)**
 `badge` · `box` · `card` · `container` · `grid` · `inline` · `resizable-split` · `sheet` · `sidebar` · `stack`

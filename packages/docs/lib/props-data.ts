@@ -788,6 +788,47 @@ export const propsData: Record<string, PropDef[]> = {
       description: 'Notified when the compare mode toggles via the header segmented control.',
     },
   ],
+  'decision-dock': [
+    {
+      name: 'kind',
+      type: "'approve' | 'pick' | 'run'",
+      default: "'approve'",
+      description: 'The answer buttons: Needs Work with Approve (A), Send X (Enter) or I Ran It (R).',
+    },
+    {
+      name: 'label',
+      type: 'ReactNode',
+      description: "The item's short name, drawn bold before the question (a ticket ID, for example).",
+    },
+    {
+      name: 'question',
+      type: 'ReactNode',
+      description: 'The question being answered.',
+    },
+    {
+      name: 'choice',
+      type: 'string | null',
+      default: 'null',
+      description: "pick only: the chosen option's short name. Unset, Send is disabled and shows no key.",
+    },
+    {
+      name: 'onAnswer',
+      type: '(verdict: string, note?: string) => void',
+      description: 'Called once with the verdict line and, for Needs Work, the note.',
+    },
+    {
+      name: 'sentText',
+      type: 'ReactNode',
+      default: "'Your answer is in.'",
+      description: "The sent state's line after the verdict.",
+    },
+    {
+      name: 'onAdvance',
+      type: '() => void',
+      description: "Called when the sent state's progress bar fills: move to the next item.",
+    },
+  ],
+
   'doc-frame': [
     {
       name: 'manifest',

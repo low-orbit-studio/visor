@@ -1,0 +1,224 @@
+/* DecisionDock: a frosted answer bar pinned to the bottom of the viewport.
+   Sticky, so it rides the bottom of whatever scrolls it and stops at its
+   container's end. Over a photo (data-glass="on") it reads the glass layer;
+   elsewhere a see-through card surface blurs the page under it. */
+.root {
+  position: sticky;
+  bottom: var(--decision-dock-inset, var(--spacing-4, 1rem));
+  z-index: 30;
+  box-sizing: border-box;
+  /* Intentional: the reference build's measure for one line of question and two buttons. */
+  width: min(var(--decision-dock-max-width, 65rem), 100%);
+  margin-inline: auto;
+  padding: var(--spacing-3, 0.75rem) var(--spacing-3, 0.75rem) var(--spacing-3, 0.75rem) var(--spacing-5, 1.25rem);
+  overflow: hidden;
+  border-radius: var(--decision-dock-radius, var(--radius-2xl, 1rem));
+  background: var(
+    --decision-dock-bg,
+    linear-gradient(var(--glass-on-lift, transparent) 0 0),
+    var(--glass-on-fill, color-mix(in srgb, var(--surface-card, #ffffff) 82%, transparent))
+  );
+  /* Intentional: the reference build's frost, so text behind the bar never reads through. */
+  -webkit-backdrop-filter: var(--decision-dock-filter, var(--glass-on-blur, blur(22px) saturate(150%)));
+  backdrop-filter: var(--decision-dock-filter, var(--glass-on-blur, blur(22px) saturate(150%)));
+  box-shadow: var(--glass-on-shadow, var(--shadow-xl, 0 20px 25px -5px rgb(0 0 0 / 0.1)));
+  color: var(--glass-on-ink, var(--text-primary, #111827));
+  animation: decision-dock-enter var(--motion-duration-slow, 500ms) var(--motion-easing-enter, ease-out) both;
+}
+
+.root[data-phase="note"] {
+  padding: var(--spacing-4, 1rem);
+}
+
+/* ---------- idle: the question and the answer buttons ---------- */
+
+.idle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-5, 1.25rem);
+}
+
+.ask {
+  display: flex;
+  align-items: baseline;
+  gap: var(--spacing-3, 0.75rem);
+  min-width: 0;
+  margin: 0;
+  font-size: var(--font-size-base, 1rem);
+}
+
+.askLabel {
+  flex: none;
+  font-weight: var(--font-weight-bold, 700);
+}
+
+.askText {
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: var(--glass-on-ink, var(--text-secondary, #4b5563));
+}
+
+.row {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--spacing-2, 0.5rem);
+}
+
+.row kbd {
+  margin-inline-start: var(--spacing-2, 0.5rem);
+}
+
+/* The key on the main button is drawn from the button's own ink, so it reads on any fill. */
+.primary kbd {
+  background: color-mix(in srgb, currentColor calc(var(--opacity-12, 0.12) * 100%), transparent);
+  border-color: transparent;
+  box-shadow: none;
+  color: inherit;
+}
+
+/* Nothing to send yet: a quiet neutral, not a faded brand fill. */
+.primary:disabled {
+  opacity: 1;
+  background: color-mix(in srgb, var(--text-primary, #111827) calc(var(--opacity-5, 0.05) * 100%), transparent);
+  color: var(--text-tertiary, #6b7280);
+}
+
+/* ---------- note: Needs Work opens a field in place ---------- */
+
+.note {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2, 0.5rem);
+  animation: decision-dock-swap var(--motion-duration-normal, 250ms) var(--motion-easing-enter, ease-out) both;
+}
+
+.noteLabel {
+  font-size: var(--font-size-sm, 0.875rem);
+  font-weight: var(--font-weight-semibold, 600);
+}
+
+/* ---------- done: the drawn check, the verdict and the bar to the next item ---------- */
+
+.done {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3, 0.75rem);
+  min-height: var(--spacing-10, 2.5rem);
+  animation: decision-dock-swap var(--motion-duration-normal, 250ms) var(--motion-easing-enter, ease-out) both;
+}
+
+.tick {
+  flex: none;
+}
+
+.tickRing {
+  fill: var(--text-success, #15803d);
+}
+
+.tickMark {
+  fill: none;
+  stroke: var(--surface-card, #ffffff);
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+  animation: decision-dock-draw var(--motion-duration-slow, 500ms) var(--motion-easing-enter, ease-out) both;
+  animation-delay: var(--motion-duration-fast, 150ms);
+}
+
+.doneText {
+  font-size: var(--font-size-base, 1rem);
+  color: var(--glass-on-ink, var(--text-secondary, #4b5563));
+}
+
+.doneText strong {
+  color: var(--glass-on-ink, var(--text-primary, #111827));
+}
+
+/* Runs the length of the bar's bottom edge; onAdvance fires when it fills. */
+.progress {
+  position: absolute;
+  inset-inline: calc(-1 * var(--spacing-5, 1.25rem)) calc(-1 * var(--spacing-3, 0.75rem));
+  bottom: calc(-1 * var(--spacing-3, 0.75rem));
+  height: var(--stroke-width-medium, 2px);
+  background: var(--text-success, #15803d);
+  transform-origin: left;
+  animation: decision-dock-advance var(--decision-dock-advance, 1.2s) var(--motion-easing-linear, linear) both;
+}
+
+@keyframes decision-dock-enter {
+  from {
+    opacity: 0;
+    transform: translateY(var(--spacing-10, 2.5rem));
+  }
+}
+
+@keyframes decision-dock-swap {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes decision-dock-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes decision-dock-advance {
+  from {
+    transform: scaleX(0);
+  }
+}
+
+/* On a phone the bar spans the screen edge to edge and the buttons share the row. */
+@media (max-width: 639px) {
+  .root {
+    bottom: 0;
+    width: 100%;
+    border-radius: var(--decision-dock-radius, var(--radius-2xl, 1rem)) var(--decision-dock-radius, var(--radius-2xl, 1rem)) 0 0;
+    padding: var(--spacing-3, 0.75rem) var(--spacing-4, 1rem) calc(var(--spacing-3, 0.75rem) + env(safe-area-inset-bottom));
+  }
+
+  .idle {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--spacing-2, 0.5rem);
+  }
+
+  .askText {
+    white-space: normal;
+  }
+
+  .row > * {
+    flex: 1;
+  }
+
+  .row kbd {
+    display: none;
+  }
+
+  .progress {
+    inset-inline: calc(-1 * var(--spacing-4, 1rem));
+    bottom: calc(-1 * (var(--spacing-3, 0.75rem) + env(safe-area-inset-bottom)));
+  }
+}
+
+/* The progress bar still runs: it is the countdown to the next item, not decoration. */
+@media (prefers-reduced-motion: reduce) {
+  .root,
+  .note,
+  .done,
+  .tickMark {
+    animation: none;
+  }
+}
