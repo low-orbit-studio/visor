@@ -1,5 +1,7 @@
+import * as React from "react"
 import { render, screen } from "@testing-library/react"
-import { describe, it, expect } from "vitest"
+import userEvent from "@testing-library/user-event"
+import { describe, it, expect, vi } from "vitest"
 import { InfographicBar, type InfographicBarStat } from "../infographic-bar"
 import { checkA11y } from "../../../../test-utils/a11y"
 
@@ -127,6 +129,97 @@ describe("InfographicBar", () => {
 describe("accessibility", () => {
   it("has no WCAG 2.1 AA violations", async () => {
     const { container } = render(<InfographicBar stats={stats} />)
+    await checkA11y(container)
+  })
+})
+
+describe("selectable band (VI-868)", () => {
+  const filters: InfographicBarStat[] = [
+    { id: "all", label: "waiting", value: 7 },
+    { id: "images", label: "images", value: 5 },
+    { id: "pick", label: "pick one", value: 1 },
+    { id: "run", label: "run", value: 1 },
+  ]
+
+  it("renders a radiogroup of radios, one pressed", () => {
+    render(<InfographicBar stats={filters} defaultValue="images" aria-label="Filter" />)
+    const group = screen.getByRole("radiogroup", { name: "Filter" })
+    expect(group).toHaveAttribute("data-slot", "infographic-bar")
+    const radios = screen.getAllByRole("radio")
+    expect(radios).toHaveLength(4)
+    expect(radios.map((r) => r.getAttribute("aria-checked"))).toEqual([
+      "false",
+      "true",
+      "false",
+      "false",
+    ])
+    expect(radios[0]).toHaveAccessibleName("7 waiting")
+  })
+
+  it("selects the first cell when uncontrolled with no default", () => {
+    render(<InfographicBar stats={filters} onValueChange={() => {}} />)
+    expect(screen.getAllByRole("radio")[0]).toHaveAttribute("aria-checked", "true")
+  })
+
+  it("calls onValueChange with the clicked cell id and moves the press", async () => {
+    const onValueChange = vi.fn()
+    render(<InfographicBar stats={filters} onValueChange={onValueChange} />)
+    await userEvent.click(screen.getByRole("radio", { name: "1 pick one" }))
+    expect(onValueChange).toHaveBeenCalledWith("pick")
+    expect(screen.getByRole("radio", { name: "1 pick one" })).toHaveAttribute("aria-checked", "true")
+  })
+
+  it("keeps the pressed cell when it is clicked again", async () => {
+    const onValueChange = vi.fn()
+    render(<InfographicBar stats={filters} defaultValue="all" onValueChange={onValueChange} />)
+    await userEvent.click(screen.getByRole("radio", { name: "7 waiting" }))
+    expect(onValueChange).not.toHaveBeenCalled()
+    expect(screen.getByRole("radio", { name: "7 waiting" })).toHaveAttribute("aria-checked", "true")
+  })
+
+  it("follows a controlled value", async () => {
+    function Controlled() {
+      const [value, setValue] = React.useState("run")
+      return <InfographicBar stats={filters} value={value} onValueChange={setValue} />
+    }
+    render(<Controlled />)
+    expect(screen.getByRole("radio", { name: "1 run" })).toHaveAttribute("aria-checked", "true")
+    await userEvent.click(screen.getByRole("radio", { name: "5 images" }))
+    expect(screen.getByRole("radio", { name: "5 images" })).toHaveAttribute("aria-checked", "true")
+  })
+
+  it("is one tab stop, and arrow keys move focus and selection together", async () => {
+    const onValueChange = vi.fn()
+    render(<InfographicBar stats={filters} defaultValue="all" onValueChange={onValueChange} />)
+    await userEvent.tab()
+    const radios = screen.getAllByRole("radio")
+    expect(radios[0]).toHaveFocus()
+    expect(radios.filter((r) => r.tabIndex === 0)).toHaveLength(1)
+    await userEvent.keyboard("{ArrowRight}")
+    expect(radios[1]).toHaveFocus()
+    expect(radios[1]).toHaveAttribute("aria-checked", "true")
+    expect(onValueChange).toHaveBeenLastCalledWith("images")
+    await userEvent.keyboard("{ArrowLeft}")
+    expect(radios[0]).toHaveAttribute("aria-checked", "true")
+  })
+
+  it("draws the value over a caption that keeps its own case", () => {
+    const { container } = render(<InfographicBar stats={filters} onValueChange={() => {}} />)
+    const radio = screen.getAllByRole("radio")[2]
+    const parts = Array.from(radio.querySelectorAll("[data-slot^='infographic-bar-']")).map(
+      (el) => [el.getAttribute("data-slot"), el.textContent]
+    )
+    expect(parts).toEqual([
+      ["infographic-bar-value", "1"],
+      ["infographic-bar-caption", "pick one"],
+    ])
+    expect(container.querySelector("[data-slot='stat-card']")).toBeNull()
+  })
+
+  it("has no WCAG 2.1 AA violations", async () => {
+    const { container } = render(
+      <InfographicBar stats={filters} defaultValue="all" aria-label="Filter" />
+    )
     await checkA11y(container)
   })
 })

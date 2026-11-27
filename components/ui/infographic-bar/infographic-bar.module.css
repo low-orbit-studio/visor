@@ -46,3 +46,167 @@
   border-left: var(--stroke-width-thin, 1px) solid transparent;
   border-image: linear-gradient(var(--infographic-bar-divider, var(--hairline, #e5e7eb)), var(--infographic-bar-divider, var(--hairline, #e5e7eb))) 1 / 0 0 0 var(--hairline-width, var(--stroke-width-thin, 1px));
 }
+
+/* ─── Selectable band (VI-868) ──────────────────────────────────────────
+ * A filter band drawn in PL-3452: big counts over sentence-case captions,
+ * one cell pressed. Built on ToggleGroup (outline variant), whose sliding
+ * indicator is the pressed plate. Two classes (`.bar.selectable`) so these
+ * rules out-specify ToggleGroup's own whichever sheet loads last.
+ *
+ * Sizes are the drawing's: 4px inset, cells min 124px, 12/18/14px cell
+ * padding, a 44px count and a 13px caption (no font-size token is either;
+ * both are hooks with the drawn value as default). The attribute lifts the
+ * track variables above ToggleGroup's two-class size rules.
+ */
+.bar.selectable[data-selectable] {
+  --_track-padding: var(--spacing-1, 0.25rem);
+  --_track-radius: var(--infographic-bar-radius, var(--radius-xl, 0.75rem));
+  --_track-border: 0px;
+  /* The pressed cell keeps the band's ink, not the primary-on-accent ink. */
+  --toggle-group-selected-text: var(--text-primary, #111827);
+  --toggle-group-unselected-text: var(--text-primary, #111827);
+
+  display: inline-grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(var(--infographic-bar-cell-min-width, 7.75rem), 1fr);
+  gap: 0;
+  padding: var(--_track-padding);
+  border: 0;
+  border-radius: var(--_track-radius);
+  box-shadow: none;
+  overflow: visible;
+  isolation: isolate;
+  /* One tint, no border: the page mixed 6% toward the ink. On a pure-black
+   * page (oklch L under 0.05) that mix reads as nothing, so a 3% white layer
+   * fades in there and nowhere else. */
+  background-color: var(
+    --infographic-bar-bg,
+    color-mix(in oklab, var(--surface-page, #ffffff) 94%, var(--text-primary, #111827))
+  );
+}
+
+@supports (color: oklch(from red l c h)) {
+  .bar.selectable {
+    background-image: linear-gradient(
+      oklch(from var(--surface-page, #ffffff) 1 0 0 / calc(0.03 * clamp(0, (0.05 - l) * 1000, 1))),
+      oklch(from var(--surface-page, #ffffff) 1 0 0 / calc(0.03 * clamp(0, (0.05 - l) * 1000, 1)))
+    );
+  }
+}
+
+/* The pressed plate (ToggleGroup's indicator), concentric with the band. */
+.bar.selectable > [aria-hidden="true"] {
+  border-radius: var(--_inner-radius);
+  background-color: var(--infographic-bar-plate-bg, var(--surface-card, #ffffff));
+  box-shadow: var(--infographic-bar-plate-shadow, var(--shadow-sm, 0 1px 2px 0 rgb(0 0 0 / 0.05)));
+  transition:
+    transform var(--motion-duration-300, 300ms) var(--motion-easing-ease-out, cubic-bezier(0.22, 1, 0.36, 1)),
+    width var(--motion-duration-300, 300ms) var(--motion-easing-ease-out, cubic-bezier(0.22, 1, 0.36, 1)),
+    opacity var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
+}
+
+/* Mode without a mode class: themes switch light and dark in several ways
+ * (a dark class on an ancestor, the media query, dark-only themes, Blackout's dark
+ * "light" mode), so the plate reads the page and the ink instead.
+ *   Light page (oklch L >= 0.625): the page lifted 60% toward white.
+ *   Light ink (dark mode): the ink at 9% as a wash over the band.
+ * Each layer's alpha is 0 or its drawn value, set by a clamp() step. */
+@supports (color: oklch(from red l c h)) {
+  .bar.selectable > [aria-hidden="true"] {
+    background-color: var(
+      --infographic-bar-plate-bg,
+      oklch(
+        from color-mix(in oklab, var(--surface-page, #ffffff) 40%, white)
+        l c h / calc(alpha * clamp(0, (l - 0.85) * 1000, 1))
+      )
+    );
+    background-image: linear-gradient(
+      oklch(from var(--text-primary, #111827) l c h / calc(alpha * 0.09 * clamp(0, (l - 0.5) * 1000, 1))),
+      oklch(from var(--text-primary, #111827) l c h / calc(alpha * 0.09 * clamp(0, (l - 0.5) * 1000, 1)))
+    );
+  }
+}
+
+.bar.selectable .option {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: var(--spacing-1, 0.25rem);
+  height: auto;
+  min-width: 0;
+  padding: var(--spacing-3, 0.75rem) var(--spacing-4_5, 1.125rem) var(--spacing-3_5, 0.875rem);
+  font-size: inherit;
+  font-weight: inherit;
+  text-align: start;
+}
+
+@media (hover: hover) {
+  .bar.selectable .option:hover:not(:disabled):not([data-state="on"]) {
+    background-color: color-mix(in oklab, var(--text-primary, #111827) 4%, transparent);
+  }
+}
+
+/* Hairline between cells, hidden beside the pressed one. */
+.bar.selectable .option + .option::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: var(--spacing-3_5, 0.875rem);
+  bottom: var(--spacing-3_5, 0.875rem);
+  width: var(--hairline-width, var(--stroke-width-thin, 1px));
+  background-color: var(--infographic-bar-divider, var(--hairline, #e5e7eb));
+  transition: opacity var(--motion-duration-300, 300ms) var(--motion-easing-ease-out, cubic-bezier(0.22, 1, 0.36, 1));
+}
+
+.bar.selectable .option[data-state="on"]::before,
+.bar.selectable .option[data-state="on"] + .option::before {
+  opacity: 0;
+}
+
+.bar.selectable .value {
+  display: block;
+  font-family: var(--font-display, var(--font-family-heading, inherit));
+  /* 44px: the drawn count size, between --font-size-4xl and -5xl. */
+  font-size: var(--infographic-bar-value-size, 2.75rem);
+  font-weight: var(--font-weight-bold, 700);
+  line-height: 1;
+  letter-spacing: var(--infographic-bar-value-letter-spacing, -0.03em);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Sentence case: the caption keeps the case it is given. */
+.bar.selectable .caption {
+  /* 13px: the drawn caption size, between --font-size-xs and -sm. */
+  font-size: var(--infographic-bar-caption-size, 0.8125rem);
+  font-weight: var(--font-weight-normal, 400);
+  line-height: normal;
+  text-transform: none;
+  color: var(--text-secondary, #6b7280);
+}
+
+/* Narrow screens (drawn at 720px): the band spans the width and shrinks its type. */
+@media (max-width: 720px) {
+  .bar.selectable {
+    display: grid;
+    grid-auto-columns: minmax(0, 1fr);
+    width: 100%;
+  }
+
+  .bar.selectable .option {
+    padding: var(--spacing-3, 0.75rem);
+  }
+
+  .bar.selectable .value {
+    /* 32px: the drawn narrow count size. */
+    font-size: var(--infographic-bar-value-size-narrow, 2rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bar.selectable > [aria-hidden="true"],
+  .bar.selectable .option + .option::before {
+    transition: none;
+  }
+}

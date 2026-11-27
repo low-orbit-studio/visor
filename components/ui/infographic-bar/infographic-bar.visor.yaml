@@ -7,6 +7,7 @@ when_to_use:
   - Rendering a KPI/metric row that should read as ONE continuous band, not separate bordered cards
   - Admin dashboard summary strips where several metrics share a single framed surface
   - Theme-portable metric rows that must look right in both bordered and borderless palettes
+  - A band of counts that is also the list's filter (selectable mode, one cell pressed)
 
 when_not_to_use:
   - Showing a single metric (use StatCard directly)
@@ -33,7 +34,7 @@ props:
   - name: stats[].label
     type: React.ReactNode
     required: true
-    description: Small uppercase label describing the metric.
+    description: Label describing the metric. Uppercase in a read-only band; a selectable band draws it as a sentence-case caption under the value.
   - name: stats[].value
     type: React.ReactNode
     required: true
@@ -61,17 +62,27 @@ props:
     description: Typography scale for the cell value.
   - name: stats[].id
     type: string
-    description: Stable React key for the cell. Falls back to the array index when omitted.
+    description: Stable React key for the cell, and its value in a selectable band. Falls back to the array index (as a string) when omitted.
   - name: size
     type: "'sm' | 'md'"
     default: "md"
-    description: Dimensional density forwarded to every cell.
+    description: Dimensional density forwarded to every cell of a read-only band.
+  - name: value
+    type: string
+    description: Selected cell id (controlled). Passing value, defaultValue or onValueChange makes the band selectable, a radiogroup filter with one cell pressed and a plate that slides between cells.
+  - name: defaultValue
+    type: string
+    description: Uncontrolled initial selection. Falls back to the first cell.
+  - name: onValueChange
+    type: "(value: string) => void"
+    description: Fires with the newly selected cell id. Never fires with an empty string.
   - name: className
     type: string
     description: Additional CSS class names merged onto the band element.
 
 dependencies:
   - stat-card
+  - toggle-group
 
 preview_url: "https://visor.loworbit.studio/docs/components/admin/infographic-bar"
 

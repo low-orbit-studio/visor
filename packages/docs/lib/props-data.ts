@@ -3752,7 +3752,8 @@ export const propsData: Record<string, PropDef[]> = {
       name: 'stats[].label',
       type: 'React.ReactNode',
       required: true,
-      description: 'Small uppercase label describing the metric.',
+      description:
+        'Label describing the metric. Uppercase in a read-only band; a selectable band draws it as a sentence-case caption under the value.',
     },
     {
       name: 'stats[].value',
@@ -3777,13 +3778,29 @@ export const propsData: Record<string, PropDef[]> = {
       name: 'stats[].id',
       type: 'string',
       description:
-        'Stable React key for the cell. Falls back to the array index when omitted.',
+        'Stable React key for the cell, and its value in a selectable band. Falls back to the array index (as a string) when omitted.',
     },
     {
       name: 'size',
       type: "'sm' | 'md'",
       default: "'md'",
-      description: 'Dimensional density forwarded to every cell.',
+      description: 'Dimensional density forwarded to every cell of a read-only band.',
+    },
+    {
+      name: 'value',
+      type: 'string',
+      description:
+        'Selected cell id (controlled). Passing value, defaultValue or onValueChange makes the band selectable: a radiogroup filter with one cell pressed.',
+    },
+    {
+      name: 'defaultValue',
+      type: 'string',
+      description: 'Uncontrolled initial selection. Falls back to the first cell.',
+    },
+    {
+      name: 'onValueChange',
+      type: '(value: string) => void',
+      description: 'Fires with the newly selected cell id. Never fires with an empty string.',
     },
     {
       name: 'className',

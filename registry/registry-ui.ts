@@ -2674,7 +2674,7 @@ export const ui: Registry = [
     description:
       "Composable continuous stat-card band — lays out N stat-cards as a single infographic strip with outer-rounded/inner-square corners and hairline dividers, no full per-card borders. Theme-portable across bordered and borderless palettes.",
     dependencies: ["@loworbitstudio/visor-core"],
-    registryDependencies: ["utils", "stat-card"],
+    registryDependencies: ["utils", "stat-card", "toggle-group"],
     files: [
       {
         path: "components/ui/infographic-bar/infographic-bar.tsx",

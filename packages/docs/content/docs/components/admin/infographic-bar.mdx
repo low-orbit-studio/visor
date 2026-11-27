@@ -61,6 +61,28 @@ Pass `size="sm"` to tighten every cell for dense dashboards.
   />
 </ComponentPreview>
 
+## Selectable band (a filter)
+
+Pass `value`, `defaultValue` or `onValueChange` and the band becomes a filter: a radiogroup whose cells are radios, one pressed. Each cell draws its value over a sentence-case caption, and the pressed plate slides between cells. Arrow keys move focus and selection together; the band is one tab stop. The cell `id` is the value reported by `onValueChange`.
+
+<ComponentPreview
+  title="Filter band"
+  code={"<InfographicBar\n  aria-label=\"Filter the inbox\"\n  defaultValue=\"all\"\n  onValueChange={setFilter}\n  stats={[\n    { id: \"all\", value: 7, label: \"waiting\" },\n    { id: \"images\", value: 5, label: \"images\" },\n    { id: \"pick\", value: 1, label: \"pick one\" },\n    { id: \"run\", value: 1, label: \"run\" },\n  ]}\n/>"}
+>
+  <InfographicBar
+    aria-label="Filter the inbox"
+    defaultValue="all"
+    stats={[
+      { id: 'all', value: 7, label: 'waiting' },
+      { id: 'images', value: 5, label: 'images' },
+      { id: 'pick', value: 1, label: 'pick one' },
+      { id: 'run', value: 1, label: 'run' },
+    ]}
+  />
+</ComponentPreview>
+
+A selectable cell shows `value` and `label` only; `delta`, `trend`, `footer`, `variant` and `valueAs` apply to the read-only band.
+
 ## Installation
 
 ```bash
@@ -72,7 +94,7 @@ This copies two files into your project:
 - `components/ui/infographic-bar/infographic-bar.tsx` — the component
 - `components/ui/infographic-bar/infographic-bar.module.css` — the styles
 
-`StatCard` is installed automatically as a dependency.
+`StatCard` and `ToggleGroup` (the selectable band's radiogroup) are installed automatically as dependencies.
 
 ## Usage
 
@@ -100,6 +122,12 @@ InfographicBar is theme-agnostic and reads correctly in both bordered and border
 - **Dividers** use `--hairline` — the house soft-separator token, lighter than a full border. Override `--infographic-bar-divider` to retune them, including `transparent` for a fully seamless band.
 - **Corners** round via `overflow: hidden` on the band, so outer cells round and inner cells stay square for any number of cells.
 
+The selectable band has no border and sits on one tint:
+
+- **Band** is the page mixed 6% toward the ink (`--infographic-bar-bg`); on a pure-black page a 3% white layer fades in so the band still reads.
+- **Pressed plate** is a lifted plate on a light page (the page mixed 60% toward white, plus `--shadow-sm`) and a 9% ink wash in dark. It reads the page and the ink, not a mode class, so an always-dark theme's light mode still gets the wash. Override with `--infographic-bar-plate-bg` and `--infographic-bar-plate-shadow`.
+- **Size** follows the approval-inbox drawing: a 4px inset with concentric inner corners (`--radius-xl` less the inset, `--infographic-bar-radius` to retune), cells at least 124px wide (`--infographic-bar-cell-min-width`), a 44px count (`--infographic-bar-value-size`) and a 13px caption (`--infographic-bar-caption-size`). Below 720px the band spans its container and the count drops to 32px.
+
 ## API Reference
 
 ### InfographicBarProps
@@ -115,3 +143,5 @@ Each entry in `stats` is a subset of [`StatCardProps`](/docs/components/admin/st
 ## Accessibility
 
 Each cell is a `StatCard`, which announces its delta direction (`up`, `down`, `flat`) to screen readers via visually-hidden text alongside the visible glyph — color is never the sole signal. The cells default to `<article>` landmarks, so the band exposes one landmark per metric.
+
+A selectable band is a `radiogroup` (name it with `aria-label`); each cell is a `radio` with `aria-checked`, named by its value and caption ("7 waiting"). Arrow keys move focus and selection together, and the band is one tab stop.
