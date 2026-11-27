@@ -9,7 +9,7 @@ import {
 import { cn } from "../../../lib/utils"
 import { Button } from "../button/button"
 import { SegmentedControl } from "../segmented-control/segmented-control"
-import { computeDiff, paintMask, type DiffResult } from "./capture-diff"
+import { computeDiff, paintMask, type DiffResult } from "../../../lib/capture-diff"
 import styles from "./before-after-compare.module.css"
 
 /**
@@ -19,8 +19,8 @@ import styles from "./before-after-compare.module.css"
  * and phones drawn at their capture's CSS width in a concentric bezel.
  *
  * FidelityMirror stays the design-vs-built surface (live nodes and iframes,
- * a verdict and classed deltas); this component compares two image captures,
- * and the pixel engine lives in `capture-diff.ts`.
+ * a verdict and classed deltas); this component compares two image captures.
+ * Both share one pixel engine, `lib/capture-diff.ts`.
  */
 
 // ─── types ─────────────────────────────────────────────────────────────────────

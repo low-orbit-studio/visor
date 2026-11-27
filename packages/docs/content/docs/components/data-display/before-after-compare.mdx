@@ -38,7 +38,7 @@ Use `BeforeAfterCompare` for any review of a change between two captures of the 
 | Side by Side | `1` | Before and after next to each other, top-aligned when their heights differ. Stacks under 768px. |
 | Swipe | `2` | After over before, clipped at a divider. The divider is a `role="slider"`: drag it, or focus it and use the arrow keys (Shift for 10%, Home and End for the ends). |
 | Flip | `3` | One image at a time. Click or press Space to swap them instantly; both stay mounted so nothing fades. |
-| Diff | `4` | The after capture greyed, every changed pixel painted in `--text-warning`, changed regions boxed and a stat line (regions, share of pixels, height difference). The diff runs in the browser on a canvas, so the captures must be same-origin or served with CORS. |
+| Diff | `4` | The after capture greyed, every changed pixel painted in `--text-warning`, changed regions boxed and a stat line (regions, share of pixels, height difference). The diff runs in the browser on a canvas, so the captures must be same-origin or served with CORS. The engine is `lib/capture-diff.ts`, shared with FidelityMirror's `onDiff`. |
 
 `Z` toggles the loupe. Keys act while focus is inside the component; clicking an image focuses it.
 

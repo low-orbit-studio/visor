@@ -8,7 +8,7 @@ import {
   type CapturePair,
   type CompareMark,
 } from "../before-after-compare"
-import { diffPixels } from "../capture-diff"
+import { diffPixels } from "../../../../lib/capture-diff"
 
 const desktop: CapturePair = {
   before: "/before.png",

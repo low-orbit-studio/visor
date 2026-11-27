@@ -18,8 +18,8 @@ why: >
   design-vs-built mirror. FidelityMirror stays the design-vs-built surface: its
   sides are live nodes and iframes, which can't be pixel-diffed or loupe'd, and
   it carries a verdict and classed deltas. BeforeAfterCompare compares two image
-  captures, and its pixel engine (capture-diff.ts) is a pure module FidelityMirror
-  can adopt for image sources. The pointer is written as CSS variables on the
+  captures. Both share one pixel engine, lib/capture-diff.ts (the capture-diff
+  registry lib): FidelityMirror calls it for two image sources through onDiff. The pointer is written as CSS variables on the
   stage, so the crosshair and both loupes move without a React render.
 
 props:

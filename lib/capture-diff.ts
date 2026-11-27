@@ -1,6 +1,7 @@
 /**
  * The capture-pair engine (VI-863): a pixel diff of two captures, done in the
- * browser on a scaled copy. Returns a changed-pixel mask and the changed
+ * browser on a scaled copy. Shared by BeforeAfterCompare (its Diff mode) and
+ * FidelityMirror (its `onDiff` readout for two image sources). Returns a changed-pixel mask and the changed
  * regions as boxes in 0–1 units of the after capture.
  *
  * `diffPixels` is pure (RGBA arrays in, mask and boxes out) so it is testable

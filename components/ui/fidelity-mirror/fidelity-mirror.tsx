@@ -9,6 +9,7 @@ import {
   ArrowsHorizontalIcon,
 } from "@phosphor-icons/react"
 import { cn } from "../../../lib/utils"
+import { computeDiff, type DiffResult } from "../../../lib/capture-diff"
 import styles from "./fidelity-mirror.module.css"
 
 /**
@@ -26,6 +27,10 @@ import styles from "./fidelity-mirror.module.css"
  * The compare goes full-bleed on widescreen (`bleed`, default on) so each pane
  * is ~50vw with the center gutter equal to the outer padding. Under 768px the
  * panes stack design-over-built — never a sideways scroll strip.
+ *
+ * When both sides are image captures, `onDiff` runs the shared capture-pair
+ * engine (`lib/capture-diff.ts`, also BeforeAfterCompare's Diff mode) and
+ * reports the pixel diff, so a caller can derive `verdict` / `score` from it.
  */
 
 // ─── types ─────────────────────────────────────────────────────────────────────
@@ -100,6 +105,12 @@ export interface FidelityMirrorProps
   overlayPosition?: number
   /** Notified when the compare mode toggles. */
   onModeChange?: (mode: FidelityCompareMode) => void
+  /**
+   * Receives the pixel diff of design vs built from the shared capture-pair
+   * engine. Runs only when both sides render as images (`kind: "image"` with a
+   * `src`); the captures must be same-origin or served with CORS.
+   */
+  onDiff?: (result: DiffResult) => void
 }
 
 // ─── constants ─────────────────────────────────────────────────────────────────
@@ -119,6 +130,15 @@ function defaultKind(platform: FidelityPlatform): FidelitySource["kind"] {
   if (platform === "web") return "route"
   if (platform === "external") return "external"
   return "image"
+}
+
+/** The image URL a side renders, or undefined when it is not an image. */
+function imageSrc(
+  source: FidelitySource,
+  platform: FidelityPlatform
+): string | undefined {
+  if (source.content) return undefined
+  return (source.kind ?? defaultKind(platform)) === "image" ? source.src : undefined
 }
 
 /** Whether a platform frames its captures in a device bezel. */
@@ -199,6 +219,7 @@ const FidelityMirror = React.forwardRef<HTMLElement, FidelityMirrorProps>(
       bleed = true,
       overlayPosition = 55,
       onModeChange,
+      onDiff,
       className,
       "aria-label": ariaLabel,
       ...props
@@ -212,6 +233,25 @@ const FidelityMirror = React.forwardRef<HTMLElement, FidelityMirrorProps>(
       setActiveMode(next)
       onModeChange?.(next)
     }
+
+    const designImg = imageSrc(design, platform)
+    const builtImg = imageSrc(built, platform)
+    const onDiffRef = React.useRef(onDiff)
+    React.useEffect(() => {
+      onDiffRef.current = onDiff
+    })
+    const wantsDiff = Boolean(onDiff)
+    React.useEffect(() => {
+      if (!wantsDiff || !designImg || !builtImg) return
+      let live = true
+      computeDiff(designImg, builtImg)
+        .then((res) => live && onDiffRef.current?.(res))
+        // A capture that fails to load or taints the canvas has no diff to report.
+        .catch(() => {})
+      return () => {
+        live = false
+      }
+    }, [wantsDiff, designImg, builtImg])
 
     const hasDeltas = Array.isArray(deltas) && deltas.length > 0
     const designLabel = design.label ?? defaultLabel("design", platform)

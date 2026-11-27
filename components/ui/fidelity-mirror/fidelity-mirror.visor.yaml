@@ -72,6 +72,9 @@ props:
   - name: onModeChange
     type: "(mode: 'split' | 'overlay') => void"
     description: Notified when the compare mode toggles via the header segmented control.
+  - name: onDiff
+    type: "(result: DiffResult) => void"
+    description: Receives the pixel diff of design vs built from the shared capture-pair engine (lib/capture-diff.ts, also BeforeAfterCompare's Diff mode). Runs only when both sides render as images; the captures must be same-origin or served with CORS. Draws nothing, so a caller can derive verdict and score from it.
 
 dependencies:
   - "@phosphor-icons/react"
