@@ -278,6 +278,33 @@ export const FIXTURES: Record<string, Record<string, Fixture>> = {
       }`,
     },
   },
+  "infographic-bar": {
+    default: {
+      export: "InfographicBar",
+      props: `{
+        stats: [
+          { label: "Total Revenue", value: "$48,120", delta: { value: "+12.4%", direction: "up" } },
+          { label: "Active Users", value: "892", delta: { value: "+3.1%", direction: "up" } },
+          { label: "Churn Rate", value: "3.2%", delta: { value: "-0.4%", direction: "down" } },
+        ],
+      }`,
+    },
+    // VI-868: the approval inbox's filter band (PL-3452), second cell pressed.
+    selectable: {
+      export: "InfographicBar",
+      interactiveTarget: "[data-slot=toggle-group-item]",
+      props: `{
+        "aria-label": "Filter the inbox",
+        defaultValue: "images",
+        stats: [
+          { id: "all", value: 7, label: "waiting" },
+          { id: "images", value: 5, label: "images" },
+          { id: "pick", value: 1, label: "pick one" },
+          { id: "run", value: 1, label: "run" },
+        ],
+      }`,
+    },
+  },
   "doc-nav": {
     default: {
       export: "DocNav",
