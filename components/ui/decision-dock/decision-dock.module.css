@@ -116,7 +116,9 @@
 }
 
 .composer [data-slot="composer-field"]:focus-visible {
-  outline: none;
+  /* Transparent, so the card's ring shows instead; forced-colors mode still draws it. */
+  outline: var(--focus-ring-width, 2px) solid transparent;
+  outline-offset: var(--focus-ring-offset, 2px);
 }
 
 /* ---------- done: the drawn check, the verdict and the bar to the next item ---------- */
