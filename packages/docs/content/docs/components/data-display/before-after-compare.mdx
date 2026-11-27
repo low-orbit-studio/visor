@@ -1,0 +1,85 @@
+---
+title: Before After Compare
+description: A before/after capture pair in four modes (Side by Side, Swipe, Flip and a pixel Diff), with a shared crosshair, a synced 2.5× loupe, click-to-mark pins and phones drawn at their true size in a bezel. Copy it into your project and own it completely.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { BeforeAfterCompareDesktopDemo, BeforeAfterComparePhoneDemo } from '@/components/ui/before-after-compare-demos';
+
+## Desktop Pair
+
+<ComponentPreview
+  title="Desktop captures span the plate; click to mark a spot"
+  code={"<BeforeAfterCompare\n  pair={{\n    label: 'Meter Docs',\n    before: '/captures/before.webp',\n    after: '/captures/after.webp',\n    viewport: { width: 1280, height: 800, dpr: 1 },\n  }}\n  marks={marks}\n  onMarksChange={setMarks}\n/>"}
+>
+  <BeforeAfterCompareDesktopDemo />
+</ComponentPreview>
+
+## Phone Pair
+
+A capture narrower than 600 CSS pixels renders as a phone: at its capture's CSS width, never scaled up, in a bezel whose screen corners are concentric with the frame.
+
+<ComponentPreview
+  title="A 390px capture at its true size"
+  code={"<BeforeAfterCompare\n  pair={{\n    label: 'Meter Docs, Phone',\n    before: '/captures/phone-before.webp',\n    after: '/captures/phone-after.webp',\n    viewport: { width: 390, height: 844, dpr: 2 },\n  }}\n/>"}
+>
+  <BeforeAfterComparePhoneDemo />
+</ComponentPreview>
+
+## When to Use
+
+Use `BeforeAfterCompare` for any review of a change between two captures of the same screen: an approval inbox, a visual regression report, a PR comment. Use [`FidelityMirror`](/docs/components/data-display/fidelity-mirror) instead when the comparison is a design against its build, with live routes, a verdict and classed deltas.
+
+## Modes
+
+| Mode | Key | What it does |
+| --- | --- | --- |
+| Side by Side | `1` | Before and after next to each other, top-aligned when their heights differ. Stacks under 768px. |
+| Swipe | `2` | After over before, clipped at a divider. The divider is a `role="slider"`: drag it, or focus it and use the arrow keys (Shift for 10%, Home and End for the ends). |
+| Flip | `3` | One image at a time. Click or press Space to swap them instantly; both stay mounted so nothing fades. |
+| Diff | `4` | The after capture greyed, every changed pixel painted in `--text-warning`, changed regions boxed and a stat line (regions, share of pixels, height difference). The diff runs in the browser on a canvas, so the captures must be same-origin or served with CORS. |
+
+`Z` toggles the loupe. Keys act while focus is inside the component; clicking an image focuses it.
+
+## Crosshair and Loupe
+
+Moving the pointer over either image draws a faint crosshair (white at 18%, difference blend) on both at the same spot. With the loupe on, each image shows a 2.5× lens of its own capture at that spot, so the two lenses compare the same pixels.
+
+## Marks
+
+In Side by Side and Diff, a click drops a numbered pin at the same spot on both images. Clicking a pin removes it. Each mark carries its position as 0–1 of the image (`x`, `y`) and in the capture's CSS pixels (`px`), worked out from `viewport.width`. `markLine(mark, label)` writes the line a session receives: `1. Meter Docs at x 640, y 212`.
+
+Marks are uncontrolled by default (`defaultMarks`); pass `marks` and `onMarksChange` to keep them, for example as chips on a review note.
+
+## Installation
+
+```bash
+npx visor add before-after-compare
+```
+
+## Usage
+
+```tsx
+import { BeforeAfterCompare, markLine, type CompareMark } from '@/components/ui/before-after-compare/before-after-compare';
+
+export function Review() {
+  const [marks, setMarks] = React.useState<CompareMark[]>([]);
+  const pair = {
+    label: 'Settings',
+    before: '/captures/settings-before.webp',
+    after: '/captures/settings-after.webp',
+    viewport: { width: 1440, height: 900, dpr: 2 },
+  };
+  return (
+    <>
+      <BeforeAfterCompare pair={pair} marks={marks} onMarksChange={setMarks} />
+      <textarea defaultValue={marks.map((m) => markLine(m, pair.label)).join('\n')} />
+    </>
+  );
+}
+```
+
+## API Reference
+
+<PropsTable component="before-after-compare" />

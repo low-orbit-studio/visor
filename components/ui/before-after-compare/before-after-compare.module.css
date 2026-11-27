@@ -1,0 +1,422 @@
+/* BeforeAfterCompare (VI-863): a before/after capture pair in four modes.
+ *
+ * Theme-agnostic: every colour is a Visor token. The pointer position arrives
+ * as --bac-x / --bac-y / --bac-w (set by the stage on pointer move), so the
+ * crosshair and the loupe on both sides move without a React render.
+ */
+
+.root {
+  /* Component-owned values, overridable by a consumer or theme. */
+  --bac-gap: var(--spacing-4, 1rem);
+  --bac-tile-radius: var(--radius-lg, 0.5rem);
+  --bac-bezel: 7px; /* intentional: the phone frame's rim width */
+  --bac-screen-ratio: 0.137; /* intentional: an iPhone screen's corner radius ÷ its CSS width */
+  --bac-lens: 220px; /* intentional: the loupe's diameter */
+  --bac-crosshair-opacity: 0.18; /* intentional: a faint 18% difference-blend crosshair (PL-3452 round 2) */
+  --bac-mark: var(--interactive-primary-bg, #2563eb);
+  --bac-mark-ink: var(--interactive-primary-text, #ffffff);
+  --bac-diff: var(--text-warning, #d97706);
+
+  display: flex;
+  flex-direction: column;
+  gap: var(--bac-gap);
+  min-width: 0;
+  color: var(--text-primary, #111827);
+  font-family: var(--font-sans, inherit);
+}
+
+/* ── Bar ─────────────────────────────────────────────────────────────────── */
+.bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--spacing-2, 0.5rem) var(--spacing-3, 0.75rem);
+}
+
+.spacer {
+  flex: 1;
+}
+
+.meta {
+  font-family: var(--font-mono, monospace);
+  font-size: var(--font-size-sm, 0.875rem);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-secondary, #4b5563);
+  white-space: nowrap;
+}
+
+.statDim {
+  color: var(--text-tertiary, #6b7280);
+}
+
+/* ── Stage ───────────────────────────────────────────────────────────────── */
+.stage {
+  position: relative;
+  min-width: 0;
+  outline: none;
+}
+
+.stage[data-markable] [data-mark-surface] {
+  cursor: crosshair;
+}
+
+.side {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--bac-gap);
+  /* Pairs with different heights stay top-aligned. */
+  align-items: start;
+}
+
+.side[data-phone] {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-start;
+  gap: var(--spacing-8, 2rem);
+}
+
+@media (max-width: 767px) {
+  .side:not([data-phone]) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.figure,
+.single {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3, 0.75rem);
+  min-width: 0;
+  margin: 0;
+}
+
+.single[data-phone] {
+  align-items: center;
+}
+
+.caption {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3, 0.75rem);
+  min-height: var(--spacing-8, 2rem);
+}
+
+.caption[data-split] {
+  justify-content: space-between;
+}
+
+.hint {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-2, 0.5rem);
+  font-size: var(--font-size-sm, 0.875rem);
+  color: var(--text-tertiary, #6b7280);
+}
+
+.stat {
+  font-size: var(--font-size-sm, 0.875rem);
+  color: var(--text-primary, #111827);
+}
+
+/* ── Before / After tag ──────────────────────────────────────────────────── */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-2, 0.5rem);
+  padding: var(--spacing-1, 0.25rem) var(--spacing-3, 0.75rem) var(--spacing-1, 0.25rem)
+    var(--spacing-2, 0.5rem);
+  border-radius: var(--radius-md, 0.375rem);
+  background: var(--surface-muted, #f3f4f6);
+  font-size: var(--font-size-sm, 0.875rem);
+  font-weight: var(--font-weight-bold, 700);
+  color: var(--text-primary, #111827);
+}
+
+.tagDot {
+  width: var(--spacing-2, 0.5rem);
+  height: var(--spacing-2, 0.5rem);
+  border-radius: var(--radius-full, 9999px);
+}
+
+.tag[data-side="before"] .tagDot {
+  box-shadow: inset 0 0 0 var(--stroke-width-medium, 1.5px) var(--text-tertiary, #6b7280);
+}
+
+.tag[data-side="after"] .tagDot {
+  background: var(--text-primary, #111827);
+}
+
+/* ── Frames ──────────────────────────────────────────────────────────────── */
+
+/* Desktop: a rounded tile spanning its column. */
+.tile {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--bac-tile-radius);
+  background: var(--surface-page, #ffffff);
+  box-shadow:
+    0 0 0 var(--stroke-width-thin, 1px) var(--border-default, #e5e7eb),
+    var(--shadow-md);
+}
+
+/* Phone: drawn at the capture's CSS width (never scaled up), shrinking only to
+ * fit its column. Bezel and screen corners are concentric: outer = inner + rim. */
+.device {
+  --bac-screen-r: calc(var(--bac-true-w) * var(--bac-screen-ratio));
+  position: relative;
+  box-sizing: content-box;
+  width: var(--bac-true-w);
+  max-width: calc(100% - 2 * var(--bac-bezel));
+  padding: var(--bac-bezel);
+  border-radius: calc(var(--bac-screen-r) + var(--bac-bezel));
+  background: var(--surface-elev-3, #374151);
+  box-shadow:
+    inset 0 0 0 var(--stroke-width-thin, 1px) var(--border-strong, #9ca3af),
+    var(--shadow-xl);
+}
+
+.device .screen {
+  overflow: hidden;
+  border-radius: var(--bac-screen-r);
+  background: var(--surface-page, #ffffff);
+}
+
+.screen {
+  position: relative;
+}
+
+.shot {
+  display: block;
+  width: 100%;
+  height: auto;
+  user-select: none;
+}
+
+/* ── Crosshair + loupe ───────────────────────────────────────────────────── */
+.overlay {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--motion-duration-fast, 150ms) var(--motion-easing-ease-out, ease-out);
+}
+
+.stage[data-pointer] .overlay {
+  opacity: 1;
+}
+
+.crossV,
+.crossH {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: var(--color-white, #ffffff);
+  mix-blend-mode: difference;
+  opacity: var(--bac-crosshair-opacity);
+}
+
+.crossV {
+  width: var(--stroke-width-thin, 1px);
+  height: 100%;
+  transform: translateX(var(--bac-x, 0));
+}
+
+.crossH {
+  width: 100%;
+  height: var(--stroke-width-thin, 1px);
+  transform: translateY(var(--bac-y, 0));
+}
+
+.lens {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--bac-lens);
+  height: var(--bac-lens);
+  border-radius: var(--radius-full, 9999px);
+  background-color: var(--surface-page, #ffffff);
+  background-repeat: no-repeat;
+  background-size: calc(var(--bac-w, 0px) * var(--bac-zoom)) auto;
+  background-position:
+    calc(var(--bac-lens) / 2 - var(--bac-x, 0px) * var(--bac-zoom))
+    calc(var(--bac-lens) / 2 - var(--bac-y, 0px) * var(--bac-zoom));
+  transform: translate(
+    calc(var(--bac-x, 0px) - var(--bac-lens) / 2),
+    calc(var(--bac-y, 0px) - var(--bac-lens) / 2)
+  );
+  box-shadow:
+    0 0 0 var(--stroke-width-medium, 2px) var(--text-primary, #111827),
+    var(--shadow-xl);
+}
+
+/* ── Marks ───────────────────────────────────────────────────────────────── */
+.pin {
+  position: absolute;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: var(--spacing-6, 1.5rem);
+  height: var(--spacing-6, 1.5rem);
+  translate: -50% -50%;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-full, 9999px);
+  background: var(--bac-mark);
+  color: var(--bac-mark-ink);
+  font-size: var(--font-size-xs, 0.75rem);
+  font-weight: var(--font-weight-bold, 700);
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  box-shadow:
+    0 0 0 var(--stroke-width-medium, 2px) var(--surface-page, #ffffff),
+    var(--shadow-lg);
+  transition: scale var(--motion-duration-fast, 150ms) var(--motion-easing-ease-out, ease-out);
+}
+
+.pin:hover {
+  scale: 1.12;
+}
+
+.pin:focus-visible {
+  outline: var(--focus-ring-width, 2px) solid var(--border-focus, #2563eb);
+  outline-offset: var(--focus-ring-offset, 2px);
+}
+
+/* ── Layered modes (swipe, flip, diff) ───────────────────────────────────── */
+.stack {
+  position: relative;
+  display: grid;
+}
+
+.stack > * {
+  grid-area: 1 / 1;
+  align-self: start;
+}
+
+.layer {
+  display: block;
+}
+
+.layer[data-hidden] {
+  visibility: hidden;
+}
+
+/* Swipe */
+.swipe {
+  cursor: ew-resize;
+  touch-action: pan-y;
+}
+
+.handle {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  /* Override .stack's start alignment so the divider spans the full height. */
+  align-self: stretch;
+  width: 0;
+  outline: none;
+}
+
+.handle::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(var(--stroke-width-medium, 2px) / -2);
+  width: var(--stroke-width-medium, 2px);
+  background: var(--color-white, #ffffff);
+  mix-blend-mode: difference;
+}
+
+.knob {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  display: grid;
+  place-items: center;
+  width: var(--spacing-10, 2.5rem);
+  height: var(--spacing-10, 2.5rem);
+  translate: -50% -50%;
+  border-radius: var(--radius-full, 9999px);
+  background: var(--surface-popover, #ffffff);
+  color: var(--text-primary, #111827);
+  box-shadow:
+    0 0 0 var(--stroke-width-thin, 1px) var(--border-strong, #9ca3af),
+    var(--shadow-lg);
+}
+
+.handle:focus-visible .knob {
+  outline: var(--focus-ring-width, 2px) solid var(--border-focus, #2563eb);
+  outline-offset: var(--focus-ring-offset, 2px);
+}
+
+/* Flip */
+.flip {
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+
+.flip:focus-visible {
+  outline: var(--focus-ring-width, 2px) solid var(--border-focus, #2563eb);
+  outline-offset: calc(-1 * var(--focus-ring-offset, 2px) - var(--focus-ring-width, 2px));
+}
+
+/* Diff */
+.diffBase {
+  display: block;
+  opacity: var(--opacity-40, 0.4);
+  filter: grayscale(1);
+}
+
+.diffMask {
+  width: 100%;
+  color: var(--bac-diff);
+  image-rendering: pixelated;
+}
+
+.diffBox {
+  position: absolute;
+  border-radius: var(--radius-md, 0.375rem);
+  box-shadow:
+    0 0 0 var(--stroke-width-medium, 2px) var(--bac-diff),
+    0 0 0 var(--spacing-1, 0.25rem) color-mix(in srgb, var(--bac-diff) 22%, transparent);
+  pointer-events: none;
+}
+
+/* ── Key legend ──────────────────────────────────────────────────────────── */
+.keys {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--spacing-1, 0.25rem) var(--spacing-4, 1rem);
+  margin: 0;
+  font-size: var(--font-size-xs, 0.75rem);
+  color: var(--text-tertiary, #6b7280);
+}
+
+.keyItem {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-1, 0.25rem);
+}
+
+.kbd {
+  padding: 0 var(--spacing-1, 0.25rem);
+  border-radius: var(--radius-sm, 0.25rem);
+  box-shadow: inset 0 0 0 var(--stroke-width-thin, 1px) var(--border-default, #e5e7eb);
+  font-family: var(--font-mono, monospace);
+  font-size: var(--font-size-xs, 0.75rem);
+  color: var(--text-secondary, #4b5563);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .overlay,
+  .pin {
+    transition: none;
+  }
+}

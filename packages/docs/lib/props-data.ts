@@ -2151,6 +2151,30 @@ export const propsData: Record<string, PropDef[]> = {
     },
   ],
 
+  'before-after-compare': [
+    {
+      name: 'pair',
+      type: '{ before: string; after: string; label: string; viewport: { width: number; height: number; dpr?: number } }',
+      description: "The two capture URLs, the pair's name (alt text and mark lines) and the viewport they were taken at. A width under 600 renders as a phone at that CSS width. Required.",
+    },
+    { name: 'mode', type: "'side' | 'swipe' | 'flip' | 'diff'", description: 'Controlled mode.' },
+    { name: 'defaultMode', type: "'side' | 'swipe' | 'flip' | 'diff'", default: "'side'", description: 'Uncontrolled initial mode.' },
+    { name: 'onModeChange', type: '(mode: CompareMode) => void', description: 'Fires when the mode changes, from the control or keys 1–4.' },
+    {
+      name: 'marks',
+      type: '{ n: number; x: number; y: number; px: { x: number; y: number } }[]',
+      description: 'Controlled marks. x and y are 0–1 of the image; px is in the capture\'s CSS pixels.',
+    },
+    { name: 'defaultMarks', type: 'CompareMark[]', default: '[]', description: 'Uncontrolled initial marks.' },
+    { name: 'onMarksChange', type: '(marks: CompareMark[]) => void', description: 'Fires when a click adds a mark or removes one.' },
+    { name: 'defaultLoupe', type: 'boolean', default: 'false', description: 'Whether the loupe starts on. Z toggles it.' },
+    {
+      name: '...props',
+      type: "React.ComponentProps<'section'>",
+      description: 'Standard section attributes are forwarded to the root.',
+    },
+  ],
+
   'photo-backdrop': [
     {
       name: 'backgrounds',

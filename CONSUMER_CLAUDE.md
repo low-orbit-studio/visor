@@ -59,15 +59,16 @@ npx visor add <component-name> --overwrite
 
 ---
 
-## Component Catalog (83)
+## Component Catalog (84)
 
-### Data Display (7)
+### Data Display (8)
 
 | Component | Description |
 | --- | --- |
 | `accordion` | Vertically stacked expandable panels |
 | `avatar` | User or entity image with fallback initials |
 | `badge` | Small status or category label |
+| `before-after-compare` | Before/after capture pair: side by side, swipe, flip, pixel diff, loupe and marks |
 | `card` | Contained surface for grouping related content |
 | `chart` | Data visualization wrapper using Recharts |
 | `table` | Structured data display with header, body, and footer rows |
