@@ -962,6 +962,18 @@ export const FIXTURES: Record<string, Record<string, Fixture>> = {
       props: `{ "aria-label": "Workspace", fixed: false, showLabels: true, items: [{ label: "Home", icon: ${NAV_ICONS[5]}, href: "#home", active: true }, { label: "Inbox", icon: ${NAV_ICONS[1]}, href: "#inbox", mark: true }, { label: "Settings", icon: ${NAV_ICONS[5]}, href: "#settings" }] }`,
     },
   },
+  // VI-864: the option cards row. Wide frame so three cards sit side by side.
+  "option-cards": {
+    default: {
+      export: "OptionCards",
+      interactiveTarget: "[data-slot=option-cards-card]",
+      props: `{ "aria-label": "Hosting", defaultValue: 0, style: { width: 900 }, options: [{ label: "Keep Vercel", detail: "Deploy the docs site the way it ships today.", pros: ["No setup", "Preview links on every PR"], cons: ["Per-seat cost"], recommended: true }, { label: "Self-Host", detail: "Run the docs on our own box.", pros: ["No monthly bill"], cons: ["We run upgrades", "No previews"] }, { label: "Static Export", detail: "Ship plain files to a bucket.", pros: ["Cheapest"], cons: ["No server routes"] }] }`,
+    },
+    stacked: {
+      export: "OptionCards",
+      props: `{ "aria-label": "Hosting", defaultValue: 1, style: { width: 420 }, options: [{ label: "Keep Vercel", detail: "As today.", pros: ["No setup"], cons: ["Per-seat cost"], recommended: true }, { label: "Self-Host", detail: "Our own box.", pros: ["No bill"], cons: ["We run upgrades"] }] }`,
+    },
+  },
   // VI-615: the single-select pill group. `fullwidth` fills the render frame.
   "segmented-control": {
     default: {

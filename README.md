@@ -113,7 +113,7 @@ npx visor add button input label card
 The registry ships 88+ UI components across 6 categories, plus admin compounds, blocks, and hooks.
 
 **Form (30)**
-`billing-slider` · `button` · `calendar` · `checkbox` · `combobox` · `date-picker` · `field` · `fieldset` · `file-upload` · `form` · `input` · `label` · `number-input` · `otp-input` · `password-input` · `phone-input` · `photo-drop` · `photo-picker` · `position-picker` · `radio-group` · `scroll-hint` · `search-input` · `select` · `slider` · `slider-control` · `switch` · `tag-input` · `textarea` · `time-picker` · `toggle-group`
+`billing-slider` · `button` · `calendar` · `checkbox` · `combobox` · `date-picker` · `field` · `fieldset` · `file-upload` · `form` · `input` · `label` · `number-input` · `option-cards` · `otp-input` · `password-input` · `phone-input` · `photo-drop` · `photo-picker` · `position-picker` · `radio-group` · `scroll-hint` · `search-input` · `select` · `slider` · `slider-control` · `switch` · `tag-input` · `textarea` · `time-picker` · `toggle-group`
 
 **Data Display (18)**
 `accordion` · `animated-title` · `avatar` · `carousel` · `code-block` · `collapsible` · `heading` · `image` · `layer-chart` · `meter` · `photo-backdrop` · `progress` · `proportion-bar` · `reach-rings` · `rich-text` · `separator` · `skeleton` · `text` · `timeline`
