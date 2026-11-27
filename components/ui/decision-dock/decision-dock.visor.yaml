@@ -19,7 +19,8 @@ why: >
   keyframes instead of the motion library, so Visor gains no animation
   dependency. Sticky rather than fixed, so it rides the bottom of its own
   scroll container. The page's keys (N, A, Enter, R, Esc) skip keys typed
-  into a field or held with a modifier. The 82% card surface over a 72% page veil and the 22px frost
+  into a field or held with a modifier, and Enter on a focused button, link
+  or radio keeps its own action. The 82% card surface over a 72% page veil and the 22px frost
   are the design's numbers, kept as intentional values; over a photo the
   glass layer draws it instead.
 

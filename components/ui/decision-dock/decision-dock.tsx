@@ -69,7 +69,10 @@ const DecisionDock = React.forwardRef<HTMLDivElement, DecisionDockProps>(
     React.useEffect(() => {
       const onKey = (e: KeyboardEvent) => {
         if (e.metaKey || e.ctrlKey || e.altKey) return
-        if (e.key !== "Escape" && (e.target as HTMLElement | null)?.closest?.("input, textarea, select, [contenteditable]")) return
+        const t = e.target as HTMLElement | null
+        if (e.key !== "Escape" && t?.closest?.("input, textarea, select, [contenteditable]")) return
+        // Enter and Space keep their native activation on a focused control; letter keys still fire.
+        if ((e.key === "Enter" || e.key === " ") && t?.closest?.("button, a[href], summary, [role=button], [role=radio], [role=checkbox], [role=link], [role=tab], [role=menuitem], [role=option]")) return
         const fn = keys.current[e.key]
         if (!fn) return
         e.preventDefault()

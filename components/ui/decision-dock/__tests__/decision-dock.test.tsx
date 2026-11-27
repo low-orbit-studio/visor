@@ -49,6 +49,39 @@ describe("DecisionDock", () => {
     expect(onAnswer).toHaveBeenCalledWith("Sent B", undefined)
   })
 
+  it("pick: Enter or Space on a focused control keeps its own action and sends nothing", () => {
+    const onAnswer = vi.fn()
+    render(
+      <>
+        <div role="radiogroup" aria-label="Options">
+          <button type="button" role="radio" aria-checked="true">B</button>
+        </div>
+        <a href="#next">Next</a>
+        <DecisionDock kind="pick" question="Q" choice="B" onAnswer={onAnswer} />
+      </>,
+    )
+    const needs = screen.getByRole("button", { name: /Needs Work/ })
+    for (const el of [needs, screen.getByRole("radio"), screen.getByRole("link")]) {
+      el.focus()
+      // fireEvent returns false when the handler called preventDefault.
+      expect(fireEvent.keyDown(el, { key: "Enter" })).toBe(true)
+      expect(fireEvent.keyDown(el, { key: " " })).toBe(true)
+    }
+    expect(onAnswer).not.toHaveBeenCalled()
+    // The browser's own activation of Needs Work then opens the note.
+    fireEvent.click(needs)
+    expect(screen.getByRole("textbox")).toHaveFocus()
+  })
+
+  it("letter keys still fire from a focused button", () => {
+    const onAnswer = vi.fn()
+    render(<DecisionDock question="Q" onAnswer={onAnswer} />)
+    const needs = screen.getByRole("button", { name: /Needs Work/ })
+    needs.focus()
+    expect(fireEvent.keyDown(needs, { key: "a" })).toBe(false)
+    expect(onAnswer).toHaveBeenCalledWith("Approved", undefined)
+  })
+
   it("run: I Ran It sends on click and on R", () => {
     const onAnswer = vi.fn()
     render(<DecisionDock kind="run" question="Q" onAnswer={onAnswer} />)
