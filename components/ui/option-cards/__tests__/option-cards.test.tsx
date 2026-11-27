@@ -69,6 +69,36 @@ describe("OptionCards", () => {
     expect(screen.getByRole("radio", { name: "Static export" })).toBeChecked()
   })
 
+  it("with nothing picked, ArrowRight steps from the focused first card to the second", async () => {
+    const user = userEvent.setup()
+    renderCards()
+    await user.tab()
+    await user.keyboard("{ArrowRight}")
+    expect(screen.getByRole("radio", { name: "Self-host" })).toBeChecked()
+    expect(screen.getByRole("radio", { name: "Self-host" })).toHaveFocus()
+  })
+
+  it("with nothing picked, ArrowLeft wraps to the last card", async () => {
+    const user = userEvent.setup()
+    renderCards()
+    await user.tab()
+    await user.keyboard("{ArrowLeft}")
+    expect(screen.getByRole("radio", { name: "Static export" })).toBeChecked()
+    expect(screen.getByRole("radio", { name: "Static export" })).toHaveFocus()
+  })
+
+  it("arrows keep moving focus when a controlled parent ignores the change", async () => {
+    const user = userEvent.setup()
+    const onValueChange = vi.fn()
+    renderCards({ value: 0, onValueChange })
+    await user.tab()
+    await user.keyboard("{ArrowRight}")
+    expect(screen.getByRole("radio", { name: "Self-host" })).toHaveFocus()
+    await user.keyboard("{ArrowRight}")
+    expect(screen.getByRole("radio", { name: "Static export" })).toHaveFocus()
+    expect(onValueChange.mock.calls).toEqual([[1], [2]])
+  })
+
   it("A/B/C keys pick directly while focus is in the group", async () => {
     const user = userEvent.setup()
     const onValueChange = vi.fn()

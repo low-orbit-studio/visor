@@ -82,7 +82,9 @@ const OptionCards = React.forwardRef<HTMLDivElement, OptionCardsProps>(
     const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
       if (event.altKey || event.ctrlKey || event.metaKey) return
       const n = options.length
-      const current = value ?? -1
+      // Step from the focused card, so an uncontrolled-empty or ignored-controlled group still moves.
+      const focused = cardRefs.current.findIndex((c) => c === document.activeElement)
+      const current = focused >= 0 ? focused : (value ?? 0)
       let next: number | null = null
       if (event.key === "ArrowRight" || event.key === "ArrowDown") next = (current + 1) % n
       else if (event.key === "ArrowLeft" || event.key === "ArrowUp") next = (current - 1 + n) % n
