@@ -1,0 +1,80 @@
+---
+title: DecisionDock
+description: A floating answer bar. It carries the item's context and its answer buttons, each with its key; Needs Work opens a note in place, and an answer turns the bar into a sent state that runs to the next item.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { DecisionDockDemo } from '@/components/ui/decision-dock-demo';
+
+The dock is the one place an answer is given. It sits sticky at the bottom of the view, so the work above
+keeps the full width, and it says exactly what will be sent. Put it last inside the page's scrolling
+column.
+
+## Kinds
+
+- `approve`: **Needs Work** (`N`) and **Approve** (`A`).
+- `pick`: **Needs Work** and **Send X** (`↵`), disabled with no key until `choice` names an option.
+- `run`: **Needs Work** and **I Ran It** (`R`).
+
+Keys typed into a field, or with ⌘, Ctrl or Alt held, are left alone, and Enter or Space on a
+focused button, link, radio or checkbox keeps its own action. Mount one dock per page: its keys
+are the page's keys.
+
+<ComponentPreview
+  title="Decision Dock"
+  code={"import { DecisionDock } from '@/components/ui/decision-dock/decision-dock';\n\n<DecisionDock\n  key={item.id}\n  kind=\"approve\"\n  label=\"VI-865\"\n  question=\"Does the confirm dialog look right?\"\n  onAnswer={(verdict, note) => save(item.id, verdict, note)}\n  onAdvance={goToNext}\n/>"}
+>
+  <DecisionDockDemo />
+</ComponentPreview>
+
+## Installation
+
+```bash
+npx visor add decision-dock
+```
+
+This copies two files into your project, and adds Button, Kbd and Composer if they are missing:
+
+- `components/ui/decision-dock/decision-dock.tsx` — the component
+- `components/ui/decision-dock/decision-dock.module.css` — the bar, its three states and the keyframes
+
+## Needs Work
+
+**Needs Work** (or `N`) opens a note in place of the buttons, focused. ⌘↵ sends it (so does ↵; ⇧↵ starts
+a new line), and Esc goes back. `onAnswer` gets `"Needs work"` and the note.
+
+## Sent State
+
+An answer turns the bar into a status line: a check drawn in the success colour, the verdict
+("Approved.", "Sent B.", "Ran it.", "Needs work.") and `sentText`. A bar runs along the bottom edge for
+`--decision-dock-advance` (1.2s) and calls `onAdvance` when it fills. Show the next item by changing the
+dock's `key`.
+
+Under reduced motion the dock, the note and the check appear without moving; the progress bar still runs,
+since it is the countdown to the next item.
+
+## On a Phone
+
+Below 640px the dock spans the screen edge to edge with square bottom corners, the question wraps, the two
+buttons share the row and the key hints hide.
+
+## Glass
+
+Over a photo (`data-glass="on"`) the dock reads the glass layer's fill, lift, blur, shadow and ink. Elsewhere
+it is the card surface at 82% over a 72% veil of the page colour, frosted 22px, so the page reads through without its text competing (Blackout's see-through card still gets a solid ground).
+
+## Customization
+
+| Property | Default | What it sets |
+|---|---|---|
+| `--decision-dock-bg` | the glass fill, or the card surface at 82% over the page at 72% | The bar's fill |
+| `--decision-dock-filter` | the glass blur, or `blur(22px) saturate(150%)` | The frost behind the bar |
+| `--decision-dock-radius` | `var(--radius-2xl)` | Corner radius |
+| `--decision-dock-inset` | `var(--spacing-4)` | Gap to the bottom of the view |
+| `--decision-dock-max-width` | `65rem` | The bar's widest measure |
+| `--decision-dock-advance` | `1.2s` | How long the sent state's bar runs |
+
+## Props
+
+<PropsTable component="decision-dock" />

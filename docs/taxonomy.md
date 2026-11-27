@@ -57,6 +57,7 @@ Components that communicate status, progress, or alerts to the user.
 |-----------|--------|-------|
 | alert | ❌ Needs page | Inline status message (info, warning, error, success) |
 | banner | ✅ Documented | Prominent site-wide notification |
+| decision-dock | ✅ Documented | Floating answer bar with keys, a Needs Work note and a sent state |
 | progress | ❌ Needs page | Bar/ring showing completion percentage |
 | skeleton | ❌ Needs page | Loading placeholder that mimics content shape |
 | toast | ✅ Documented | Temporary notification (Sonner-style) |

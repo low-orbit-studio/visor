@@ -59,7 +59,7 @@ npx visor add <component-name> --overwrite
 
 ---
 
-## Component Catalog (83)
+## Component Catalog (84)
 
 ### Data Display (7)
 
@@ -73,12 +73,13 @@ npx visor add <component-name> --overwrite
 | `table` | Structured data display with header, body, and footer rows |
 | `timeline` | Chronological list of events with connectors |
 
-### Feedback (7)
+### Feedback (8)
 
 | Component | Description |
 | --- | --- |
 | `alert` | Inline callout for important messages |
 | `banner` | Full-width notification bar |
+| `decision-dock` | Floating answer bar: answer buttons with keys, a Needs Work note, a sent state |
 | `popover` | Floating content panel anchored to a trigger |
 | `progress` | Horizontal bar indicating completion |
 | `proportion-bar` | One total split into parts by value, with a legend |

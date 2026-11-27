@@ -1,0 +1,95 @@
+name: DecisionDock
+description: A floating answer bar, sticky at the bottom of the view. It carries the item's context and its answer buttons, each with its key; Needs Work opens a note in place, and an answer turns the bar into a sent state that runs to the next item.
+extends: HTMLDivElement
+category: feedback
+
+when_to_use:
+  - A review or approval screen where one item is answered at a time (approve, pick one option, or confirm a step was run)
+  - The answer should stay in reach while the work above it scrolls, with a key for each answer
+
+when_not_to_use:
+  - A form with several fields to submit (use Form and a Button)
+  - Actions on selected rows (use BulkActionBar)
+  - A yes/no that blocks the page until answered (use ConfirmDialog)
+
+why: >
+  Lifted from the approval inbox design (PL-3452), where the dock is the one
+  place an answer is given. It floats over the work so the images keep the
+  full width, and it says exactly what will be sent. Rebuilt with CSS
+  keyframes instead of the motion library, so Visor gains no animation
+  dependency. Sticky rather than fixed, so it rides the bottom of its own
+  scroll container. The page's keys (N, A, Enter, R, Esc) skip keys typed
+  into a field or held with a modifier, and Enter on a focused button, link
+  or radio keeps its own action. The 82% card surface over a 72% page veil and the 22px frost
+  are the design's numbers, kept as intentional values; over a photo the
+  glass layer draws it instead.
+
+props:
+  - name: kind
+    type: "'approve' | 'pick' | 'run'"
+    default: "'approve'"
+    description: The answer buttons. approve is Needs Work (N) and Approve (A); pick is Needs Work and Send X (Enter); run is Needs Work and I Ran It (R).
+  - name: label
+    type: ReactNode
+    description: The item's short name, drawn bold before the question (a ticket ID, for example).
+  - name: question
+    type: ReactNode
+    required: true
+    description: The question being answered. One line on a wide bar; it wraps on a phone.
+  - name: choice
+    type: "string | null"
+    default: "null"
+    description: pick only. The chosen option's short name ("A"). Unset, Send is disabled and shows no key.
+  - name: onAnswer
+    type: "(verdict: string, note?: string) => void"
+    description: Called once with the verdict line ("Approved", "Sent A", "Ran it", "Needs work") and, for Needs Work, the note.
+  - name: sentText
+    type: ReactNode
+    default: "'Your answer is in.'"
+    description: The sent state's line after the verdict.
+  - name: onAdvance
+    type: "() => void"
+    description: Called when the sent state's progress bar fills. Show the next item by changing the dock's key.
+
+customization:
+  description: Set these on the dock or any ancestor.
+  properties:
+    - name: --decision-dock-bg
+      default: "the glass fill, or the card surface at 82% over the page at 72%"
+      description: The bar's fill.
+    - name: --decision-dock-filter
+      default: "the glass blur, or blur(22px) saturate(150%)"
+      description: The frost behind the bar.
+    - name: --decision-dock-radius
+      default: var(--radius-2xl)
+      description: Corner radius.
+    - name: --decision-dock-inset
+      default: var(--spacing-4)
+      description: Gap to the bottom of the view.
+    - name: --decision-dock-max-width
+      default: 65rem
+      description: The bar's widest measure.
+    - name: --decision-dock-advance
+      default: 1.2s
+      description: How long the sent state's progress bar runs before onAdvance.
+
+dependencies: []
+
+registry_dependencies:
+  - "utils"
+  - "button"
+  - "kbd"
+  - "composer"
+
+preview_url: "https://visor.loworbit.studio/docs/components/feedback/decision-dock"
+
+example: |
+  <DecisionDock
+    key={item.id}
+    kind="pick"
+    label={item.ticket}
+    question={item.question}
+    choice={picked}
+    onAnswer={(verdict, note) => save(item.id, verdict, note)}
+    onAdvance={goToNext}
+  />

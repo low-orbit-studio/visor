@@ -1261,6 +1261,25 @@ export const ui: Registry = [
     ],
   },
   {
+    name: "decision-dock",
+    type: "registry:ui",
+    category: "feedback",
+    description:
+      "A floating answer bar, sticky at the bottom of the view: the item's context and its answer buttons, each with its key (approve, pick or run). Needs Work opens a note in place that sends with Cmd+Enter; an answer turns the bar into a sent state with a drawn check, the verdict and a progress bar to the next item. Reads the glass layer over a photo.",
+    dependencies: ["@loworbitstudio/visor-core"],
+    registryDependencies: ["utils", "button", "kbd", "composer"],
+    files: [
+      {
+        path: "components/ui/decision-dock/decision-dock.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/decision-dock/decision-dock.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
     name: "composer",
     type: "registry:ui",
     category: "form",
